@@ -393,6 +393,8 @@ const NAV = {
       {id:'sec_dashboard', label:'待辦總覽'},
       {id:'sec_institutions', label:'機構管理'},
       {id:'sec_form', label:'新增機構資料'},
+      {id:'sec_case_detail', label:'案件狀態追蹤'},
+      {id:'sec_contract', label:'合約簽訂'},
     ]
   },
   advisor:{
@@ -418,6 +420,7 @@ const NAV = {
     items:[
       {id:'adm_reports', label:'統計報表匯出'},
       {id:'adm_regs', label:'法規版本管理'},
+      {id:'adm_committee', label:'委員會治理報表'},
     ]
   }
 };
@@ -836,6 +839,153 @@ function screen_stu_journey(){
   </div>`;
 }
 
+function screen_sec_case_detail(){
+  return `
+  <div class="page-head">
+    <h1>案件狀態追蹤</h1>
+    <p>單一實習案的完整生命週期與卡關提示</p>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">李冠廷 → 雲創數位有限公司</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">案件編號 INT-2026-0142・資訊管理學系</div>
+      </div>
+      <span class="tag warn">合約待補（有條件先行）</span>
+    </div>
+
+    <div class="progress-track" style="margin-bottom:22px;">
+      <div class="pstep done"><div class="pline"></div><div class="circle">✓</div><div class="lbl">草案</div></div>
+      <div class="pstep done"><div class="pline"></div><div class="circle">✓</div><div class="lbl">機構查核中</div></div>
+      <div class="pstep done"><div class="pline"></div><div class="circle">✓</div><div class="lbl">已核准</div></div>
+      <div class="pstep current"><div class="pline"></div><div class="circle">4</div><div class="lbl">合約簽訂中</div></div>
+      <div class="pstep"><div class="pline"></div><div class="circle">5</div><div class="lbl">實習進行中</div></div>
+      <div class="pstep"><div class="pline"></div><div class="circle">6</div><div class="lbl">實習結束</div></div>
+      <div class="pstep"><div class="pline"></div><div class="circle">7</div><div class="lbl">結案存查</div></div>
+    </div>
+
+    <div class="banner gold" style="margin-bottom:18px;">
+      <span class="ic">⚠️</span>
+      <div><b>有條件先行中：</b>機構合約行政作業較慢，尚未回簽，但學生已於 2026/07/01 開始實習。系統已標記「合約待補」，將持續提醒，不會阻擋後續訪視與進度作業。合約補齊前無法進入「實習結束」狀態。</div>
+    </div>
+
+    <div class="section-title" style="padding:0 0 12px;border:none;">狀態轉換所需條件檢查</div>
+    <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--success-bg);color:var(--success)">✓</div><div class="body"><div class="title">機構查核紀錄</div><div class="sub">已完成・2026/06/10</div></div><span class="tag ok">已具備</span></div>
+    <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--success-bg);color:var(--success)">✓</div><div class="body"><div class="title">學生個別實習計畫</div><div class="sub">已由林志明教授與機構共同擬定・2026/06/25</div></div><span class="tag ok">已具備</span></div>
+    <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--alert-bg);color:var(--alert)">✕</div><div class="body"><div class="title">合約正式回簽</div><div class="sub">已寄出待機構回簽，逾期 6 天</div></div><span class="tag alert">缺少</span></div>
+    <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--ink-faint);color:#fff">·</div><div class="body"><div class="title">訪視紀錄（≥1 筆）</div><div class="sub">尚未進行，預計 8/20</div></div><span class="tag neutral">尚未需要</span></div>
+    <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--ink-faint);color:#fff">·</div><div class="body"><div class="title">滿意度調查／成績考核</div><div class="sub">實習結束後開放</div></div><span class="tag neutral">尚未需要</span></div>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:flex-end;">
+    <button class="btn ghost">催辦合約回簽</button>
+    <button class="btn primary" onclick="showScreen('sec_contract')">前往合約簽訂 →</button>
+  </div>`;
+}
+
+function screen_sec_contract(){
+  return `
+  <div class="page-head">
+    <h1>合約簽訂</h1>
+    <p>李冠廷 → 雲創數位有限公司・INT-2026-0142</p>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div class="field" style="margin-bottom:18px;">
+      <label>合約關係類型 <span class="req">*</span></label>
+      <div style="display:flex;gap:12px;">
+        <label class="card" style="flex:1;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;border-color:var(--primary);">
+          <input type="radio" name="relation" checked style="margin-top:3px;">
+          <div><div style="font-size:12.5px;font-weight:700;">僱傭關係</div><div style="font-size:11px;color:var(--ink-faint);margin-top:3px;">學生從事學習訓練以外之勞務提供或工作事實，適用勞基法</div></div>
+        </label>
+        <label class="card" style="flex:1;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
+          <input type="radio" name="relation" style="margin-top:3px;">
+          <div><div style="font-size:12.5px;font-weight:700;">非僱傭關係</div><div style="font-size:11px;color:var(--ink-faint);margin-top:3px;">單純學習訓練關係，不具工作事實</div></div>
+        </label>
+      </div>
+      <div class="help" style="margin-top:8px;">判斷依據：人格從屬性（是否服從雇主權威）／經濟從屬性（是否為他人目的而勞動）／組織從屬性（是否納入生產組織體系）。如有疑義建議洽詢學校法律顧問。</div>
+    </div>
+
+    <div class="banner gold" style="margin-bottom:18px;">
+      <span class="ic">📋</span>
+      <div><b>已依「僱傭關係」自動套用契約範本（教育部 111年函頒版本）及對應保險檢核規則：</b>需依法辦理勞工保險、勞工職業災害保險、就業保險、全民健康保險，並提繳勞工退休金；薪資不得低於當年度基本工資。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>對應保險辦理狀態（依合約類型自動列出必要項目）</label>
+      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:7px;font-size:12px;">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 勞工保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 勞工職業災害保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 就業保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 全民健康保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 勞工退休金提繳</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;padding-top:6px;border-top:1px solid var(--line);"><input type="checkbox" checked> 學校校外實習團體傷害保險（校方義務，不論僱傭與否皆須投保）</label>
+      </div>
+    </div>
+
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field"><label>薪資／待遇（元／月）<span class="req">*</span></label><input class="mono" value="28,000"><div class="help">不得低於當年度基本工資</div></div>
+      <div class="field"><label>合約檔案上傳</label><input type="file"></div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;">
+      <label>適用法規版本</label>
+      <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;">《校外實習作業要點》第 4 版（2026/08/10 生效）— 自動帶入，不受後續版本更新影響</div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">儲存草稿</button>
+      <button class="btn primary">送出待機構回簽</button>
+    </div>
+  </div>`;
+}
+
+function screen_adm_committee(){
+  return `
+  <div class="page-head">
+    <h1>委員會治理報表</h1>
+    <p>供校級及院/系/所/學位學程級校外實習委員會會議引用之彙總資料（法定強制設置，依「專科以上學校產學合作實施辦法」第6條）</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">ℹ️</span>
+    <div>本報表為<b>治理層彙總</b>，非個案審核工具。委員會任務為督導機構評估機制、檢核契約、督導申訴與意外事件處理，日常個案審核仍由系主管於「機構審核」畫面逐案核定，不會因委員會而卡關。</div>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:18px;">
+    <div class="card stat"><div class="lbl">本期新增機構</div><div class="val mono">18</div><div class="delta">全校 35 系所合計</div></div>
+    <div class="card stat"><div class="lbl">契約待檢核確認</div><div class="val mono" style="color:var(--warn)">4</div></div>
+    <div class="card stat"><div class="lbl">爭議／意外事件</div><div class="val mono" style="color:var(--alert)">1</div></div>
+    <div class="card stat"><div class="lbl">下次委員會會議</div><div class="val mono" style="font-size:16px;">2026/09/15</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">機構評估結果彙總 <span class="hint">供督導確認用，非逐案審查</span></div>
+    <table>
+      <thead><tr><th>系所</th><th>新增機構</th><th>建議推薦</th><th>列管注意</th><th>不建議（含例外核准）</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;">資訊管理學系</td><td class="mono">3</td><td class="mono">2</td><td class="mono">1</td><td class="mono">0</td></tr>
+        <tr><td style="font-weight:700;">企業管理學系</td><td class="mono">5</td><td class="mono">4</td><td class="mono">0</td><td class="mono">1</td></tr>
+        <tr><td style="font-weight:700;">社會工作學系</td><td class="mono">2</td><td class="mono">1</td><td class="mono">1</td><td class="mono">0</td></tr>
+        <tr><td style="color:var(--ink-faint);">...其餘 32 系所</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">待委員會檢核確認之契約</div>
+    <div class="list-row"><div class="icon" style="background:var(--warn-bg);color:var(--warn)">📄</div><div class="body"><div class="title">企業管理學系・翊豐廣告有限公司（例外核准案）</div><div class="sub">品質燈號含紅燈，經系主管例外核准，待委員會事後確認</div></div><button class="btn ghost sm">查看核定理由</button></div>
+    <div class="list-row"><div class="icon" style="background:var(--warn-bg);color:var(--warn)">📄</div><div class="body"><div class="title">社會工作學系・安心居家社會福利基金會（首次合作）</div><div class="sub">無歷史合作紀錄，依規則加開期初訪視</div></div><button class="btn ghost sm">查看檔案</button></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">會議紀錄建檔</div>
+    <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✓</div><div class="body"><div class="title">114學年度第2次校級委員會會議</div><div class="sub">2026/06/20・決議：核准本期機構評估結果，翊豐廣告案列入追蹤</div></div><button class="btn ghost sm">查看紀錄</button></div>
+    <div class="list-row"><div class="icon" style="background:var(--surface-2);color:var(--ink-faint)">○</div><div class="body"><div class="title">114學年度第3次校級委員會會議（排定中）</div><div class="sub">2026/09/15・待上傳議程</div></div><button class="btn primary sm">建立會議紀錄</button></div>
+  </div>`;
+}
+
 function screen_adm_reports(){
   return `
   <div class="page-head">
@@ -943,11 +1093,14 @@ const SCREENS = {
   sec_dashboard: screen_sec_dashboard,
   sec_institutions: screen_sec_institutions,
   sec_form: screen_sec_form,
+  sec_case_detail: screen_sec_case_detail,
+  sec_contract: screen_sec_contract,
   adv_visits: screen_adv_visits,
   dir_review: screen_dir_review,
   stu_journey: screen_stu_journey,
   adm_reports: screen_adm_reports,
   adm_regs: screen_adm_regs,
+  adm_committee: screen_adm_committee,
   notifications: screen_notifications,
 };
 

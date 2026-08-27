@@ -404,7 +404,9 @@ const NAV = {
   director:{
     label:'系主管', avatar:'陳', name:'陳美玲 主任', roleText:'社會工作學系・系主任', dept:'社會工作學系',
     items:[
-      {id:'dir_review', label:'機構審核'},
+      {id:'dir_review', label:'機構審核（現行評分制）'},
+      {id:'dir_review_lights', label:'方案A・燈號分級'},
+      {id:'dir_review_history', label:'方案B・歷史紀錄導向'},
     ]
   },
   student:{
@@ -509,12 +511,31 @@ function screen_sec_dashboard(){
 
 function screen_sec_institutions(){
   const rows = [
-    {name:'台灣星辰資訊股份有限公司', field:'軟體開發', status:'待審核', tag:'warn', score:'82', updated:'2026/08/16'},
-    {name:'雲創數位有限公司', field:'數位行銷', status:'合格・使用中', tag:'ok', score:'91', updated:'2026/08/12'},
-    {name:'大成物流股份有限公司', field:'供應鏈管理', status:'評核即將到期', tag:'gold', score:'76', updated:'2025/09/02'},
-    {name:'晴川會計師事務所', field:'財務會計', status:'合格・使用中', tag:'ok', score:'88', updated:'2026/07/28'},
-    {name:'翊豐廣告有限公司', field:'品牌行銷', status:'不建議推薦', tag:'alert', score:'54', updated:'2026/06/30'},
+    {name:'台灣星辰資訊股份有限公司', field:'軟體開發', status:'待審核', tag:'warn', lights:'🟢🟢🟡', updated:'2026/08/16'},
+    {name:'雲創數位有限公司', field:'數位行銷', status:'合格・使用中', tag:'ok', lights:'🟢🟢🟢', updated:'2026/08/12'},
+    {name:'大成物流股份有限公司', field:'供應鏈管理', status:'評核即將到期', tag:'gold', lights:'🟢🟡🟢', updated:'2025/09/02'},
+    {name:'晴川會計師事務所', field:'財務會計', status:'合格・使用中', tag:'ok', lights:'🟢🟢🟢', updated:'2026/07/28'},
+    {name:'翊豐廣告有限公司', field:'品牌行銷', status:'不建議推薦', tag:'alert', lights:'🔴🟡🟢', updated:'2026/06/30'},
   ];
+  const kanban = {
+    '待查核':[{n:'安心居家社會福利基金會',s:'助教查核中',d:2},{n:'翊豐廣告有限公司',s:'待補查核意見',d:6}],
+    '待簽約':[{n:'台灣星辰資訊股份有限公司',s:'合約寄出待回簽',d:1},{n:'晴川會計師事務所',s:'學生名單確認中',d:3}],
+    '待訪視':[{n:'雲創數位有限公司',s:'李冠廷・期中訪視',d:4},{n:'雲創數位有限公司',s:'黃宥蓁・期中訪視',d:2}],
+    '待結案':[{n:'大成物流股份有限公司',s:'滿意度調查回收中',d:8}],
+  };
+  const kanbanCols = Object.keys(kanban).map(col=>{
+    const items = kanban[col].map(it=>`
+      <div class="card" style="padding:10px 12px;margin-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">${it.n}</div>
+        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:6px;">${it.s}</div>
+        <span class="tag ${it.d>5?'alert':(it.d>3?'warn':'neutral')}">已卡 ${it.d} 天</span>
+      </div>`).join('');
+    return `<div style="flex:1;min-width:200px;">
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink-soft);padding:0 2px 8px;">${col} <span style="color:var(--ink-faint);font-weight:400;">(${kanban[col].length})</span></div>
+      ${items}
+    </div>`;
+  }).join('');
+
   return `
   <div class="page-head">
     <h1>機構管理</h1>
@@ -522,20 +543,29 @@ function screen_sec_institutions(){
   </div>
   <div class="banner info" style="margin-bottom:16px;">
     <span class="ic">ℹ️</span>
-    <div>新增機構時，系統會自動比對教育部「實習機構查詢系統」資料，並提示是否有查核異常紀錄。</div>
+    <div>新增機構時，系統會提示於教育部「實習機構查詢系統」進行人工比對確認。</div>
   </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">案件看板 <span class="hint">依卡關天數自動標色，超過 5 天標紅提醒</span></div>
+    <div style="display:flex;gap:14px;padding:16px 18px;overflow-x:auto;">${kanbanCols}</div>
+  </div>
+
   <div class="card">
     <div class="section-title">
       機構清單（41 家）
-      <button class="btn primary sm" onclick="showScreen('sec_form')">＋ 新增機構</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn ghost sm">套用既有合格機構</button>
+        <button class="btn primary sm" onclick="showScreen('sec_form')">＋ 新增機構</button>
+      </div>
     </div>
     <table>
-      <thead><tr><th>機構名稱</th><th>實習領域</th><th>綜合評分</th><th>狀態</th><th>最後更新</th><th></th></tr></thead>
+      <thead><tr><th>機構名稱</th><th>實習領域</th><th>品質燈號</th><th>狀態</th><th>最後更新</th><th></th></tr></thead>
       <tbody>
         ${rows.map(r=>`<tr>
           <td style="font-weight:700;">${r.name}</td>
           <td>${r.field}</td>
-          <td class="mono">${r.score} 分</td>
+          <td style="letter-spacing:2px;">${r.lights}</td>
           <td><span class="tag ${r.tag}">${r.status}</span></td>
           <td class="mono" style="color:var(--ink-faint);">${r.updated}</td>
           <td><button class="btn ghost sm">查看</button></td>
@@ -550,6 +580,11 @@ function screen_sec_form(){
   <div class="page-head">
     <h1>新增機構資料</h1>
     <p>填寫機構基本資料與初步評估，送出後將進入系主任審核流程</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:12px;">
+    <span class="ic">👥</span>
+    <div><b>批次建立提醒：</b>若本機構將同時媒合多位學生（例如同班 25 人共用一份合約），建議送出審核通過後，於「課程配對」步驟使用批次建立功能，一次勾選學生名單產生多筆實習案，不需逐筆輸入。</div>
   </div>
 
   <div class="banner gold" style="margin-bottom:18px;">
@@ -575,13 +610,48 @@ function screen_sec_form(){
     </div>
 
     <div class="field" style="margin-bottom:18px;">
-      <label>權益福利與工作環境評估量表</label>
+      <label>權益福利與工作環境評估（燈號制）</label>
       <div class="grid g3">
-        <div class="card" style="padding:12px 14px;"><div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:6px;">勞健保投保</div><div class="rating">★★★★★</div></div>
-        <div class="card" style="padding:12px 14px;"><div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:6px;">職務內容相符度</div><div class="rating">★★★★☆</div></div>
-        <div class="card" style="padding:12px 14px;"><div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:6px;">工作環境安全性</div><div class="rating">★★★★★</div></div>
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實習權益保障</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn sm" style="background:#2E7D4F;color:#fff;">🟢 綠燈</button>
+            <button class="btn ghost sm">🟡 黃燈</button>
+            <button class="btn ghost sm">🔴 紅燈</button>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實務學習內容專業性</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn sm" style="background:#2E7D4F;color:#fff;">🟢 綠燈</button>
+            <button class="btn ghost sm">🟡 黃燈</button>
+            <button class="btn ghost sm">🔴 紅燈</button>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實習場所安全性</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn ghost sm">🟢 綠燈</button>
+            <button class="btn sm" style="background:#B98B2A;color:#fff;">🟡 黃燈</button>
+            <button class="btn ghost sm">🔴 紅燈</button>
+          </div>
+        </div>
       </div>
-      <div class="help" style="margin-top:6px;">綜合評分將自動計算為總分百分比，達 70%（含）以上標示為「建議推薦」；未達 70% 標示為「不建議推薦」，送審後由系主管審閱查核意見決定是否例外核准</div>
+      <div class="help" style="margin-top:8px;">三面向皆綠燈→自動標示「建議推薦」；有黃燈無紅燈→「建議推薦（列管注意）」；任一紅燈→「不建議推薦」，需系主管填寫核定理由後方可例外核准</div>
+      <div class="field" style="margin-top:12px;"><label>燈號說明備註（選填，如評為黃燈/紅燈建議填寫）</label><textarea rows="2" placeholder="例：實習場所走道堆放雜物，已請機構改善，將於下次訪視複核"></textarea></div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>應備條件檢核（必要條件，任一項不符即不得合作）</label>
+      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:7px;font-size:12px;">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 依法設立或登記</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無重大職業災害</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無違反勞基法第78/79/80條處罰紀錄</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無積欠勞保/職災保費或退休金</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無性別歧視/性騷擾/就業歧視處罰紀錄</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 非從事派遣業務之事業單位</label>
+      </div>
+      <div class="help" style="margin-top:6px;">基準日：實習起始日期前一日（2026/07/01 起算，往前推 2 年）</div>
     </div>
 
     <div class="field" style="margin-bottom:18px;">
@@ -684,9 +754,12 @@ function screen_dir_review(){
 
     <div class="grid g3" style="margin-bottom:18px;">
       <div class="card" style="padding:14px 16px;background:var(--surface-2);">
-        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">綜合評估分數</div>
-        <div class="mono" style="font-size:22px;font-weight:700;">69<span style="font-size:13px;color:var(--ink-faint);">/100（69%）</span></div>
-        <div style="font-size:11px;color:var(--warn);margin-top:4px;">系所門檻：達 70% 以上為建議推薦</div>
+        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:8px;">品質燈號評估</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;">
+          <div style="display:flex;justify-content:space-between;"><span>實習權益保障</span><span class="tag ok">🟢 綠燈</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>實務學習內容專業性</span><span class="tag ok">🟢 綠燈</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>實習場所安全性</span><span class="tag alert">🔴 紅燈</span></div>
+        </div>
       </div>
       <div class="card" style="padding:14px 16px;background:var(--surface-2);">
         <div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">教育部機構查詢比對</div>
@@ -701,7 +774,7 @@ function screen_dir_review(){
 
     <div class="banner gold" style="margin-bottom:18px;">
       <span class="ic">⚠️</span>
-      <div>本案綜合評分未達建議推薦門檻（70%），系統標示為「不建議推薦」。依貴校規劃，此類案件不經委員會審議，改由<b>系主管審閱查核評估意見後逕行決定</b>是否例外核准，並須填寫核定理由存查。</div>
+      <div>本案「實習場所安全性」面向評為<b>🔴 紅燈</b>（輔導教師備註：機構倉儲區走道堆放雜物，未設置明確安全動線標示），系統自動標示為「不建議推薦」。依貴校規劃，此類案件不經委員會審議，改由<b>系主管審閱查核評估意見後逕行決定</b>是否例外核准，並須填寫核定理由存查。</div>
     </div>
 
     <div class="field" style="margin-bottom:18px;">
@@ -723,8 +796,131 @@ function screen_dir_review(){
   </div>`;
 }
 
-function screen_stu_journey(){
+function screen_dir_review_lights(){
   return `
+  <div class="page-head">
+    <h1>方案 A・燈號分級（不做加總）</h1>
+    <p>三個面向各自獨立判定，不收斂成單一分數；只要任一面向紅燈，整體即不建議</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">💡</span>
+    <div>設計重點：避免「安全性不合格，但因為其他面向分數高，平均起來還是通過」的情況。三個面向各自可見，問題出在哪一眼就看得到。</div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">安心居家社會福利基金會</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">申請人：系辦助理 吳佩珊・提交於 2026/08/14</div>
+      </div>
+      <span class="tag alert">🔴 整體：不建議推薦</span>
+    </div>
+
+    <div class="grid g3" style="margin-bottom:18px;">
+      <div class="card" style="padding:16px;border-left:4px solid var(--success);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🟢</span>
+          <div style="font-size:12.5px;font-weight:700;">實習權益保障</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.6;">薪資給付明確、投保情形完整、無加班或輪班疑慮，膳宿與實習時間安排合理。</div>
+      </div>
+      <div class="card" style="padding:16px;border-left:4px solid var(--gold);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🟡</span>
+          <div style="font-size:12.5px;font-weight:700;">實務學習內容專業性</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.6;">機構規模較小、可安排之實務操作機會有限，但與系上課程相關性尚可，建議加強個別實習計畫規劃。</div>
+      </div>
+      <div class="card" style="padding:16px;border-left:4px solid var(--alert);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🔴</span>
+          <div style="font-size:12.5px;font-weight:700;">實習場所安全性</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.6;">現場評估發現無明確之緊急應變流程與安全教育訓練紀錄，且無專責人員可即時聯繫，需改善後始得複評。</div>
+      </div>
+    </div>
+
+    <div class="banner gold" style="margin-bottom:18px;">
+      <span class="ic">⚠️</span>
+      <div><b>系統判定邏輯：</b>依規則「任一面向紅燈 → 整體不建議推薦」，本案因「實習場所安全性」為紅燈，即使其他兩面向表現尚可，仍判定為不建議推薦，不會被平均分數稀釋掉。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>查核評估意見（助教／輔導教師填寫）</label>
+      <div style="padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;color:var(--ink-soft);background:var(--surface-2);">
+        「機構帶領意願高、待遇合理，但現場未見緊急應變 SOP 張貼，也未提供教育訓練紀錄，建議請機構補件後複評，暫不建議本學期媒合學生。」— 助教 吳佩珊
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;">
+      <label>系主管核定理由 <span class="req">*</span></label>
+      <textarea rows="2" placeholder="紅燈項目原則上應退回補件；如有特殊考量需例外核准，請說明理由"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn danger-ghost">退回補件（安全性未達標）</button>
+      <button class="btn primary">例外核准（需特別說明）</button>
+    </div>
+  </div>`;
+}
+
+function screen_dir_review_history(){
+  return `
+  <div class="page-head">
+    <h1>方案 B・歷史紀錄導向</h1>
+    <p>已合作機構不重新評分，改看歷史軌跡；新機構標示首次合作並加強訪視頻率</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">💡</span>
+    <div>設計重點：與其每年用分數重新猜測機構好不好，不如直接呈現過去實際發生的訪視評語、學生滿意度與爭議紀錄，讓系主管依真實歷程判斷是否續用。</div>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">雲創數位有限公司</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">已合作 3 個學年度・累計 11 位學生</div>
+      </div>
+      <span class="tag ok">歷史紀錄良好・建議續用</span>
+    </div>
+
+    <div style="display:flex;gap:0;margin:18px 0 6px;border-bottom:1px solid var(--line);">
+      <div style="padding:8px 4px;font-size:11.5px;font-weight:700;border-bottom:2px solid var(--primary);color:var(--primary);">訪視評語軌跡</div>
+    </div>
+    <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">114學年度第1學期・李冠廷</div><div class="sub">「機構帶領用心，學生表示學習收穫大，環境安全無虞」— 林志明教授</div></div><span class="tag ok">正向</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">113學年度第2學期・黃宥蓁</div><div class="sub">「進度符合個別實習計畫，機構回應積極」— 林志明教授</div></div><span class="tag ok">正向</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--warn-bg);color:var(--warn)">!</div><div class="body"><div class="title">113學年度第1學期・張家豪</div><div class="sub">「學生一度反映加班疑慮，經協調後機構已改善排班」</div></div><span class="tag warn">已改善</span></div>
+
+    <div style="display:flex;gap:24px;margin:18px 0 14px;padding-top:14px;border-top:1px solid var(--line);">
+      <div><div style="font-size:11px;color:var(--ink-faint);">學生滿意度平均</div><div class="mono" style="font-size:20px;font-weight:700;color:var(--success);">4.5 / 5.0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-faint);">爭議／意外事件</div><div class="mono" style="font-size:20px;font-weight:700;">0 件</div></div>
+      <div><div style="font-size:11px;color:var(--ink-faint);">訪視完成率</div><div class="mono" style="font-size:20px;font-weight:700;">100%</div></div>
+      <div><div style="font-size:11px;color:var(--ink-faint);">法定應備條件</div><div class="mono" style="font-size:20px;font-weight:700;color:var(--success);">✓ 符合</div></div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;"><label>本學年度續用核定理由</label><textarea rows="2" placeholder="依歷史紀錄判斷，說明是否繼續合作或需加註條件">歷史合作紀錄穩定，唯一次加班疑慮已妥善處理並持續追蹤，同意續用。</textarea></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">要求本學期加強訪視</button>
+      <button class="btn primary">核定續用</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;">安心居家社會福利基金會</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">尚無合作紀錄</div>
+      </div>
+      <span class="tag gold">首次合作・無歷史資料</span>
+    </div>
+    <div class="banner gold">
+      <span class="ic">🆕</span>
+      <div>此機構無歷史軌跡可參考，系統建議：核准後第一學期比照一般規則訪視外，<b>加開 1 次期初訪視</b>（開學後 2 週內），並將本學期訪視結果列為明年度是否續用的關鍵依據。</div>
+    </div>
+  </div>`;
+}
   <div class="page-head">
     <h1>我的實習歷程</h1>
     <p>李冠廷・資訊管理學系四年級</p>
@@ -874,6 +1070,8 @@ const SCREENS = {
   sec_form: screen_sec_form,
   adv_visits: screen_adv_visits,
   dir_review: screen_dir_review,
+  dir_review_lights: screen_dir_review_lights,
+  dir_review_history: screen_dir_review_history,
   stu_journey: screen_stu_journey,
   adm_reports: screen_adm_reports,
   adm_regs: screen_adm_regs,

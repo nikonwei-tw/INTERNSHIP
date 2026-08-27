@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>輔仁大學產業實習管理平台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F5F1;
+    --surface:#FFFFFF;
+    --surface-2:#FBF9F6;
+    --ink:#221C1A;
+    --ink-soft:#6B615C;
+    --ink-faint:#9C938C;
+    --line:#E6E0D8;
+    --primary:#6B1E2E;
+    --primary-soft:#8C3347;
+    --primary-bg:#F3E5E8;
+    --gold:#B98B2A;
+    --gold-bg:#FAF1DE;
+    --success:#3F7D5C;
+    --success-bg:#E7F1EC;
+    --warn:#B8722A;
+    --warn-bg:#FBEEE0;
+    --alert:#A23B3B;
+    --alert-bg:#F7E7E5;
+    --radius:12px;
+    --shadow: 0 1px 2px rgba(34,28,26,0.04), 0 8px 24px rgba(34,28,26,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Noto Sans TC', sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .serif{font-family:'Noto Serif TC', serif;}
+  a{color:inherit;text-decoration:none;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+
+  /* ---------- Top Nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 5vw;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .mark{
+    width:36px;height:36px;border-radius:9px;
+    background:var(--primary);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif TC',serif;font-weight:900;color:var(--gold);
+    font-size:16px;flex-shrink:0;
+  }
+  .brand .name{font-family:'Noto Serif TC',serif;font-weight:700;font-size:15px;line-height:1.3;}
+  .brand .sub{font-size:10px;color:var(--ink-faint);letter-spacing:0.05em;}
+  .navlinks{display:flex;align-items:center;gap:28px;}
+  .navlinks a{font-size:13px;font-weight:500;color:var(--ink-soft);transition:color .15s;}
+  .navlinks a:hover{color:var(--primary);}
+  .btn{
+    all:unset;cursor:pointer;
+    padding:10px 20px;border-radius:8px;
+    font-size:13px;font-weight:700;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn.primary{background:var(--primary);color:#fff;}
+  .btn.primary:hover{background:var(--primary-soft);}
+  .btn.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink);}
+  .btn.ghost:hover{border-color:var(--primary);color:var(--primary);}
+  .btn.sm{padding:7px 14px;font-size:12px;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:72px 5vw 56px;
+    background:
+      radial-gradient(1100px 420px at 85% -10%, rgba(185,139,42,0.14), transparent 60%),
+      linear-gradient(180deg, #FBF7F1 0%, var(--bg) 100%);
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;
+  }
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 12px;border-radius:100px;
+    background:var(--gold-bg);color:var(--gold);
+    font-size:11.5px;font-weight:700;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:'Noto Serif TC',serif;font-weight:900;
+    font-size:38px;line-height:1.4;margin:0 0 16px;color:var(--primary);
+  }
+  .hero p{font-size:14.5px;line-height:1.9;color:var(--ink-soft);margin:0 0 28px;max-width:520px;}
+  .hero-ctas{display:flex;gap:12px;margin-bottom:36px;}
+  .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);padding-top:22px;max-width:560px;}
+  .hero-stats .stat .val{font-family:'Noto Serif TC',serif;font-size:24px;font-weight:700;color:var(--primary);}
+  .hero-stats .stat .lbl{font-size:11px;color:var(--ink-faint);margin-top:4px;}
+
+  .hero-visual{
+    background:linear-gradient(160deg, var(--primary) 0%, #4A1420 100%);
+    border-radius:20px;
+    padding:32px;
+    box-shadow:var(--shadow);
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-visual::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(300px 200px at 90% 10%, rgba(185,139,42,0.35), transparent 70%);
+  }
+  .hero-visual .card-mini{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;padding:14px 16px;margin-bottom:10px;
+    position:relative;z-index:1;
+  }
+  .hero-visual .card-mini .t{font-size:12px;font-weight:700;margin-bottom:4px;}
+  .hero-visual .card-mini .s{font-size:11px;color:rgba(255,255,255,0.65);}
+  .hero-visual .flow{display:flex;align-items:center;gap:6px;margin-top:18px;position:relative;z-index:1;flex-wrap:wrap;}
+  .hero-visual .flow .step{
+    background:rgba(255,255,255,0.1);border-radius:100px;padding:5px 11px;
+    font-size:10.5px;color:rgba(255,255,255,0.85);
+  }
+  .hero-visual .flow .arrow{color:rgba(255,255,255,0.4);font-size:11px;}
+
+  /* ---------- Sections ---------- */
+  section{padding:56px 5vw;}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;}
+  .section-head h2{font-family:'Noto Serif TC',serif;font-size:23px;font-weight:700;margin:0 0 6px;}
+  .section-head p{font-size:12.5px;color:var(--ink-faint);margin:0;}
+  .section-head .more{font-size:12.5px;font-weight:700;color:var(--primary);white-space:nowrap;}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);}
+
+  /* Opportunities */
+  .opps{background:var(--surface-2);}
+  .opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .opp-card{padding:20px;display:flex;flex-direction:column;gap:10px;}
+  .opp-top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .opp-field{
+    display:inline-flex;padding:3px 9px;border-radius:100px;font-size:10.5px;font-weight:700;
+    background:var(--primary-bg);color:var(--primary);
+  }
+  .opp-deadline{font-size:10.5px;color:var(--alert);font-weight:700;}
+  .opp-name{font-family:'Noto Serif TC',serif;font-size:15.5px;font-weight:700;}
+  .opp-meta{font-size:11.5px;color:var(--ink-soft);display:flex;flex-direction:column;gap:4px;}
+  .opp-meta span{display:flex;align-items:center;gap:6px;}
+  .opp-foot{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:12px;border-top:1px solid var(--line);}
+  .opp-slots{font-size:11px;color:var(--ink-faint);}
+
+  /* News */
+  .news-list{display:flex;flex-direction:column;gap:0;}
+  .news-row{
+    display:flex;gap:16px;align-items:flex-start;
+    padding:18px 4px;border-bottom:1px solid var(--line);
+  }
+  .news-row:first-child{padding-top:0;}
+  .news-date{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);
+    width:78px;flex-shrink:0;padding-top:2px;
+  }
+  .news-tag{
+    display:inline-flex;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;margin-bottom:5px;
+  }
+  .news-tag.reg{background:var(--gold-bg);color:var(--gold);}
+  .news-tag.deadline{background:var(--alert-bg);color:var(--alert);}
+  .news-tag.system{background:var(--primary-bg);color:var(--primary);}
+  .news-title{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+  .news-desc{font-size:12px;color:var(--ink-soft);line-height:1.7;}
+
+  /* Docs */
+  .docs{background:var(--surface-2);}
+  .doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .doc-card{
+    padding:20px;display:flex;gap:14px;align-items:flex-start;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .doc-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(34,28,26,0.09);}
+  .doc-icon{
+    width:40px;height:40px;border-radius:10px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:17px;
+    background:var(--primary-bg);color:var(--primary);
+  }
+  .doc-title{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.5;}
+  .doc-desc{font-size:11px;color:var(--ink-faint);line-height:1.6;}
+  .doc-ext{font-size:10px;color:var(--gold);font-weight:700;margin-top:6px;display:inline-block;}
+
+  /* Platform overview */
+  .overview{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .role-card{padding:20px 16px;text-align:center;}
+  .role-card .ic{
+    width:44px;height:44px;border-radius:50%;margin:0 auto 12px;
+    display:flex;align-items:center;justify-content:center;font-size:19px;
+    background:var(--gold-bg);color:var(--gold);
+  }
+  .role-card .t{font-size:12.5px;font-weight:700;margin-bottom:6px;}
+  .role-card .d{font-size:10.5px;color:var(--ink-faint);line-height:1.6;}
+
+  footer{
+    padding:36px 5vw 30px;background:var(--primary);color:rgba(255,255,255,0.75);
+    display:flex;justify-content:space-between;align-items:center;font-size:11.5px;flex-wrap:wrap;gap:12px;
+  }
+  footer .fb{display:flex;align-items:center;gap:10px;color:#fff;font-family:'Noto Serif TC',serif;font-weight:700;font-size:13px;}
+
+  /* Modal */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(34,28,26,0.5);
+    align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--surface);border-radius:16px;max-width:520px;width:100%;
+    padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal h3{font-family:'Noto Serif TC',serif;font-size:18px;margin:0 0 6px;}
+  .modal p{font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;line-height:1.7;}
+  .role-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .role-pick button{
+    all:unset;cursor:pointer;padding:12px 14px;border-radius:10px;border:1px solid var(--line);
+    font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:10px;transition:border-color .15s;
+  }
+  .role-pick button:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg);}
+  .modal-note{
+    background:var(--gold-bg);color:#7A5A19;border-radius:10px;padding:12px 14px;font-size:11.5px;line-height:1.7;
+  }
+  .modal-close{all:unset;cursor:pointer;float:right;font-size:18px;color:var(--ink-faint);}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;}
+    .opp-grid, .doc-grid{grid-template-columns:1fr;}
+    .overview{grid-template-columns:repeat(2,1fr);}
+    .navlinks{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">
+    <div class="mark">輔</div>
+    <div><div class="name">產業實習管理平台</div><div class="sub">FJU INTERNSHIP PLATFORM</div></div>
+  </div>
+  <div class="navlinks">
+    <a href="#opportunities">實習機會</a>
+    <a href="#news">最新消息</a>
+    <a href="#docs">法規專區</a>
+    <a href="#overview">平台功能</a>
+  </div>
+  <button class="btn primary" onclick="openModal()">登入系統</button>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">🎓 全校 35 系所適用</div>
+    <h1>從機構查核到成效評估<br>一站式校外實習管理平台</h1>
+    <p>整合實習前查核、合約簽訂、實地訪視、滿意度調查與教育部校務資料庫填報，並串接學生學習歷程，讓系所秘書、輔導教師與學生都能簡單上手。</p>
+    <div class="hero-ctas">
+      <button class="btn primary" onclick="openModal()">登入系統 →</button>
+      <a href="#overview"><button class="btn ghost">了解平台功能</button></a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="val mono">35</div><div class="lbl">適用系所單位</div></div>
+      <div class="stat"><div class="val mono">6</div><div class="lbl">法定實習作業階段全涵蓋</div></div>
+      <div class="stat"><div class="val mono">3</div><div class="lbl">教育部標準報表格式</div></div>
+      <div class="stat"><div class="val mono">5</div><div class="lbl">角色別客製化後台</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="card-mini"><div class="t">🏢 機構查核</div><div class="s">應備條件檢核 ＋ 燈號品質評估</div></div>
+    <div class="card-mini"><div class="t">📄 合約與個別實習計畫</div><div class="s">僱傭／非僱傭關係自動套用對應規範</div></div>
+    <div class="card-mini"><div class="t">📊 教育部校務資料庫提報</div><div class="s">學10／學10-2／學10-3 一鍵產出並自動勾稽</div></div>
+    <div class="flow">
+      <span class="step">機構查核</span><span class="arrow">→</span>
+      <span class="step">合約簽訂</span><span class="arrow">→</span>
+      <span class="step">實習訪視</span><span class="arrow">→</span>
+      <span class="step">成效評估</span><span class="arrow">→</span>
+      <span class="step">學習歷程</span>
+    </div>
+  </div>
+</section>
+
+<section class="opps" id="opportunities">
+  <div class="section-head">
+    <div><h2>實習機會公告</h2><p>目前開放媒合中的合作機構實習名額（燈號代表機構查核與品質評估結果）</p></div>
+    <a class="more" href="#">查看全部機會 →</a>
+  </div>
+  <div class="opp-grid">
+    <div class="card opp-card">
+      <div class="opp-top"><span class="opp-field">軟體開發</span><span class="opp-deadline">8/30 截止</span></div>
+      <div class="opp-name">台灣星辰資訊股份有限公司</div>
+      <div class="opp-meta">
+        <span>📍 台北市內湖區</span>
+        <span>🕐 114學年度第1學期・全學期實習</span>
+        <span>🟢🟢🟡 查核燈號</span>
+      </div>
+      <div class="opp-foot"><span class="opp-slots">開放名額：3</span><span class="tag" style="font-size:11px;color:var(--primary);font-weight:700;">資訊管理學系</span></div>
+    </div>
+    <div class="card opp-card">
+      <div class="opp-top"><span class="opp-field">數位行銷</span><span class="opp-deadline">9/05 截止</span></div>
+      <div class="opp-name">雲創數位有限公司</div>
+      <div class="opp-meta">
+        <span>📍 台北市信義區</span>
+        <span>🕐 暑假期間實習</span>
+        <span>🟢🟢🟢 查核燈號</span>
+      </div>
+      <div class="opp-foot"><span class="opp-slots">開放名額：5</span><span class="tag" style="font-size:11px;color:var(--primary);font-weight:700;">企業管理學系</span></div>
+    </div>
+    <div class="card opp-card">
+      <div class="opp-top"><span class="opp-field">社會服務</span><span class="opp-deadline">9/10 截止</span></div>
+      <div class="opp-name">安心居家社會福利基金會</div>
+      <div class="opp-meta">
+        <span>📍 新北市板橋區</span>
+        <span>🕐 114學年度第1學期・學期期間實習</span>
+        <span>🆕 首次合作機構</span>
+      </div>
+      <div class="opp-foot"><span class="opp-slots">開放名額：2</span><span class="tag" style="font-size:11px;color:var(--primary);font-weight:700;">社會工作學系</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="news">
+  <div class="section-head">
+    <div><h2>最新消息</h2><p>系統公告、法規更新與填報期程提醒</p></div>
+    <a class="more" href="#">全部公告 →</a>
+  </div>
+  <div class="card" style="padding:8px 22px;">
+    <div class="news-list">
+      <div class="news-row">
+        <div class="news-date">2026/08/10</div>
+        <div><span class="news-tag reg">法規更新</span><div class="news-title">《校外實習作業要點》第 4 版已上線</div><div class="news-desc">新增教育部機構查核比對規定與燈號品質評估機制，即日起適用於所有新申請案件。</div></div>
+      </div>
+      <div class="news-row">
+        <div class="news-date">2026/08/05</div>
+        <div><span class="news-tag system">系統公告</span><div class="news-title">機構查核採「應備條件＋品質燈號」雙軌評估</div><div class="news-desc">取代原本的百分比評分制，避免單一低分項目被其他面向平均掉，問題可一眼辨識。</div></div>
+      </div>
+      <div class="news-row">
+        <div class="news-date">2026/08/01</div>
+        <div><span class="news-tag deadline">填報提醒</span><div class="news-title">114 學年度教育部實習調查資料填報將於 9/30 截止</div><div class="news-desc">請各系所於期限前完成學10、學10-2、學10-3 三張表之資料確認與勾稽檢核。</div></div>
+      </div>
+      <div class="news-row" style="border-bottom:none;">
+        <div class="news-date">2026/07/20</div>
+        <div><span class="news-tag system">系統公告</span><div class="news-title">學生實習歷程串接功能開放測試</div><div class="news-desc">實習進行中即可於個人歷程頁查看進度，結束後自動同步至學習歷程檔案。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="docs" id="docs">
+  <div class="section-head">
+    <div><h2>常用法規文件連結</h2><p>校外實習相關法規、辦法與範本，供各系所辦理實習作業參考</p></div>
+  </div>
+  <div class="doc-grid">
+    <div class="card doc-card"><div class="doc-icon">📘</div><div><div class="doc-title">專科以上學校產學合作實施辦法</div><div class="doc-desc">校外實習委員會設置、機構應備條件等法源依據</div><span class="doc-ext">法規全文 ↗</span></div></div>
+    <div class="card doc-card"><div class="doc-icon">📗</div><div><div class="doc-title">大專校院推動學生校外實習課程作業參考手冊</div><div class="doc-desc">教育部 115年1月版・完整作業機制與常見問題</div><span class="doc-ext">下載 PDF ↗</span></div></div>
+    <div class="card doc-card"><div class="doc-icon">🏫</div><div><div class="doc-title">輔仁大學校外實習作業要點</div><div class="doc-desc">校訂第 4 版・2026/08/10 生效</div><span class="doc-ext">系統內查看 ↗</span></div></div>
+    <div class="card doc-card"><div class="doc-icon">📄</div><div><div class="doc-title">校外實習合作契約範本（僱傭關係版本）</div><div class="doc-desc">教育部 111年函頒範本</div><span class="doc-ext">下載範本 ↗</span></div></div>
+    <div class="card doc-card"><div class="doc-icon">📄</div><div><div class="doc-title">校外實習合作契約範本（非僱傭關係版本）</div><div class="doc-desc">教育部 111年函頒範本</div><span class="doc-ext">下載範本 ↗</span></div></div>
+    <div class="card doc-card"><div class="doc-icon">🔍</div><div><div class="doc-title">教育部實習機構查詢系統</div><div class="doc-desc">機構合法性人工比對查詢入口</div><span class="doc-ext">前往查詢 ↗</span></div></div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="section-head">
+    <div><h2>依身分打造的後台功能</h2><p>登入後系統依角色自動導向對應功能，降低操作學習成本</p></div>
+  </div>
+  <div class="overview">
+    <div class="card role-card"><div class="ic">🗂️</div><div class="t">系所秘書／助理</div><div class="d">機構管理、批次建立實習案、合約簽訂、案件狀態追蹤</div></div>
+    <div class="card role-card"><div class="ic">🧑‍🏫</div><div class="t">實習輔導教師</div><div class="d">訪視排程與紀錄、學生進度追蹤、不適應輔導</div></div>
+    <div class="card role-card"><div class="ic">✅</div><div class="t">系主管</div><div class="d">機構審核核定、契約檢核、爭議案件處理</div></div>
+    <div class="card role-card"><div class="ic">🎓</div><div class="t">學生</div><div class="d">實習歷程查看、心得上傳、學習歷程自動同步</div></div>
+    <div class="card role-card"><div class="ic">🏛️</div><div class="t">校級管理者</div><div class="d">跨系統計報表、法規版本管理、委員會治理報表</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fb"><span>輔</span> 輔仁大學產業實習管理平台</div>
+  <div>教務處實習業務單位　聯絡電話：(02) 2905-XXXX　系統規劃原型・非正式上線版本</div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>選擇登入身分</h3>
+    <p>系統將依您的帳號權限自動導向對應後台功能（本頁為靜態展示原型）</p>
+    <div class="role-pick">
+      <button>🗂️ 系所秘書／助理</button>
+      <button>🧑‍🏫 實習輔導教師</button>
+      <button>✅ 系主管</button>
+      <button>🎓 學生</button>
+      <button style="grid-column:1 / -1;">🏛️ 校級管理者</button>
+    </div>
+    <div class="modal-note">💡 此入口網站為登入前的公開頁面展示原型；登入後的各角色後台互動畫面，請參考另一份《系統畫面原型》文件。</div>
+  </div>
+</div>
+
+<script>
+function openModal(){ document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalBg(e){ if(e.target.id==='modalOverlay') closeModal(); }
+</script>
+
+</body>
+</html>

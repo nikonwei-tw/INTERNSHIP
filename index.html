@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>輔仁大學產業實習平台 — 系統畫面原型</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F5F1;
+    --surface:#FFFFFF;
+    --surface-2:#FBF9F6;
+    --ink:#221C1A;
+    --ink-soft:#6B615C;
+    --ink-faint:#9C938C;
+    --line:#E6E0D8;
+    --primary:#6B1E2E;
+    --primary-soft:#8C3347;
+    --primary-bg:#F3E5E8;
+    --gold:#B98B2A;
+    --gold-bg:#FAF1DE;
+    --success:#3F7D5C;
+    --success-bg:#E7F1EC;
+    --warn:#B8722A;
+    --warn-bg:#FBEEE0;
+    --alert:#A23B3B;
+    --alert-bg:#F7E7E5;
+    --track-actual:#2E5C8A;
+    --track-actual-bg:#E7EEF5;
+    --track-enroll:#7A4FA0;
+    --track-enroll-bg:#EFE7F5;
+    --radius:10px;
+    --shadow: 0 1px 2px rgba(34,28,26,0.04), 0 4px 16px rgba(34,28,26,0.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Noto Sans TC', sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .serif{font-family:'Noto Serif TC', serif;}
+
+  .app{
+    display:grid;
+    grid-template-columns: 250px 1fr;
+    min-height:100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background:linear-gradient(180deg, var(--primary) 0%, #551725 100%);
+    color:#F3E9EA;
+    padding:22px 16px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:2px 6px 14px;
+    border-bottom:1px solid rgba(255,255,255,0.14);
+  }
+  .brand .mark{
+    width:34px;height:34px;border-radius:8px;
+    background:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif TC',serif;font-weight:900;color:var(--primary);
+    font-size:16px;flex-shrink:0;
+  }
+  .brand .name{
+    font-family:'Noto Serif TC',serif;
+    font-weight:700;
+    font-size:14.5px;
+    line-height:1.4;
+  }
+  .brand .sub{
+    font-size:10.5px;
+    color:rgba(255,255,255,0.6);
+    letter-spacing:0.03em;
+  }
+
+  .role-block{
+    display:flex;flex-direction:column;gap:4px;
+  }
+  .role-label{
+    font-size:10.5px;
+    color:rgba(255,255,255,0.5);
+    letter-spacing:0.08em;
+    padding:0 8px 4px;
+  }
+  .role-btn{
+    all:unset;
+    display:flex;align-items:center;gap:9px;
+    padding:9px 10px;
+    border-radius:8px;
+    font-size:12.5px;
+    cursor:pointer;
+    color:rgba(255,255,255,0.72);
+    transition:background .15s ease, color .15s ease;
+  }
+  .role-btn .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.35);flex-shrink:0;}
+  .role-btn:hover{background:rgba(255,255,255,0.08); color:#fff;}
+  .role-btn.active{background:rgba(255,255,255,0.16); color:#fff; font-weight:500;}
+  .role-btn.active .dot{background:var(--gold);}
+
+  .nav-block{
+    display:flex;flex-direction:column;gap:2px;
+    padding-top:6px;
+    border-top:1px solid rgba(255,255,255,0.14);
+  }
+  .nav-item{
+    all:unset;
+    padding:9px 10px;
+    border-radius:8px;
+    font-size:13px;
+    cursor:pointer;
+    color:rgba(255,255,255,0.85);
+    display:flex; align-items:center; gap:8px;
+    transition:background .15s ease;
+  }
+  .nav-item:hover{background:rgba(255,255,255,0.08);}
+  .nav-item.active{background:#fff; color:var(--primary); font-weight:700;}
+
+  .sidebar-foot{
+    margin-top:auto;
+    font-size:10.5px;
+    color:rgba(255,255,255,0.4);
+    padding:10px 8px 0;
+    border-top:1px solid rgba(255,255,255,0.14);
+    line-height:1.6;
+  }
+
+  /* ---------- Main ---------- */
+  .main{
+    display:flex;flex-direction:column;
+    min-width:0;
+  }
+  .topbar{
+    height:60px;
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;
+    flex-shrink:0;
+  }
+  .crumbs{font-size:12px;color:var(--ink-faint);}
+  .crumbs b{color:var(--ink);font-weight:700;}
+  .topbar-right{display:flex;align-items:center;gap:16px;}
+  .bell{
+    position:relative; cursor:pointer;
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+  }
+  .bell .badge{
+    position:absolute;top:-3px;right:-3px;
+    background:var(--alert);color:#fff;
+    font-size:9px;font-weight:700;
+    width:16px;height:16px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .user-chip{display:flex;align-items:center;gap:8px;}
+  .user-chip .avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--primary-bg); color:var(--primary);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;
+  }
+  .user-chip .who{font-size:12px;line-height:1.35;}
+  .user-chip .who .n{font-weight:700;}
+  .user-chip .who .r{color:var(--ink-faint);}
+
+  .content{
+    padding:26px 30px 60px;
+    flex:1;
+    overflow-y:auto;
+  }
+  .page-head{margin-bottom:20px;}
+  .page-head h1{
+    font-family:'Noto Serif TC',serif;
+    font-size:22px;font-weight:700;margin:0 0 4px;
+  }
+  .page-head p{margin:0;color:var(--ink-soft);font-size:13px;}
+
+  /* ---------- shared bits ---------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .grid{display:grid;gap:16px;}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g2{grid-template-columns:1.4fr 1fr;}
+
+  .stat{
+    padding:18px 18px 16px;
+  }
+  .stat .lbl{font-size:11.5px;color:var(--ink-faint);margin-bottom:8px;}
+  .stat .val{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:700;}
+  .stat .delta{font-size:11px;margin-top:6px;color:var(--ink-faint);}
+  .stat .delta.up{color:var(--success);}
+  .stat .delta.warn{color:var(--warn);}
+
+  .section-title{
+    font-size:13.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-title .hint{font-size:11px;color:var(--ink-faint);font-weight:400;}
+
+  .list-row{
+    display:flex;align-items:center;gap:12px;
+    padding:13px 18px;
+    border-bottom:1px solid var(--line);
+    font-size:12.5px;
+  }
+  .list-row:last-child{border-bottom:none;}
+  .list-row .icon{
+    width:30px;height:30px;border-radius:8px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;
+  }
+  .list-row .body{flex:1;min-width:0;}
+  .list-row .title{font-weight:700;margin-bottom:2px;}
+  .list-row .sub{color:var(--ink-faint);font-size:11.5px;}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:3px 9px;border-radius:100px;
+    font-size:11px;font-weight:700;
+    white-space:nowrap;
+  }
+  .tag.ok{background:var(--success-bg);color:var(--success);}
+  .tag.warn{background:var(--warn-bg);color:var(--warn);}
+  .tag.alert{background:var(--alert-bg);color:var(--alert);}
+  .tag.gold{background:var(--gold-bg);color:var(--gold);}
+  .tag.neutral{background:var(--surface-2);color:var(--ink-soft); border:1px solid var(--line);}
+
+  /* dual-track time pill — signature component */
+  .dualtrack{display:flex;gap:6px;flex-wrap:wrap;}
+  .track{
+    display:flex;align-items:center;gap:6px;
+    padding:4px 10px 4px 4px;
+    border-radius:100px;
+    font-size:11px;
+  }
+  .track .ic{
+    width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;flex-shrink:0;
+  }
+  .track.actual{background:var(--track-actual-bg);color:var(--track-actual);}
+  .track.actual .ic{background:var(--track-actual);color:#fff;}
+  .track.enroll{background:var(--track-enroll-bg);color:var(--track-enroll);}
+  .track.enroll .ic{background:var(--track-enroll);color:#fff;}
+  .track b{font-family:'IBM Plex Mono',monospace;font-weight:500;}
+
+  .btn{
+    all:unset;cursor:pointer;
+    padding:9px 16px;border-radius:8px;
+    font-size:12.5px;font-weight:700;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn.primary{background:var(--primary);color:#fff;}
+  .btn.primary:hover{background:var(--primary-soft);}
+  .btn.ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink);}
+  .btn.ghost:hover{border-color:var(--primary);color:var(--primary);}
+  .btn.gold{background:var(--gold);color:#fff;}
+  .btn.sm{padding:6px 12px;font-size:11.5px;}
+  .btn.danger-ghost{background:var(--surface);border:1px solid var(--alert);color:var(--alert);}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{
+    text-align:left;font-size:11px;color:var(--ink-faint);font-weight:700;
+    padding:10px 14px;border-bottom:1px solid var(--line);
+    background:var(--surface-2);
+  }
+  tbody td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface-2);}
+
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:11.5px;font-weight:700;color:var(--ink-soft);}
+  .field .req{color:var(--alert);}
+  .field input, .field select, .field textarea{
+    font-family:inherit;font-size:12.5px;
+    padding:9px 11px;border:1px solid var(--line);border-radius:8px;
+    background:var(--surface);color:var(--ink);
+  }
+  .field .help{font-size:10.5px;color:var(--ink-faint);}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  .banner{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:13px 16px;border-radius:10px;font-size:12px;line-height:1.6;
+  }
+  .banner.info{background:var(--track-actual-bg);color:#2A4A67;}
+  .banner.gold{background:var(--gold-bg);color:#7A5A19;}
+  .banner .ic{font-size:15px;}
+
+  .progress-track{
+    display:flex;align-items:center;gap:0;
+  }
+  .pstep{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;}
+  .pstep .circle{
+    width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;
+    background:var(--surface-2);border:2px solid var(--line);color:var(--ink-faint);
+    z-index:1;
+  }
+  .pstep.done .circle{background:var(--success);border-color:var(--success);color:#fff;}
+  .pstep.current .circle{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .pstep .lbl{font-size:10.5px;text-align:center;color:var(--ink-faint);}
+  .pstep.done .lbl, .pstep.current .lbl{color:var(--ink);font-weight:700;}
+  .pline{position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0;}
+  .pstep.done .pline{background:var(--success);}
+  .pstep:first-child .pline{display:none;}
+
+  .rating{display:flex;gap:3px;}
+  .rating .st{width:15px;height:15px;color:var(--gold);}
+
+  .empty-hint{padding:30px;text-align:center;color:var(--ink-faint);font-size:12px;}
+
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+
+  .todo-item{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .todo-item:last-child{border-bottom:none;}
+  .todo-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--primary);}
+  .todo-item .due{margin-left:auto;font-size:11px;color:var(--ink-faint);}
+  .todo-item .due.soon{color:var(--warn);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">輔</div>
+      <div>
+        <div class="name">產業實習管理平台</div>
+        <div class="sub">FJU INTERNSHIP SYSTEM</div>
+      </div>
+    </div>
+
+    <div class="role-block">
+      <div class="role-label">切換身分視角（原型示範用）</div>
+      <button class="role-btn" data-role="secretary"><span class="dot"></span>系所秘書／助理</button>
+      <button class="role-btn" data-role="advisor"><span class="dot"></span>實習輔導教師</button>
+      <button class="role-btn" data-role="director"><span class="dot"></span>系主管</button>
+      <button class="role-btn" data-role="student"><span class="dot"></span>學生</button>
+      <button class="role-btn" data-role="admin"><span class="dot"></span>校級管理者</button>
+    </div>
+
+    <div class="nav-block" id="navBlock"></div>
+
+    <div class="sidebar-foot">
+      系統規劃大綱 v2 對應原型<br>
+      僅供畫面走查，非最終視覺定案
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="crumbs" id="crumbs">資訊管理學系 &nbsp;/&nbsp; <b>待辦總覽</b></div>
+      <div class="topbar-right">
+        <div class="bell" onclick="showScreen('notifications')"><span>🔔</span><span class="badge">4</span></div>
+        <div class="user-chip">
+          <div class="avatar" id="avatarInit">王</div>
+          <div class="who"><div class="n" id="userName">王淑芬</div><div class="r" id="userRole">資訊管理學系・系辦助理</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<script>
+const NAV = {
+  secretary: {
+    label:'系所秘書／助理', avatar:'王', name:'王淑芬', roleText:'資訊管理學系・系辦助理', dept:'資訊管理學系',
+    items:[
+      {id:'sec_dashboard', label:'待辦總覽'},
+      {id:'sec_institutions', label:'機構管理'},
+      {id:'sec_form', label:'新增機構資料'},
+    ]
+  },
+  advisor:{
+    label:'實習輔導教師', avatar:'林', name:'林志明 教授', roleText:'企業管理學系・實習輔導教師', dept:'企業管理學系',
+    items:[
+      {id:'adv_visits', label:'訪視紀錄'},
+    ]
+  },
+  director:{
+    label:'系主管', avatar:'陳', name:'陳美玲 主任', roleText:'社會工作學系・系主任', dept:'社會工作學系',
+    items:[
+      {id:'dir_review', label:'機構審核（現行評分制）'},
+      {id:'dir_review_lights', label:'方案A・燈號分級'},
+      {id:'dir_review_history', label:'方案B・歷史紀錄導向'},
+    ]
+  },
+  student:{
+    label:'學生', avatar:'李', name:'李冠廷', roleText:'資訊管理學系四年級', dept:'資訊管理學系',
+    items:[
+      {id:'stu_journey', label:'我的實習歷程'},
+    ]
+  },
+  admin:{
+    label:'校級管理者', avatar:'教', name:'教務處實習業務', roleText:'教務處・跨系彙總管理', dept:'全校',
+    items:[
+      {id:'adm_reports', label:'統計報表匯出'},
+      {id:'adm_regs', label:'法規版本管理'},
+    ]
+  }
+};
+
+let currentRole='secretary';
+let currentScreen='sec_dashboard';
+
+function initSidebar(){
+  document.querySelectorAll('.role-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      currentRole = btn.dataset.role;
+      currentScreen = NAV[currentRole].items[0].id;
+      render();
+    });
+  });
+}
+
+function renderNav(){
+  const nav = NAV[currentRole];
+  const el = document.getElementById('navBlock');
+  el.innerHTML = '<div class="role-label" style="padding-top:2px">'+nav.label+' 功能選單</div>' +
+    nav.items.map(it=>`<button class="nav-item ${it.id===currentScreen?'active':''}" data-id="${it.id}">${it.label}</button>`).join('');
+  el.querySelectorAll('.nav-item').forEach(b=>{
+    b.addEventListener('click', ()=>{ currentScreen=b.dataset.id; render(); });
+  });
+}
+
+function updateChrome(){
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.toggle('active', b.dataset.role===currentRole));
+  const nav = NAV[currentRole];
+  document.getElementById('avatarInit').textContent = nav.avatar;
+  document.getElementById('userName').textContent = nav.name;
+  document.getElementById('userRole').textContent = nav.roleText;
+  const screenLabel = (nav.items.find(i=>i.id===currentScreen)||{}).label || '通知提醒中心';
+  document.getElementById('crumbs').innerHTML = nav.dept + ' &nbsp;/&nbsp; <b>' + screenLabel + '</b>';
+}
+
+function showScreen(id){ currentScreen=id; render(); }
+
+function dual(actual, enroll){
+  return `<div class="dualtrack">
+    <div class="track actual"><span class="ic">實</span>實際期間 <b>${actual}</b></div>
+    <div class="track enroll"><span class="ic">選</span>認列學年期 <b>${enroll}</b></div>
+  </div>`;
+}
+
+/* ---------------- SCREENS ---------------- */
+
+function screen_sec_dashboard(){
+  return `
+  <div class="page-head">
+    <h1>早安，王淑芬 — 資訊管理學系</h1>
+    <p>以下是本系所今日待處理事項與整體實習概況</p>
+  </div>
+  <div class="grid g4" style="margin-bottom:18px;">
+    <div class="card stat"><div class="lbl">本學年度實習學生數</div><div class="val mono">86</div><div class="delta up">▲ 較去年同期 +12</div></div>
+    <div class="card stat"><div class="lbl">合作機構數（有效）</div><div class="val mono">41</div><div class="delta">3 家評核即將到期</div></div>
+    <div class="card stat"><div class="lbl">待審核機構申請</div><div class="val mono">5</div><div class="delta warn">2 件已逾 3 個工作天</div></div>
+    <div class="card stat"><div class="lbl">本月待完成訪視</div><div class="val mono">9</div><div class="delta warn">4 筆將於 7 日內到期</div></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="section-title">待辦事項 <span class="hint">依到期日排序</span></div>
+      <div class="todo-item"><input type="checkbox"><span>審核「台灣星辰資訊」機構評估表，待送系主任核定</span><span class="due soon">今天到期</span></div>
+      <div class="todo-item"><input type="checkbox"><span>上傳「雲創數位」實習合約掃描檔</span><span class="due soon">明天到期</span></div>
+      <div class="todo-item"><input type="checkbox"><span>「大成物流」機構評核效期即將於 9/02 到期，需重新查核</span><span class="due">14 天後</span></div>
+      <div class="todo-item"><input type="checkbox"><span>提醒 6 位學生填寫實習滿意度調查</span><span class="due">開放中</span></div>
+      <div class="todo-item"><input type="checkbox"><span>確認暑期實習學生的選課認列學年期是否已對應完成</span><span class="due">開放中</span></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">系統公告</div>
+      <div class="list-row">
+        <div class="icon" style="background:var(--gold-bg);color:var(--gold);">📘</div>
+        <div class="body"><div class="title">《校外實習作業要點》第 4 版已上線</div><div class="sub">教務處・2026/08/10 發布</div></div>
+      </div>
+      <div class="list-row">
+        <div class="icon" style="background:var(--track-actual-bg);color:var(--track-actual);">🏫</div>
+        <div class="body"><div class="title">教育部實習機構查詢系統比對功能開放測試</div><div class="sub">資訊中心・2026/08/05 發布</div></div>
+      </div>
+      <div class="list-row">
+        <div class="icon" style="background:var(--alert-bg);color:var(--alert);">⏰</div>
+        <div class="body"><div class="title">114 學年度教育部實習調查資料填報將於 9/30 截止</div><div class="sub">教務處・2026/08/01 發布</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function screen_sec_institutions(){
+  const rows = [
+    {name:'台灣星辰資訊股份有限公司', field:'軟體開發', status:'待審核', tag:'warn', lights:'🟢🟢🟡', updated:'2026/08/16'},
+    {name:'雲創數位有限公司', field:'數位行銷', status:'合格・使用中', tag:'ok', lights:'🟢🟢🟢', updated:'2026/08/12'},
+    {name:'大成物流股份有限公司', field:'供應鏈管理', status:'評核即將到期', tag:'gold', lights:'🟢🟡🟢', updated:'2025/09/02'},
+    {name:'晴川會計師事務所', field:'財務會計', status:'合格・使用中', tag:'ok', lights:'🟢🟢🟢', updated:'2026/07/28'},
+    {name:'翊豐廣告有限公司', field:'品牌行銷', status:'不建議推薦', tag:'alert', lights:'🔴🟡🟢', updated:'2026/06/30'},
+  ];
+  const kanban = {
+    '待查核':[{n:'安心居家社會福利基金會',s:'助教查核中',d:2},{n:'翊豐廣告有限公司',s:'待補查核意見',d:6}],
+    '待簽約':[{n:'台灣星辰資訊股份有限公司',s:'合約寄出待回簽',d:1},{n:'晴川會計師事務所',s:'學生名單確認中',d:3}],
+    '待訪視':[{n:'雲創數位有限公司',s:'李冠廷・期中訪視',d:4},{n:'雲創數位有限公司',s:'黃宥蓁・期中訪視',d:2}],
+    '待結案':[{n:'大成物流股份有限公司',s:'滿意度調查回收中',d:8}],
+  };
+  const kanbanCols = Object.keys(kanban).map(col=>{
+    const items = kanban[col].map(it=>`
+      <div class="card" style="padding:10px 12px;margin-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">${it.n}</div>
+        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:6px;">${it.s}</div>
+        <span class="tag ${it.d>5?'alert':(it.d>3?'warn':'neutral')}">已卡 ${it.d} 天</span>
+      </div>`).join('');
+    return `<div style="flex:1;min-width:200px;">
+      <div style="font-size:11.5px;font-weight:700;color:var(--ink-soft);padding:0 2px 8px;">${col} <span style="color:var(--ink-faint);font-weight:400;">(${kanban[col].length})</span></div>
+      ${items}
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="page-head">
+    <h1>機構管理</h1>
+    <p>建立與追蹤本系所合作實習機構的申請、查核與合約狀態</p>
+  </div>
+  <div class="banner info" style="margin-bottom:16px;">
+    <span class="ic">ℹ️</span>
+    <div>新增機構時，系統會提示於教育部「實習機構查詢系統」進行人工比對確認。</div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">案件看板 <span class="hint">依卡關天數自動標色，超過 5 天標紅提醒</span></div>
+    <div style="display:flex;gap:14px;padding:16px 18px;overflow-x:auto;">${kanbanCols}</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">
+      機構清單（41 家）
+      <div style="display:flex;gap:8px;">
+        <button class="btn ghost sm">套用既有合格機構</button>
+        <button class="btn primary sm" onclick="showScreen('sec_form')">＋ 新增機構</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>機構名稱</th><th>實習領域</th><th>品質燈號</th><th>狀態</th><th>最後更新</th><th></th></tr></thead>
+      <tbody>
+        ${rows.map(r=>`<tr>
+          <td style="font-weight:700;">${r.name}</td>
+          <td>${r.field}</td>
+          <td style="letter-spacing:2px;">${r.lights}</td>
+          <td><span class="tag ${r.tag}">${r.status}</span></td>
+          <td class="mono" style="color:var(--ink-faint);">${r.updated}</td>
+          <td><button class="btn ghost sm">查看</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function screen_sec_form(){
+  return `
+  <div class="page-head">
+    <h1>新增機構資料</h1>
+    <p>填寫機構基本資料與初步評估，送出後將進入系主任審核流程</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:12px;">
+    <span class="ic">👥</span>
+    <div><b>批次建立提醒：</b>若本機構將同時媒合多位學生（例如同班 25 人共用一份合約），建議送出審核通過後，於「課程配對」步驟使用批次建立功能，一次勾選學生名單產生多筆實習案，不需逐筆輸入。</div>
+  </div>
+
+  <div class="banner gold" style="margin-bottom:18px;">
+    <span class="ic">🔎</span>
+    <div><b>教育部機構查詢比對（人工比對）：</b>請自行至教育部「實習機構查詢系統」查詢本機構統一編號，並將比對結果填入下方欄位。目前尚未確認該系統是否開放介接，暫以人工比對後勾選確認方式辦理。</div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field"><label>機構名稱 <span class="req">*</span></label><input placeholder="例：台灣星辰資訊股份有限公司"></div>
+      <div class="field"><label>統一編號 <span class="req">*</span></label><input placeholder="12345678" class="mono"></div>
+    </div>
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field"><label>實習領域 <span class="req">*</span></label>
+        <select><option>軟體開發</option><option>數位行銷</option><option>財務會計</option><option>供應鏈管理</option></select>
+      </div>
+      <div class="field"><label>教育部機構查詢比對結果 <span class="req">*</span></label>
+        <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400;"><input type="checkbox" checked> 本人已於教育部實習機構查詢系統人工查詢比對，查無異常紀錄</label>
+          <div style="font-size:10.5px;color:var(--ink-faint);">確認人：助教 吳佩珊・查詢日期：2026/08/13（如查有異常，需另加註說明始得送出審核）</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>權益福利與工作環境評估（燈號制）</label>
+      <div class="grid g3">
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實習權益保障</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn sm" style="background:#2E7D4F;color:#fff;">🟢 綠燈</button>
+            <button class="btn ghost sm">🟡 黃燈</button>
+            <button class="btn ghost sm">🔴 紅燈</button>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實務學習內容專業性</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn sm" style="background:#2E7D4F;color:#fff;">🟢 綠燈</button>
+            <button class="btn ghost sm">🟡 黃燈</button>
+            <button class="btn ghost sm">🔴 紅燈</button>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實習場所安全性</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn ghost sm">🟢 綠燈</button>
+            <button class="btn sm" style="background:#B98B2A;color:#fff;">🟡 黃燈</button>
+            <button class="btn ghost sm">🔴 紅燈</button>
+          </div>
+        </div>
+      </div>
+      <div class="help" style="margin-top:8px;">三面向皆綠燈→自動標示「建議推薦」；有黃燈無紅燈→「建議推薦（列管注意）」；任一紅燈→「不建議推薦」，需系主管填寫核定理由後方可例外核准</div>
+      <div class="field" style="margin-top:12px;"><label>燈號說明備註（選填，如評為黃燈/紅燈建議填寫）</label><textarea rows="2" placeholder="例：實習場所走道堆放雜物，已請機構改善，將於下次訪視複核"></textarea></div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>應備條件檢核（必要條件，任一項不符即不得合作）</label>
+      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:7px;font-size:12px;">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 依法設立或登記</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無重大職業災害</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無違反勞基法第78/79/80條處罰紀錄</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無積欠勞保/職災保費或退休金</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無性別歧視/性騷擾/就業歧視處罰紀錄</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 非從事派遣業務之事業單位</label>
+      </div>
+      <div class="help" style="margin-top:6px;">基準日：實習起始日期前一日（2026/07/01 起算，往前推 2 年）</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>適用法規版本</label>
+      <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;display:flex;align-items:center;justify-content:space-between;">
+        <span>《校外實習作業要點》第 4 版（2026/08/10 生效）</span>
+        <span class="tag neutral">自動帶入現行版本</span>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;">
+      <label>備註說明</label>
+      <textarea rows="3" placeholder="如有異常查核紀錄或補充事項，請於此說明"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">儲存草稿</button>
+      <button class="btn primary">送出審核</button>
+    </div>
+  </div>`;
+}
+
+function screen_adv_visits(){
+  const visits=[
+    {student:'李冠廷', company:'雲創數位有限公司', date:'2026/08/20', status:'待填寫', tag:'warn'},
+    {student:'黃宥蓁', company:'晴川會計師事務所', date:'2026/08/22', status:'待填寫', tag:'warn'},
+    {student:'張家豪', company:'台灣星辰資訊股份有限公司', date:'2026/07/30', status:'已完成', tag:'ok'},
+  ];
+  return `
+  <div class="page-head">
+    <h1>訪視紀錄</h1>
+    <p>企業管理學系・本學期共 12 位學生需完成至少 1 次實地訪視</p>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:18px;">
+    <div class="card stat"><div class="lbl">已完成訪視</div><div class="val mono">8</div></div>
+    <div class="card stat"><div class="lbl">待完成訪視</div><div class="val mono">4</div></div>
+    <div class="card stat"><div class="lbl">本週到期</div><div class="val mono" style="color:var(--warn)">2</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">訪視排程</div>
+    <table>
+      <thead><tr><th>學生</th><th>實習機構</th><th>預定訪視日</th><th>狀態</th><th></th></tr></thead>
+      <tbody>
+        ${visits.map(v=>`<tr>
+          <td style="font-weight:700;">${v.student}</td>
+          <td>${v.company}</td>
+          <td class="mono">${v.date}</td>
+          <td><span class="tag ${v.tag}">${v.status}</span></td>
+          <td><button class="btn ghost sm">${v.status==='已完成'?'查看紀錄':'填寫紀錄'}</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">填寫訪視紀錄 — 李冠廷（雲創數位有限公司）</div>
+    ${dual('2026/07/01 – 2026/08/31','114學年度第1學期')}
+    <div style="height:14px;"></div>
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field"><label>訪視日期 <span class="req">*</span></label><input type="date" value="2026-08-20"></div>
+      <div class="field"><label>適用法規版本</label><input value="《校外實習作業要點》第 4 版" disabled style="color:var(--ink-faint)"></div>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>訪視評估（5 點量表）</label>
+      <div class="grid g3">
+        <div class="card" style="padding:12px 14px;"><div style="font-size:11.5px;margin-bottom:6px;">職務內容相符度</div><div class="rating">★★★★☆</div></div>
+        <div class="card" style="padding:12px 14px;"><div style="font-size:11.5px;margin-bottom:6px;">學習狀況</div><div class="rating">★★★★★</div></div>
+        <div class="card" style="padding:12px 14px;"><div style="font-size:11.5px;margin-bottom:6px;">機構帶領品質</div><div class="rating">★★★★☆</div></div>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>訪視照片</label>
+      <div style="border:1px dashed var(--line);border-radius:8px;padding:20px;text-align:center;color:var(--ink-faint);font-size:12px;">拖曳或點擊上傳照片（僅系所輔導教師與校級管理者可檢視）</div>
+    </div>
+    <div class="field" style="margin-bottom:20px;"><label>質性紀錄與建議</label><textarea rows="3" placeholder="請描述學生實習狀況、機構配合度及後續建議"></textarea></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">儲存草稿</button>
+      <button class="btn primary">送出訪視紀錄</button>
+    </div>
+  </div>`;
+}
+
+function screen_dir_review(){
+  return `
+  <div class="page-head">
+    <h1>機構審核</h1>
+    <p>社會工作學系・待您核定的機構申請案</p>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">安心居家社會福利基金會</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">申請人：系辦助理 吳佩珊・提交於 2026/08/14</div>
+      </div>
+      <span class="tag warn">待核定</span>
+    </div>
+
+    <div class="grid g3" style="margin-bottom:18px;">
+      <div class="card" style="padding:14px 16px;background:var(--surface-2);">
+        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:8px;">品質燈號評估</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;">
+          <div style="display:flex;justify-content:space-between;"><span>實習權益保障</span><span class="tag ok">🟢 綠燈</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>實務學習內容專業性</span><span class="tag ok">🟢 綠燈</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>實習場所安全性</span><span class="tag alert">🔴 紅燈</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:14px 16px;background:var(--surface-2);">
+        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">教育部機構查詢比對</div>
+        <div style="margin-top:4px;"><span class="tag ok">✓ 人工比對確認・查無異常</span></div>
+        <div style="font-size:10.5px;color:var(--ink-faint);margin-top:4px;">確認人：助教 吳佩珊・2026/08/13</div>
+      </div>
+      <div class="card" style="padding:14px 16px;background:var(--surface-2);">
+        <div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">適用法規版本</div>
+        <div style="font-size:12.5px;margin-top:6px;font-weight:700;">第 4 版（2026/08/10）</div>
+      </div>
+    </div>
+
+    <div class="banner gold" style="margin-bottom:18px;">
+      <span class="ic">⚠️</span>
+      <div>本案「實習場所安全性」面向評為<b>🔴 紅燈</b>（輔導教師備註：機構倉儲區走道堆放雜物，未設置明確安全動線標示），系統自動標示為「不建議推薦」。依貴校規劃，此類案件不經委員會審議，改由<b>系主管審閱查核評估意見後逕行決定</b>是否例外核准，並須填寫核定理由存查。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>實習輔導教師／助教查核評估意見</label>
+      <div style="padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;color:var(--ink-soft);background:var(--surface-2);">
+        「機構規模較小、帶領人力有限，但過往合作學生回饋良好，工作內容與系上課程相關性高，建議可核准但加強期中訪視頻率。」— 助教 吳佩珊
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;">
+      <label>系主管核定理由 <span class="req">*</span>（未達門檻案件必填）</label>
+      <textarea rows="2" placeholder="請說明核准或退回之理由，將存查作為未達門檻仍予核准之依據"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn danger-ghost">退回補件</button>
+      <button class="btn primary">核定通過（例外核准）</button>
+    </div>
+  </div>`;
+}
+
+function screen_dir_review_lights(){
+  return `
+  <div class="page-head">
+    <h1>方案 A・燈號分級（不做加總）</h1>
+    <p>三個面向各自獨立判定，不收斂成單一分數；只要任一面向紅燈，整體即不建議</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">💡</span>
+    <div>設計重點：避免「安全性不合格，但因為其他面向分數高，平均起來還是通過」的情況。三個面向各自可見，問題出在哪一眼就看得到。</div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">安心居家社會福利基金會</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">申請人：系辦助理 吳佩珊・提交於 2026/08/14</div>
+      </div>
+      <span class="tag alert">🔴 整體：不建議推薦</span>
+    </div>
+
+    <div class="grid g3" style="margin-bottom:18px;">
+      <div class="card" style="padding:16px;border-left:4px solid var(--success);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🟢</span>
+          <div style="font-size:12.5px;font-weight:700;">實習權益保障</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.6;">薪資給付明確、投保情形完整、無加班或輪班疑慮，膳宿與實習時間安排合理。</div>
+      </div>
+      <div class="card" style="padding:16px;border-left:4px solid var(--gold);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🟡</span>
+          <div style="font-size:12.5px;font-weight:700;">實務學習內容專業性</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.6;">機構規模較小、可安排之實務操作機會有限，但與系上課程相關性尚可，建議加強個別實習計畫規劃。</div>
+      </div>
+      <div class="card" style="padding:16px;border-left:4px solid var(--alert);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:16px;">🔴</span>
+          <div style="font-size:12.5px;font-weight:700;">實習場所安全性</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.6;">現場評估發現無明確之緊急應變流程與安全教育訓練紀錄，且無專責人員可即時聯繫，需改善後始得複評。</div>
+      </div>
+    </div>
+
+    <div class="banner gold" style="margin-bottom:18px;">
+      <span class="ic">⚠️</span>
+      <div><b>系統判定邏輯：</b>依規則「任一面向紅燈 → 整體不建議推薦」，本案因「實習場所安全性」為紅燈，即使其他兩面向表現尚可，仍判定為不建議推薦，不會被平均分數稀釋掉。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>查核評估意見（助教／輔導教師填寫）</label>
+      <div style="padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;color:var(--ink-soft);background:var(--surface-2);">
+        「機構帶領意願高、待遇合理，但現場未見緊急應變 SOP 張貼，也未提供教育訓練紀錄，建議請機構補件後複評，暫不建議本學期媒合學生。」— 助教 吳佩珊
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;">
+      <label>系主管核定理由 <span class="req">*</span></label>
+      <textarea rows="2" placeholder="紅燈項目原則上應退回補件；如有特殊考量需例外核准，請說明理由"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn danger-ghost">退回補件（安全性未達標）</button>
+      <button class="btn primary">例外核准（需特別說明）</button>
+    </div>
+  </div>`;
+}
+
+function screen_dir_review_history(){
+  return `
+  <div class="page-head">
+    <h1>方案 B・歷史紀錄導向</h1>
+    <p>已合作機構不重新評分，改看歷史軌跡；新機構標示首次合作並加強訪視頻率</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">💡</span>
+    <div>設計重點：與其每年用分數重新猜測機構好不好，不如直接呈現過去實際發生的訪視評語、學生滿意度與爭議紀錄，讓系主管依真實歷程判斷是否續用。</div>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">雲創數位有限公司</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">已合作 3 個學年度・累計 11 位學生</div>
+      </div>
+      <span class="tag ok">歷史紀錄良好・建議續用</span>
+    </div>
+
+    <div style="display:flex;gap:0;margin:18px 0 6px;border-bottom:1px solid var(--line);">
+      <div style="padding:8px 4px;font-size:11.5px;font-weight:700;border-bottom:2px solid var(--primary);color:var(--primary);">訪視評語軌跡</div>
+    </div>
+    <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">114學年度第1學期・李冠廷</div><div class="sub">「機構帶領用心，學生表示學習收穫大，環境安全無虞」— 林志明教授</div></div><span class="tag ok">正向</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">113學年度第2學期・黃宥蓁</div><div class="sub">「進度符合個別實習計畫，機構回應積極」— 林志明教授</div></div><span class="tag ok">正向</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--warn-bg);color:var(--warn)">!</div><div class="body"><div class="title">113學年度第1學期・張家豪</div><div class="sub">「學生一度反映加班疑慮，經協調後機構已改善排班」</div></div><span class="tag warn">已改善</span></div>
+
+    <div style="display:flex;gap:24px;margin:18px 0 14px;padding-top:14px;border-top:1px solid var(--line);">
+      <div><div style="font-size:11px;color:var(--ink-faint);">學生滿意度平均</div><div class="mono" style="font-size:20px;font-weight:700;color:var(--success);">4.5 / 5.0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-faint);">爭議／意外事件</div><div class="mono" style="font-size:20px;font-weight:700;">0 件</div></div>
+      <div><div style="font-size:11px;color:var(--ink-faint);">訪視完成率</div><div class="mono" style="font-size:20px;font-weight:700;">100%</div></div>
+      <div><div style="font-size:11px;color:var(--ink-faint);">法定應備條件</div><div class="mono" style="font-size:20px;font-weight:700;color:var(--success);">✓ 符合</div></div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;"><label>本學年度續用核定理由</label><textarea rows="2" placeholder="依歷史紀錄判斷，說明是否繼續合作或需加註條件">歷史合作紀錄穩定，唯一次加班疑慮已妥善處理並持續追蹤，同意續用。</textarea></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">要求本學期加強訪視</button>
+      <button class="btn primary">核定續用</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;">安心居家社會福利基金會</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">尚無合作紀錄</div>
+      </div>
+      <span class="tag gold">首次合作・無歷史資料</span>
+    </div>
+    <div class="banner gold">
+      <span class="ic">🆕</span>
+      <div>此機構無歷史軌跡可參考，系統建議：核准後第一學期比照一般規則訪視外，<b>加開 1 次期初訪視</b>（開學後 2 週內），並將本學期訪視結果列為明年度是否續用的關鍵依據。</div>
+    </div>
+  </div>`;
+}
+  <div class="page-head">
+    <h1>我的實習歷程</h1>
+    <p>李冠廷・資訊管理學系四年級</p>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;">雲創數位有限公司</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">職務：前端工程實習生</div>
+      </div>
+      <span class="tag ok">實習進行中</span>
+    </div>
+    ${dual('2026/07/01 – 2026/08/31','114學年度第1學期')}
+    <div style="height:18px;"></div>
+    <div class="progress-track">
+      <div class="pstep done"><div class="pline"></div><div class="circle">✓</div><div class="lbl">合約簽訂</div></div>
+      <div class="pstep done"><div class="pline"></div><div class="circle">✓</div><div class="lbl">實習開始</div></div>
+      <div class="pstep current"><div class="pline"></div><div class="circle">3</div><div class="lbl">期中訪視</div></div>
+      <div class="pstep"><div class="pline"></div><div class="circle">4</div><div class="lbl">實習結束</div></div>
+      <div class="pstep"><div class="pline"></div><div class="circle">5</div><div class="lbl">滿意度調查</div></div>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="section-title">待辦事項</div>
+      <div class="todo-item"><input type="checkbox"><span>確認 8/20 訪視時間是否方便</span><span class="due soon">3 天後</span></div>
+      <div class="todo-item"><input type="checkbox"><span>上傳實習週誌（第 7 週）</span><span class="due soon">明天</span></div>
+      <div class="todo-item"><input type="checkbox" disabled checked><span style="color:var(--ink-faint);text-decoration:line-through;">簽署實習保密協定</span><span class="due">已完成</span></div>
+    </div>
+    <div class="card">
+      <div class="section-title">實習歷程紀錄（自動同步至學習歷程檔案）</div>
+      <div class="list-row"><div class="icon" style="background:var(--track-actual-bg);color:var(--track-actual)">📄</div><div class="body"><div class="title">實習合約已生效</div><div class="sub">2026/07/01</div></div></div>
+      <div class="list-row"><div class="icon" style="background:var(--gold-bg);color:var(--gold)">📝</div><div class="body"><div class="title">上傳實習心得（第一個月）</div><div class="sub">2026/07/31</div></div></div>
+      <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">輔導教師期初電訪完成</div><div class="sub">2026/07/15</div></div></div>
+    </div>
+  </div>`;
+}
+
+function screen_adm_reports(){
+  return `
+  <div class="page-head">
+    <h1>統計報表匯出</h1>
+    <p>教務處跨系所彙總・供教育部校務資料庫年度提報使用</p>
+  </div>
+
+  <div class="card" style="padding:20px 22px;margin-bottom:18px;">
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field">
+        <label>統計時間基準</label>
+        <select><option>依選課認列學年期（教育部提報用）</option><option>依實際實習發生期間（機構查核／訪視用）</option></select>
+        <div class="help">兩種基準對應資料可能不同，請依用途選擇</div>
+      </div>
+      <div class="field">
+        <label>學年期範圍</label>
+        <select><option>114 學年度第 1 學期</option><option>114 學年度第 2 學期</option><option>113 學年度全年</option></select>
+      </div>
+    </div>
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>報表格式</label>
+        <select><option>學10・學生實習人數及時數（人次）</option><option>學10-2・學生實習機構及權益保障（人次）</option><option>學10-3・實習人數統計（人數，去重）</option><option>校內管理用彙總（開課／機構／執行狀況）</option></select>
+        <div class="help">學10 系列為教育部標準格式，彙總維度：學院／單位／學制班別／年級</div>
+      </div>
+      <div class="field"><label>系所範圍</label>
+        <select><option>全校 35 系所</option><option>依學院篩選</option><option>自選系所</option></select>
+      </div>
+    </div>
+    <div class="banner gold" style="margin-bottom:4px;">
+      <span class="ic">🧮</span>
+      <div><b>勾稽檢核：</b>匯出學10-2 前，系統將自動核對「投保情形＋實習待遇」人次加總是否與學10「實習人次」相符，如有落差將於下方提示，避免教育部退件。</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:flex-end;margin-bottom:18px;">
+    <button class="btn ghost">預覽報表</button>
+    <button class="btn gold">匯出教育部標準格式 (.xlsx)</button>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">勾稽檢核結果<span class="hint">匯出前自動執行</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">學10-2 投保情形人次加總（312）與學10 實習人次（312）相符</div><div class="sub">全校彙總・114學年度第1學期</div></div><span class="tag ok">通過</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--alert-bg);color:var(--alert)">⚠</div><div class="body"><div class="title">社會工作學系：學10-2 實習待遇人次（26）與學10 實習人次（28）不符，差 2 筆</div><div class="sub">建議檢查是否有案件漏填實習待遇欄位</div></div><span class="tag alert">待處理</span></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">學10・學生實習人數及時數 — 預覽<span class="hint">彙總層級：學院／單位／學制班別／年級</span></div>
+    <table>
+      <thead><tr><th>學院</th><th>單位（系所）</th><th>學制班別</th><th>年級</th><th>實習屬性</th><th>本國生人次</th><th>境外生人次</th><th>總時數</th></tr></thead>
+      <tbody>
+        <tr><td>管理學院</td><td style="font-weight:700;">資訊管理學系</td><td>學士班</td><td class="mono">4</td><td>必修3學分</td><td class="mono">28</td><td class="mono">4</td><td class="mono">9,600</td></tr>
+        <tr><td>管理學院</td><td style="font-weight:700;">企業管理學系</td><td>學士班</td><td class="mono">3</td><td>選修2學分</td><td class="mono">40</td><td class="mono">5</td><td class="mono">12,150</td></tr>
+        <tr><td>社會科學院</td><td style="font-weight:700;">社會工作學系</td><td>學士班</td><td class="mono">4</td><td>畢業條件</td><td class="mono">26</td><td class="mono">2</td><td class="mono">10,080</td></tr>
+        <tr><td style="color:var(--ink-faint);">...其餘 32 系所</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td></tr>
+      </tbody>
+    </table>
+    <div style="padding:12px 18px;font-size:11px;color:var(--ink-faint);border-top:1px solid var(--line);">
+      ＊本表統計口徑為「人次」，同一學生若修讀 2 門實習課程將分別列計；如需不重複之在學實習「人數」，請切換報表格式為「學10-3」。已中止／轉換機構之實習案件預設不計入以上統計。
+    </div>
+  </div>`;
+}
+
+function screen_adm_regs(){
+  return `
+  <div class="page-head">
+    <h1>法規與政策文件管理</h1>
+    <p>保存教育部規範、校級作業要點與系所補充規定的歷史版本</p>
+  </div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">《校外實習作業要點》版本紀錄 <button class="btn primary sm">＋ 上架新版本</button></div>
+    <div class="list-row">
+      <div class="icon" style="background:var(--success-bg);color:var(--success)">📗</div>
+      <div class="body"><div class="title">第 4 版 <span class="tag ok" style="margin-left:6px;">現行版本</span></div><div class="sub">生效日：2026/08/10・新增教育部機構查核比對規定</div></div>
+      <button class="btn ghost sm">查看內容</button>
+    </div>
+    <div class="list-row">
+      <div class="icon" style="background:var(--surface-2);color:var(--ink-faint)">📄</div>
+      <div class="body"><div class="title">第 3 版</div><div class="sub">生效期間：2025/09/01 – 2026/08/09</div></div>
+      <button class="btn ghost sm">查看內容</button>
+    </div>
+    <div class="list-row">
+      <div class="icon" style="background:var(--surface-2);color:var(--ink-faint)">📄</div>
+      <div class="body"><div class="title">第 2 版</div><div class="sub">生效期間：2024/09/01 – 2025/08/31</div></div>
+      <button class="btn ghost sm">查看內容</button>
+    </div>
+  </div>
+  <div class="banner info">
+    <span class="ic">ℹ️</span>
+    <div>新版本上架後，系統將發布通知給所有系所使用者；已建立之合約與訪視紀錄仍保留原適用版本標示，不會被覆蓋。</div>
+  </div>`;
+}
+
+function screen_notifications(){
+  return `
+  <div class="page-head"><h1>通知提醒中心</h1><p>依角色顯示相關的到期提醒與待處理事項</p></div>
+  <div class="card">
+    <div class="list-row"><div class="icon" style="background:var(--alert-bg);color:var(--alert)">⏰</div><div class="body"><div class="title">「大成物流」機構評核效期將於 9/02 到期</div><div class="sub">需重新查核・資訊管理學系</div></div><span class="tag alert">3 天內</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--warn-bg);color:var(--warn)">📋</div><div class="body"><div class="title">2 位學生尚未完成期中訪視</div><div class="sub">企業管理學系</div></div><span class="tag warn">7 天內</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--track-enroll-bg);color:var(--track-enroll)">📝</div><div class="body"><div class="title">實習滿意度調查已開放填寫</div><div class="sub">全系所學生</div></div><span class="tag neutral">開放中</span></div>
+    <div class="list-row"><div class="icon" style="background:var(--gold-bg);color:var(--gold)">📘</div><div class="body"><div class="title">《校外實習作業要點》第 4 版已上線</div><div class="sub">教務處發布</div></div><span class="tag neutral">已讀</span></div>
+  </div>`;
+}
+
+const SCREENS = {
+  sec_dashboard: screen_sec_dashboard,
+  sec_institutions: screen_sec_institutions,
+  sec_form: screen_sec_form,
+  adv_visits: screen_adv_visits,
+  dir_review: screen_dir_review,
+  dir_review_lights: screen_dir_review_lights,
+  dir_review_history: screen_dir_review_history,
+  stu_journey: screen_stu_journey,
+  adm_reports: screen_adm_reports,
+  adm_regs: screen_adm_regs,
+  notifications: screen_notifications,
+};
+
+function render(){
+  renderNav();
+  updateChrome();
+  const fn = SCREENS[currentScreen] || screen_sec_dashboard;
+  document.getElementById('content').innerHTML = fn();
+}
+
+initSidebar();
+render();
+</script>
+</body>
+</html>

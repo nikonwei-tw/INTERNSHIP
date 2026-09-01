@@ -355,7 +355,7 @@
 
     <div class="role-block">
       <div class="role-label">切換身分視角（原型示範用）</div>
-      <button class="role-btn" data-role="secretary"><span class="dot"></span>系所秘書／助理</button>
+      <button class="role-btn" data-role="secretary"><span class="dot"></span>系所秘書／實習助教</button>
       <button class="role-btn" data-role="advisor"><span class="dot"></span>實習輔導教師</button>
       <button class="role-btn" data-role="director"><span class="dot"></span>系主管</button>
       <button class="role-btn" data-role="student"><span class="dot"></span>學生</button>
@@ -377,7 +377,7 @@
         <div class="bell" onclick="showScreen('notifications')"><span>🔔</span><span class="badge">4</span></div>
         <div class="user-chip">
           <div class="avatar" id="avatarInit">王</div>
-          <div class="who"><div class="n" id="userName">王淑芬</div><div class="r" id="userRole">資訊管理學系・系辦助理</div></div>
+          <div class="who"><div class="n" id="userName">王淑芬</div><div class="r" id="userRole">資訊管理學系・系辦實習助教</div></div>
         </div>
       </div>
     </div>
@@ -388,7 +388,7 @@
 <script>
 const NAV = {
   secretary: {
-    label:'系所秘書／助理', avatar:'王', name:'王淑芬', roleText:'資訊管理學系・系辦助理', dept:'資訊管理學系',
+    label:'系所秘書／實習助教', avatar:'王', name:'王淑芬', roleText:'資訊管理學系・系辦實習助教', dept:'資訊管理學系',
     items:[
       {id:'sec_dashboard', label:'待辦總覽'},
       {id:'sec_institutions', label:'機構管理'},
@@ -400,6 +400,7 @@ const NAV = {
   advisor:{
     label:'實習輔導教師', avatar:'林', name:'林志明 教授', roleText:'企業管理學系・實習輔導教師', dept:'企業管理學系',
     items:[
+      {id:'adv_review', label:'機構查核'},
       {id:'adv_visits', label:'訪視紀錄'},
     ]
   },
@@ -519,7 +520,7 @@ function screen_sec_institutions(){
     {name:'翊豐廣告有限公司', field:'品牌行銷', status:'不建議推薦', tag:'alert', lights:'🔴🟡🟢', updated:'2026/06/30'},
   ];
   const kanban = {
-    '待查核':[{n:'安心居家社會福利基金會',s:'助教查核中',d:2},{n:'翊豐廣告有限公司',s:'待補查核意見',d:6}],
+    '待查核':[{n:'安心居家社會福利基金會',s:'實習助教查核中',d:2},{n:'翊豐廣告有限公司',s:'待補查核意見',d:6}],
     '待簽約':[{n:'台灣星辰資訊股份有限公司',s:'合約寄出待回簽',d:1},{n:'晴川會計師事務所',s:'學生名單確認中',d:3}],
     '待訪視':[{n:'雲創數位有限公司',s:'李冠廷・期中訪視',d:4},{n:'雲創數位有限公司',s:'黃宥蓁・期中訪視',d:2}],
     '待結案':[{n:'大成物流股份有限公司',s:'滿意度調查回收中',d:8}],
@@ -580,17 +581,22 @@ function screen_sec_form(){
   return `
   <div class="page-head">
     <h1>新增機構資料</h1>
-    <p>填寫機構基本資料與初步評估，送出後將進入系主任審核流程</p>
+    <p>填寫機構基本資料，送交實習輔導教師進行查核評估</p>
   </div>
 
   <div class="banner info" style="margin-bottom:12px;">
     <span class="ic">👥</span>
-    <div><b>批次建立提醒：</b>若本機構將同時媒合多位學生（例如同班 25 人共用一份合約），建議送出審核通過後，於「課程配對」步驟使用批次建立功能，一次勾選學生名單產生多筆實習案，不需逐筆輸入。</div>
+    <div><b>批次建立提醒：</b>若本機構將同時媒合多位學生（例如同班 25 人共用一份合約），建議查核通過後，於「課程配對」步驟使用批次建立功能，一次勾選學生名單產生多筆實習案，不需逐筆輸入。</div>
   </div>
 
   <div class="banner gold" style="margin-bottom:18px;">
     <span class="ic">🔎</span>
     <div><b>教育部機構查詢比對（人工比對）：</b>請自行至教育部「實習機構查詢系統」查詢本機構統一編號，並將比對結果填入下方欄位。目前尚未確認該系統是否開放介接，暫以人工比對後勾選確認方式辦理。</div>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">📋</span>
+    <div><b>角色分工提醒：</b>本頁僅填寫機構基本資料（純資料建檔），不涉及查核評估。送出後將交由<b>實習輔導教師</b>進行機構初評與查核（應備條件檢核、品質燈號評估），輔導教師查核通過後才會送交系主管核定。</div>
   </div>
 
   <div class="card" style="padding:22px;">
@@ -599,22 +605,82 @@ function screen_sec_form(){
       <div class="field"><label>統一編號 <span class="req">*</span></label><input placeholder="12345678" class="mono"></div>
     </div>
     <div class="field-row" style="margin-bottom:16px;">
-      <div class="field"><label>實習領域 <span class="req">*</span></label>
-        <select><option>軟體開發</option><option>數位行銷</option><option>財務會計</option><option>供應鏈管理</option></select>
+      <div class="field"><label>實習領域（選填）</label>
+        <input list="fieldTags" placeholder="輸入或選擇，如：軟體開發">
+        <datalist id="fieldTags"><option value="軟體開發"><option value="數位行銷"><option value="財務會計"><option value="供應鏈管理"></datalist>
       </div>
       <div class="field"><label>教育部機構查詢比對結果 <span class="req">*</span></label>
         <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:8px;">
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400;"><input type="checkbox" checked> 本人已於教育部實習機構查詢系統人工查詢比對，查無異常紀錄</label>
-          <div style="font-size:10.5px;color:var(--ink-faint);">確認人：助教 吳佩珊・查詢日期：2026/08/13（如查有異常，需另加註說明始得送出審核）</div>
+          <div style="font-size:10.5px;color:var(--ink-faint);">確認人：實習助教 吳佩珊・查詢日期：2026/08/13（如查有異常，需另加註說明始得送出）</div>
         </div>
       </div>
     </div>
 
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field"><label>實習場域所屬類型 <span class="req">*</span></label>
+        <select><option>一般辦公場所</option><option>醫事機構</option><option>政府機關</option><option>其他（含危險性工作場所）</option></select>
+      </div>
+      <div class="field"><label>初步待遇登記 <span class="req">*</span></label>
+        <div style="display:flex;gap:8px;">
+          <select style="flex:0 0 110px;"><option>僱傭傾向</option><option>非僱傭傾向</option></select>
+          <input placeholder="每月給付新臺幣＿＿元" class="mono">
+        </div>
+        <div class="help">僅供查核階段參考，正式僱傭關係判定於合約簽訂階段辦理</div>
+      </div>
+    </div>
+
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field"><label>公司地址 <span class="req">*</span></label><input placeholder="臺北市內湖區＿＿路＿＿號"></div>
+      <div class="field"><label>行業別 <span class="req">*</span></label><select><option>資訊及通訊傳播業</option><option>批發及零售業</option><option>金融及保險業</option><option>教育業</option><option>其他</option></select></div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>指派查核之實習輔導教師 <span class="req">*</span></label>
+      <select><option>林志明 教授</option><option>陳美玲 教授</option></select>
+    </div>
+
+    <div class="field" style="margin-bottom:22px;">
+      <label>備註說明</label>
+      <textarea rows="3" placeholder="如有補充事項，請於此說明"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">儲存草稿</button>
+      <button class="btn primary">送交輔導教師查核</button>
+    </div>
+  </div>`;
+}
+
+function screen_adv_review(){
+  return `
+  <div class="page-head">
+    <h1>機構查核</h1>
+    <p>依應備條件與品質燈號評估機構，查核通過後送交系主管核定</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">📋</span>
+    <div>本表為<b>全校統一單一表單</b>（參考致理科技大學《學生校外實習機構評估表》設計），不開放系所自訂項目。如對特定機構有額外意見，可於下方燈號評估之說明備註欄自由加註。</div>
+  </div>
+
+  <div class="card" style="padding:20px 22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;">台灣星辰資訊股份有限公司</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">資訊管理學系・由實習助教 吳佩珊 建檔，2026/08/16 送交查核</div>
+      </div>
+      <span class="tag warn">待查核</span>
+    </div>
+  </div>
+
+  <div class="card" style="padding:22px;">
     <div class="field" style="margin-bottom:18px;">
       <label>權益福利與工作環境評估（燈號制）</label>
       <div class="grid g3">
         <div class="card" style="padding:12px 14px;">
           <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實習權益保障</div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-bottom:8px;">薪資合理性・實習負荷量・合作理念・住宿安全</div>
           <div style="display:flex;gap:6px;">
             <button class="btn sm" style="background:#2E7D4F;color:#fff;">🟢 綠燈</button>
             <button class="btn ghost sm">🟡 黃燈</button>
@@ -623,6 +689,7 @@ function screen_sec_form(){
         </div>
         <div class="card" style="padding:12px 14px;">
           <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實務學習內容專業性</div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-bottom:8px;">實習專業性・培訓計畫・時間安排</div>
           <div style="display:flex;gap:6px;">
             <button class="btn sm" style="background:#2E7D4F;color:#fff;">🟢 綠燈</button>
             <button class="btn ghost sm">🟡 黃燈</button>
@@ -631,6 +698,7 @@ function screen_sec_form(){
         </div>
         <div class="card" style="padding:12px 14px;">
           <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">實習場所安全性</div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-bottom:8px;">環境與安全設備配置</div>
           <div style="display:flex;gap:6px;">
             <button class="btn ghost sm">🟢 綠燈</button>
             <button class="btn sm" style="background:#B98B2A;color:#fff;">🟡 黃燈</button>
@@ -638,39 +706,54 @@ function screen_sec_form(){
           </div>
         </div>
       </div>
-      <div class="help" style="margin-top:8px;">三面向皆綠燈→自動標示「建議推薦」；有黃燈無紅燈→「建議推薦（列管注意）」；任一紅燈→「不建議推薦」，需系主管填寫核定理由後方可例外核准</div>
-      <div class="field" style="margin-top:12px;"><label>燈號說明備註（選填，如評為黃燈/紅燈建議填寫）</label><textarea rows="2" placeholder="例：實習場所走道堆放雜物，已請機構改善，將於下次訪視複核"></textarea></div>
+      <div class="help" style="margin-top:8px;">三面向皆綠燈→自動標示「建議推薦」；有黃燈無紅燈→「建議推薦（列管注意）」；任一紅燈→「不建議推薦」，需系主管填寫核定理由後方可例外核准。應備條件優先於燈號：下方任一應備條件不符者，無論燈號結果為何，一律鎖定為「不得推薦」</div>
+      <div class="field" style="margin-top:12px;"><label>燈號說明備註（選填，如評為黃燈/紅燈建議填寫）</label><textarea rows="2" placeholder="例：實習場所走道堆放雜物，已請機構改善，將於下次訪視複核">實習場所走道堆放雜物，已請機構改善，將於下次訪視複核</textarea></div>
     </div>
 
     <div class="field" style="margin-bottom:18px;">
-      <label>應備條件檢核（必要條件，任一項不符即不得合作）</label>
-      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:7px;font-size:12px;">
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 依法設立或登記</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無重大職業災害</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無違反勞基法第78/79/80條處罰紀錄</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無積欠勞保/職災保費或退休金</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 最近2年無性別歧視/性騷擾/就業歧視處罰紀錄</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 非從事派遣業務之事業單位</label>
-      </div>
-      <div class="help" style="margin-top:6px;">基準日：實習起始日期前一日（2026/07/01 起算，往前推 2 年）</div>
-    </div>
+      <label>應備條件檢核（必要條件，全校統一標準，任一項不符即不得合作）</label>
+      <div style="padding:12px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:10px;font-size:12px;">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 1. 依法設立或登記</label>
 
-    <div class="field" style="margin-bottom:18px;">
-      <label>適用法規版本</label>
-      <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;display:flex;align-items:center;justify-content:space-between;">
-        <span>《校外實習作業要點》第 4 版（2026/08/10 生效）</span>
-        <span class="tag neutral">自動帶入現行版本</span>
-      </div>
-    </div>
+        <div>
+          <div style="font-weight:700;margin-bottom:5px;">2. 具足夠訓練指導人力、設施設備，或訂有安全衛生工作相關守則（需勾滿 4 項）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;padding-left:14px;">
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 機械設備維護及檢查</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 工作安全及衛生標準</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 教育及訓練</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 健康指導及管理措施</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 急救及搶救</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 防護設施之準備維持及使用</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 事故通報及報告</label>
+          </div>
+          <div style="font-size:10.5px;color:var(--success);padding-left:14px;margin-top:3px;">已勾選 4 項，符合門檻</div>
+        </div>
 
-    <div class="field" style="margin-bottom:22px;">
-      <label>備註說明</label>
-      <textarea rows="3" placeholder="如有異常查核紀錄或補充事項，請於此說明"></textarea>
+        <div>
+          <div style="font-weight:700;margin-bottom:5px;">3. 最近 2 年重大職業災害情形</div>
+          <div style="display:flex;gap:16px;padding-left:14px;">
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="radio" name="injury" checked> 無</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="radio" name="injury"> 有，非屬雇主過失（需附證明）</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="radio" name="injury"> 有，雇主過失</label>
+          </div>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 4. 最近2年無違反勞基法第78/79/80條處罰紀錄</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 5. 最近2年無積欠勞保/職災保費或退休金</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 6. 最近2年無性別歧視/性騷擾/就業歧視處罰紀錄</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 7. 非從事派遣業務之事業單位</label>
+        <div>
+          <div style="font-weight:700;margin-bottom:5px;">8. 危險性工作場所檢查合格證明</div>
+          <div style="padding-left:14px;font-size:11.5px;color:var(--ink-faint);">機構回報場域類型為「一般辦公場所」，非勞動檢查法第26條規定之危險性工作場所，本項免填</div>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 9. 未列入內政部消防署「消防安全檢查重大不合格場所一覽表」</label>
+      </div>
+      <div class="help" style="margin-top:6px;">基準日：實習起始日期前一日（2026/07/01 起算，往前推 2 年）・境外機構適用另一組 5 項應備條件（依當地法規）</div>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn ghost">儲存草稿</button>
-      <button class="btn primary">送出審核</button>
+      <button class="btn ghost">退回補件</button>
+      <button class="btn primary">查核完成，送交系主管核定</button>
     </div>
   </div>`;
 }
@@ -741,14 +824,14 @@ function screen_dir_review(){
   return `
   <div class="page-head">
     <h1>機構審核</h1>
-    <p>社會工作學系・待您核定的機構申請案</p>
+    <p>社會工作學系・審閱實習輔導教師之查核結果，核定推薦與否</p>
   </div>
 
   <div class="card" style="padding:22px;margin-bottom:18px;">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
       <div>
         <div style="font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;">安心居家社會福利基金會</div>
-        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">申請人：系辦助理 吳佩珊・提交於 2026/08/14</div>
+        <div style="color:var(--ink-faint);font-size:12px;margin-top:2px;">申請人：系辦實習助教 吳佩珊・提交於 2026/08/14</div>
       </div>
       <span class="tag warn">待核定</span>
     </div>
@@ -765,7 +848,7 @@ function screen_dir_review(){
       <div class="card" style="padding:14px 16px;background:var(--surface-2);">
         <div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">教育部機構查詢比對</div>
         <div style="margin-top:4px;"><span class="tag ok">✓ 人工比對確認・查無異常</span></div>
-        <div style="font-size:10.5px;color:var(--ink-faint);margin-top:4px;">確認人：助教 吳佩珊・2026/08/13</div>
+        <div style="font-size:10.5px;color:var(--ink-faint);margin-top:4px;">確認人：實習助教 吳佩珊・2026/08/13</div>
       </div>
       <div class="card" style="padding:14px 16px;background:var(--surface-2);">
         <div style="font-size:11px;color:var(--ink-faint);margin-bottom:4px;">適用法規版本</div>
@@ -779,9 +862,9 @@ function screen_dir_review(){
     </div>
 
     <div class="field" style="margin-bottom:18px;">
-      <label>實習輔導教師／助教查核評估意見</label>
+      <label>實習輔導教師／實習助教查核評估意見</label>
       <div style="padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;color:var(--ink-soft);background:var(--surface-2);">
-        「機構規模較小、帶領人力有限，但過往合作學生回饋良好，工作內容與系上課程相關性高，建議可核准但加強期中訪視頻率。」— 助教 吳佩珊
+        「機構規模較小、帶領人力有限，但過往合作學生回饋良好，工作內容與系上課程相關性高，建議可核准但加強期中訪視頻率。」— 實習助教 吳佩珊
       </div>
     </div>
 
@@ -1043,7 +1126,7 @@ function screen_adm_reports(){
       </tbody>
     </table>
     <div style="padding:12px 18px;font-size:11px;color:var(--ink-faint);border-top:1px solid var(--line);">
-      ＊本表統計口徑為「人次」，同一學生若修讀 2 門實習課程將分別列計；如需不重複之在學實習「人數」，請切換報表格式為「學10-3」。已中止／轉換機構之實習案件預設不計入以上統計。
+      ＊本表統計口徑為「人次」，同一學生若修讀 2 門實習課程將分別列計；如需不重複之在學實習「人數」，請切換報表格式為「學10-3」。已中止／轉換機構之實習案件預設不計入以上統計。非開課單位本系生且無雙主修資格之學生實習紀錄，亦不列入以上統計（資料仍完整保留，可於校內管理報表選擇「含不可提報學生」查看）。
     </div>
   </div>`;
 }
@@ -1095,6 +1178,7 @@ const SCREENS = {
   sec_form: screen_sec_form,
   sec_case_detail: screen_sec_case_detail,
   sec_contract: screen_sec_contract,
+  adv_review: screen_adv_review,
   adv_visits: screen_adv_visits,
   dir_review: screen_dir_review,
   stu_journey: screen_stu_journey,

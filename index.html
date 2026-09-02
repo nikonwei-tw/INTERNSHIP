@@ -396,6 +396,8 @@ const NAV = {
       {id:'sec_form', label:'新增機構資料'},
       {id:'sec_case_detail', label:'案件狀態追蹤'},
       {id:'sec_contract', label:'合約簽訂'},
+      {id:'sec_records', label:'各項紀錄上傳'},
+      {id:'sec_docs', label:'常用文件上傳'},
     ]
   },
   advisor:{
@@ -415,11 +417,15 @@ const NAV = {
     label:'學生', avatar:'李', name:'李冠廷', roleText:'資訊管理學系四年級', dept:'資訊管理學系',
     items:[
       {id:'stu_journey', label:'我的實習歷程'},
+      {id:'stu_uploads', label:'計畫書／心得上傳'},
+      {id:'stu_survey', label:'滿意度調查'},
+      {id:'stu_docs', label:'常用文件下載'},
     ]
   },
   admin:{
     label:'校級管理者', avatar:'教', name:'教務處實習業務', roleText:'教務處・跨系彙總管理', dept:'全校',
     items:[
+      {id:'adm_docsearch', label:'跨系所文件查詢'},
       {id:'adm_reports', label:'統計報表匯出'},
       {id:'adm_regs', label:'法規版本管理'},
       {id:'adm_committee', label:'委員會治理報表'},
@@ -965,6 +971,136 @@ function screen_stu_journey(){
   </div>`;
 }
 
+function screen_stu_uploads(){
+  return `
+  <div class="page-head">
+    <h1>個別實習計畫／實習心得上傳</h1>
+    <p>雲創數位有限公司・前端工程實習生</p>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">個別實習計畫上傳</div>
+    <div class="banner info" style="margin-bottom:14px;">
+      <span class="ic">📋</span>
+      <div>計畫內容請與輔導教師討論後共同擬定，<b>上傳動作由你本人操作</b>。還沒有範本嗎？<button class="btn ghost sm" onclick="showScreen('stu_docs')" style="margin-left:4px;">前往常用文件下載範本</button></div>
+    </div>
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>對應實習案 <span class="req">*</span></label><select><option>雲創數位有限公司・前端工程實習生</option></select></div>
+      <div class="field"><label>目前狀態</label>
+        <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12px;"><span class="tag ok">已上傳</span></div>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>檔案上傳（PDF／Word）<span class="req">*</span></label>
+      <div style="padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:12px;display:flex;align-items:center;justify-content:space-between;">
+        <span>📄 李冠廷_個別實習計畫書.pdf・上傳於 2026/06/25</span>
+        <button class="btn ghost sm">重新上傳</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">實習心得報告上傳</div>
+    <div class="banner gold" style="margin-bottom:14px;">
+      <span class="ic">🔒</span>
+      <div>請留意保密協定：撰寫心得時請勿洩漏機構營業機密、客戶資料或其他不宜公開之內部資訊。</div>
+    </div>
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>對應實習案 <span class="req">*</span></label><select><option>雲創數位有限公司・前端工程實習生</option></select></div>
+      <div class="field"><label>報告標題 <span class="req">*</span></label><input placeholder="例：114學年度第1學期實習心得報告"></div>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>檔案上傳（PDF／Word）<span class="req">*</span></label>
+      <div style="border:1px dashed var(--line);border-radius:8px;padding:18px;text-align:center;color:var(--ink-faint);font-size:12px;">拖曳或點擊上傳，可先至「常用文件下載」取得範本</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn primary sm">上傳心得報告</button>
+    </div>
+  </div>`;
+}
+
+function screen_stu_survey(){
+  const orgItems = ['機構提供安全的實習環境','機構實務訓練及實習內容','機構主管及同仁相處情形','機構協助指導實習期間遇到的困難'];
+  const courseItems = ['實習行前說明會（是否提前瞭解實習機構與工作性質）','系所提供之實習行政措施（保險、合約、訪視等）','系所課程安排理論與實務結合程度','實習課程對未來職涯發展之助益'];
+  const reflectItems = ['能系統化收集與狀況相關的資訊','能根據事實證據評估並合理判斷問題所在','能以系統化方式釐清問題','能透過各種管道蒐集資料並提供解決方案','能評估各解決方案利弊並找出最佳方案','能為可能發生問題預做準備'];
+  const scale5 = ['非常滿意','滿意','普通','不滿意','非常不滿意'];
+  const scale5n = ['5分','4分','3分','2分','1分'];
+
+  function likertBlock(items, scaleLabels, name){
+    const header = `<div style="display:grid;grid-template-columns:2.2fr repeat(5,1fr);gap:4px;font-size:10.5px;color:var(--ink-faint);text-align:center;padding:0 0 8px;"><div></div>${scaleLabels.map(s=>`<div>${s}</div>`).join('')}</div>`;
+    const rows = items.map((q,qi)=>`
+      <div style="display:grid;grid-template-columns:2.2fr repeat(5,1fr);gap:4px;align-items:center;padding:10px 0;border-top:1px solid var(--line);">
+        <div style="font-size:12px;">${q}</div>
+        ${scaleLabels.map((s,si)=>`<div style="text-align:center;"><input type="radio" name="${name}${qi}" ${si===1?'checked':''}></div>`).join('')}
+      </div>`).join('');
+    return header + rows;
+  }
+
+  return `
+  <div class="page-head">
+    <h1>實習滿意度調查</h1>
+    <p>雲創數位有限公司・請於實習結束後 2 週內完成填寫</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">📋</span>
+    <div>本問卷資料僅供學校內部分析之用，資料絕對保密。分為「對機構」與「對實習課程」兩個構面分別評分，讓系所能分別掌握機構品質與系所辦理成效。</div>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">構面一・學生對機構滿意度</div>
+    ${likertBlock(orgItems, scale5, 'org')}
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">構面二・學生對實習課程滿意度</div>
+    ${likertBlock(courseItems, scale5, 'course')}
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">構面三・學習反思－問題解決能力自我評估 <span class="tag gold">建議可選</span></div>
+    <div class="help" style="margin-bottom:10px;">實習前／實習後各評一次，檢視自己透過實習之能力成長，成果可作為學習歷程檔案佐證素材。</div>
+    <div style="font-size:11px;color:var(--ink-faint);margin-bottom:6px;">實習後評分</div>
+    ${likertBlock(reflectItems, scale5n, 'reflect')}
+  </div>
+
+  <div class="banner gold" style="margin-bottom:18px;">
+    <span class="ic">🖨️</span>
+    <div><b>提醒：</b>機構端滿意度調查維持紙本流程，請至「常用文件下載」取得「機構滿意度調查表」範本，交由實習機構填寫後回傳輔導教師或系所秘書，不需機構另外登入系統。</div>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:flex-end;">
+    <button class="btn ghost">儲存草稿</button>
+    <button class="btn primary">送出調查</button>
+  </div>`;
+}
+
+function screen_stu_docs(){
+  const docs = [
+    {type:'學生實習手冊', name:'114學年度校外實習學生手冊.pdf'},
+    {type:'個別實習計畫書範本', name:'學生校外實習學習計畫表_範例.docx'},
+    {type:'機構滿意度調查表範本', name:'機構對學生滿意度調查表.docx'},
+    {type:'實習考核表範本', name:'校外實習成績考核表.docx'},
+  ];
+  return `
+  <div class="page-head">
+    <h1>常用文件下載</h1>
+    <p>資訊管理學系提供之實習相關表件與範本</p>
+  </div>
+  <div class="card">
+    <div class="section-title">文件清單</div>
+    ${docs.map(d=>`
+    <div class="list-row">
+      <div class="icon" style="background:var(--gold-bg);color:var(--gold)">📄</div>
+      <div class="body">
+        <div class="title">${d.type}</div>
+        <div class="sub">${d.name}</div>
+      </div>
+      <button class="btn ghost sm">下載</button>
+    </div>`).join('')}
+  </div>`;
+}
+
 function calDay(n, type){
   if(!n) return '<div></div>';
   let dot = '';
@@ -1009,8 +1145,29 @@ function screen_sec_case_detail(){
     <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--success-bg);color:var(--success)">✓</div><div class="body"><div class="title">機構查核紀錄</div><div class="sub">已完成・2026/06/10</div></div><span class="tag ok">已具備</span></div>
     <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--success-bg);color:var(--success)">✓</div><div class="body"><div class="title">學生個別實習計畫</div><div class="sub">已由林志明教授與機構共同擬定・2026/06/25</div></div><span class="tag ok">已具備</span></div>
     <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--alert-bg);color:var(--alert)">✕</div><div class="body"><div class="title">合約正式回簽</div><div class="sub">已寄出待機構回簽，逾期 6 天</div></div><span class="tag alert">缺少</span></div>
+    <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--alert-bg);color:var(--alert)">✕</div><div class="body"><div class="title">保險投保紀錄上傳</div><div class="sub">尚未上傳校外實習團體傷害保險保單／投保清冊</div></div><span class="tag alert">缺少</span></div>
     <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--ink-faint);color:#fff">·</div><div class="body"><div class="title">訪視紀錄（≥1 筆）</div><div class="sub">尚未進行，預計 8/20</div></div><span class="tag neutral">尚未需要</span></div>
     <div class="list-row" style="padding:11px 0;"><div class="icon" style="background:var(--ink-faint);color:#fff">·</div><div class="body"><div class="title">滿意度調查／成績考核</div><div class="sub">實習結束後開放</div></div><span class="tag neutral">尚未需要</span></div>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">保險投保紀錄上傳</div>
+    <div class="help" style="margin-bottom:10px;">確保已為學生投保校外實習團體傷害保險（校方義務，不論僱傭與否皆須投保），與合約正式回簽同列為進入「實習進行中」狀態之必要條件，應於學生實際開始實習前完成。</div>
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>承保廠商</label><input placeholder="例：台灣銀行（教育部共同供應契約）"></div>
+      <div class="field"><label>保單期間</label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="date" value="2026-07-01"><span style="color:var(--ink-faint);">至</span><input type="date" value="2027-01-31">
+        </div>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>保單／投保清冊上傳 <span class="req">*</span></label>
+      <div style="border:1px dashed var(--line);border-radius:8px;padding:16px;text-align:center;color:var(--ink-faint);font-size:12px;">拖曳或點擊上傳保單、投保清冊或承保證明（PDF／圖檔）</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn primary sm">儲存投保紀錄</button>
+    </div>
   </div>
 
   <div style="display:flex;gap:10px;justify-content:flex-end;">
@@ -1019,12 +1176,26 @@ function screen_sec_case_detail(){
   </div>`;
 }
 
+function calcWage(p){
+  const [s,e] = p.period.split('–');
+  const start = new Date(s.replace(/\//g,'-'));
+  const end = new Date(e.replace(/\//g,'-'));
+  let months = (end.getFullYear()-start.getFullYear())*12 + (end.getMonth()-start.getMonth());
+  if(end.getDate() >= start.getDate()) months += 1;
+  let wage;
+  if(p.payType === '時薪') wage = (p.payAmount * p.hours) / months;
+  else if(p.payType === '月薪') wage = p.payAmount;
+  else if(p.payType === '一次性給付') wage = p.payAmount / months;
+  else wage = 0;
+  return { months, wage: Math.round(wage) };
+}
+
 function screen_sec_contract(){
   const pairs = [
-    {student:'王小明', course:'社區職能治療', year:'115學年度第1學期', credits:'3', type:'必修', period:'2026/09/01–2026/12/31', timeType:'單一學期實習'},
-    {student:'李小華', course:'社區職能治療', year:'115學年度第1學期', credits:'3', type:'必修', period:'2026/09/01–2026/12/31', timeType:'單一學期實習'},
-    {student:'陳小芳', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習'},
-    {student:'張小龍', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習'},
+    {student:'王小明', course:'社區職能治療', year:'115學年度第1學期', credits:'3', type:'必修', period:'2026/09/01–2026/10/31', timeType:'單一學期實習', hours:240, payType:'時薪', payAmount:190},
+    {student:'李小華', course:'社區職能治療', year:'115學年度第1學期', credits:'3', type:'必修', period:'2026/09/01–2026/12/31', timeType:'單一學期實習', hours:240, payType:'月薪', payAmount:28000},
+    {student:'陳小芳', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習', hours:160, payType:'時薪', payAmount:200},
+    {student:'張小龍', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習', hours:160, payType:'一次性給付', payAmount:30000},
   ];
   const blockedPair = {student:'黃小雯', course:'兒童職能治療', year:'115學年度第2學期', credits:'2', type:'選修', period:'2027/03/01–2027/06/30', timeType:'單一學期實習'};
   return `
@@ -1085,8 +1256,23 @@ function screen_sec_contract(){
       </div>
     </div>
 
+    <div class="field" style="margin-bottom:18px;">
+      <label>合約預設待遇條件（套用至各學生，可個別覆寫）</label>
+      <div class="field-row">
+        <div class="field"><label style="font-size:10.5px;">待遇類別</label>
+          <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-faint);">工資</div>
+        </div>
+        <div class="field"><label style="font-size:10.5px;">給付類型</label>
+          <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-faint);">時薪</div>
+        </div>
+        <div class="field"><label style="font-size:10.5px;">給付金額</label>
+          <input class="mono" value="190 元／小時" disabled style="color:var(--ink-faint)">
+        </div>
+      </div>
+      <div class="help" style="margin-top:6px;">配合教育部校務資料庫填報格式（見學10-2），取代原「薪資／待遇」單一數字欄位。個別學生如待遇不同，可於下方學生－課程配對清單個別覆寫。</div>
+    </div>
+
     <div class="field-row" style="margin-bottom:16px;">
-      <div class="field"><label>薪資／待遇（元／月）</label><input class="mono" value="28,000" disabled style="color:var(--ink-faint)"></div>
       <div class="field"><label>合約來源</label>
         <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-faint);">使用校方官方範本（僱傭關係版本）</div>
       </div>
@@ -1146,13 +1332,13 @@ function screen_sec_contract(){
       <button class="btn ghost sm">＋ 新增預告課程</button>
     </div>
     <table>
-      <thead><tr><th>開課代碼</th><th>開課名稱</th><th>必選修別</th><th>學分數</th><th>預計開課學年期</th><th>狀態</th></tr></thead>
+      <thead><tr><th>開課代碼</th><th>開課名稱</th><th>必選修別</th><th>學分數</th><th>預估實習總時數</th><th>預計開課學年期</th><th>狀態</th></tr></thead>
       <tbody>
-        <tr><td class="mono">OT-3021</td><td style="font-weight:700;">社區職能治療</td><td>必修</td><td class="mono">3</td><td>115學年度第1學期</td><td><span class="tag gold">預告中</span></td></tr>
-        <tr><td class="mono">OT-3045</td><td style="font-weight:700;">兒童職能治療</td><td>選修</td><td class="mono">2</td><td>115學年度第1學期</td><td><span class="tag gold">預告中</span></td></tr>
+        <tr><td class="mono">OT-3021</td><td style="font-weight:700;">社區職能治療</td><td>必修</td><td class="mono">3</td><td class="mono">240 小時<span style="color:var(--ink-faint);font-size:10px;"> (3×80)</span></td><td>115學年度第1學期</td><td><span class="tag gold">預告中</span></td></tr>
+        <tr><td class="mono">OT-3045</td><td style="font-weight:700;">兒童職能治療</td><td>選修</td><td class="mono">2</td><td class="mono">160 小時<span style="color:var(--ink-faint);font-size:10px;"> (2×80)</span></td><td>115學年度第1學期</td><td><span class="tag gold">預告中</span></td></tr>
       </tbody>
     </table>
-    <div class="help" style="margin-top:8px;">當該學年期選課系統正式開放後，系統將提供「比對確認」功能，核對預告課程與正式開課代碼是否一致。</div>
+    <div class="help" style="margin-top:8px;">「預估實習總時數」依教育部「1學分至多80小時實習」規則自動帶入建議值（學分數×80），可人工修改；作為學生－課程配對清單各筆紀錄之預設值來源。當該學年期選課系統正式開放後，系統將提供「比對確認」功能，核對預告課程與正式開課代碼是否一致。</div>
   </div>
 
   <div class="card" style="padding:22px;">
@@ -1161,24 +1347,31 @@ function screen_sec_contract(){
       <button class="btn ghost sm">＋ 新增學生配對</button>
     </div>
     <table>
-      <thead><tr><th>學生</th><th>適用課程</th><th>實際實習期間</th><th>選課認列學年期</th><th>學分／別</th><th>實習時間類別</th></tr></thead>
+      <thead><tr><th>學生</th><th>適用課程</th><th>實際實習期間</th><th>實習總時數</th><th>給付方式</th><th>月數</th><th>換算後月薪</th></tr></thead>
       <tbody>
-        ${pairs.map(p=>`<tr>
+        ${pairs.map(p=>{
+          const calc = calcWage(p);
+          return `<tr>
           <td style="font-weight:700;">${p.student}</td>
-          <td>${p.course}</td>
+          <td>${p.course}<div style="font-size:10px;color:var(--ink-faint);">${p.credits}學分・${p.type}・<span class="tag neutral" style="padding:1px 6px;">${p.year}</span></div></td>
           <td class="mono">${p.period}</td>
-          <td><span class="tag neutral">${p.year}</span></td>
-          <td class="mono">${p.credits}・${p.type}</td>
-          <td>${p.timeType}</td>
-        </tr>`).join('')}
+          <td class="mono">${p.hours} 小時</td>
+          <td class="mono">${p.payType}${p.payType==='時薪'?' '+p.payAmount+'元/hr':(p.payType==='月薪'?' '+p.payAmount.toLocaleString()+'元':' '+p.payAmount.toLocaleString()+'元')}</td>
+          <td class="mono">${calc.months}</td>
+          <td class="mono" style="font-weight:700;color:var(--primary);">${calc.wage.toLocaleString()} 元</td>
+        </tr>`;}).join('')}
         <tr style="background:var(--alert-bg);">
           <td style="font-weight:700;color:var(--ink-faint);text-decoration:line-through;">${blockedPair.student}</td>
           <td style="color:var(--ink-faint);text-decoration:line-through;">${blockedPair.course}</td>
           <td class="mono" style="color:var(--alert);font-weight:700;">${blockedPair.period}</td>
-          <td colspan="3"><span class="tag alert">⛔ 超出合約有效期間，新增遭阻擋</span></td>
+          <td colspan="4"><span class="tag alert">⛔ 超出合約有效期間，新增遭阻擋</span></td>
         </tr>
       </tbody>
     </table>
+    <div class="banner gold" style="margin-top:12px;">
+      <span class="ic">🧮</span>
+      <div><b>換算範例（王小明）：</b>社區職能治療 3 學分・預估總時數 240 小時；實習期間 2026/09/01–2026/10/31 共 2 個月；時薪 190 元 → 換算後月薪 = (190 × 240) ÷ 2 = <b>22,800 元／月</b>，直接對應教育部學10-2填報所需之「元／月」格式，不需人工計算。下方李小華（月薪制）、陳小芳與張小龍（時薪／一次性給付制）示範另外兩種給付方式的自動換算。</div>
+    </div>
     <div class="banner warn" style="margin-top:10px;">
       <span class="ic">⚠️</span>
       <div><b>示範：黃小雯的實習期間（2027/03/01–06/30）超出本合約有效期間（2026/09/01–2027/01/31）</b>，系統阻擋直接新增，提示「該生實習期間超出本合約有效期間，請另訂新約或申請合約展延」，不允許誤植進不涵蓋之合約。</div>
@@ -1191,6 +1384,117 @@ function screen_sec_contract(){
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;">
       <button class="btn primary">儲存學生配對名單</button>
     </div>
+  </div>`;
+}
+
+function screen_sec_records(){
+  const records = [
+    {type:'實習說明會記錄', year:'114學年度第2學期', desc:'開學前辦理實習說明會，說明實習內容、修課規定與權利義務，計38人出席。', file:'1142資管系實習說明會簽到冊.pdf', date:'2026/07/28'},
+    {type:'安全講習記錄', year:'114學年度第2學期', desc:'邀請職安專家講授職場安全衛生與性別平等教育，計38人出席。', file:'1142資管系職前安全講習紀錄.pdf', date:'2026/07/28'},
+    {type:'不適應輔導紀錄（繼續實習或轉介）', year:'114學年度第2學期', desc:'學生反映機構工作內容與個別實習計畫不符，經輔導教師協調後機構調整工作分派，學生決定繼續實習。', file:'不適應輔導紀錄_張同學.pdf', date:'2026/08/10'},
+  ];
+  return `
+  <div class="page-head">
+    <h1>各項紀錄上傳</h1>
+    <p>依當學年度學期實習辦理情況上傳，有資料才填寫，沒有則空著</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">🗂️</span>
+    <div>共 6 類紀錄：實習說明會記錄／安全講習記錄／成果發表記錄／不適應輔導紀錄（繼續實習或轉介）／爭議處理紀錄／中止實習紀錄。「不適應輔導」「爭議處理」「中止實習」三類可作為爭議與轉換機制之佐證文件庫；「安全講習」「實習說明會」則呼應教育部手冊留存備查要求。</div>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">新增紀錄</div>
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>紀錄類型 <span class="req">*</span></label>
+        <select>
+          <option>實習說明會記錄</option>
+          <option>安全講習記錄</option>
+          <option>成果發表記錄</option>
+          <option>不適應輔導紀錄（繼續實習或轉介）</option>
+          <option>爭議處理紀錄</option>
+          <option>中止實習紀錄</option>
+        </select>
+      </div>
+      <div class="field"><label>學年期 <span class="req">*</span></label>
+        <select><option>114學年度第2學期</option><option>114學年度第1學期</option></select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label>文字說明 <span class="req">*</span></label>
+      <textarea rows="2" placeholder="簡述事件內容"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>佐證檔案上傳 <span class="req">*</span></label>
+      <div style="border:1px dashed var(--line);border-radius:8px;padding:16px;text-align:center;color:var(--ink-faint);font-size:12px;">拖曳或點擊上傳，如「1141護理系學生校外實習委員會會議紀錄」PDF</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn primary sm">新增紀錄</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">已上傳紀錄（114學年度第2學期）</div>
+    ${records.map(r=>`
+    <div class="list-row">
+      <div class="icon" style="background:var(--primary-bg);color:var(--primary)">📄</div>
+      <div class="body">
+        <div class="title">${r.type}</div>
+        <div class="sub">${r.desc}</div>
+        <div class="sub" style="margin-top:2px;">📎 ${r.file}・上傳於 ${r.date}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function screen_sec_docs(){
+  const docs = [
+    {type:'學生實習手冊', name:'114學年度校外實習學生手冊.pdf', date:'2026/07/01'},
+    {type:'個別實習計畫書範本', name:'學生校外實習學習計畫表_範例.docx', date:'2026/07/01'},
+    {type:'機構滿意度調查表範本', name:'機構對學生滿意度調查表.docx', date:'2026/07/01'},
+    {type:'實習考核表範本', name:'校外實習成績考核表.docx', date:'2026/07/01'},
+  ];
+  return `
+  <div class="page-head">
+    <h1>常用文件上傳</h1>
+    <p>供學生下載使用，避免學生需另外向系所秘書索取紙本</p>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">新增文件</div>
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>文件類型 <span class="req">*</span></label>
+        <select>
+          <option>學生實習手冊</option>
+          <option>個別實習計畫書範本</option>
+          <option>機構滿意度調查表範本</option>
+          <option>實習考核表範本</option>
+          <option>其他實習相關文件</option>
+        </select>
+      </div>
+      <div class="field"><label>文件名稱 <span class="req">*</span></label><input placeholder="例：114學年度校外實習學生手冊"></div>
+    </div>
+    <div class="field" style="margin-bottom:16px;">
+      <label>檔案上傳 <span class="req">*</span></label>
+      <div style="border:1px dashed var(--line);border-radius:8px;padding:16px;text-align:center;color:var(--ink-faint);font-size:12px;">拖曳或點擊上傳文件</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn primary sm">新增文件</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">已上傳文件<span class="hint">學生端可直接下載</span></div>
+    ${docs.map(d=>`
+    <div class="list-row">
+      <div class="icon" style="background:var(--gold-bg);color:var(--gold)">📄</div>
+      <div class="body">
+        <div class="title">${d.type}</div>
+        <div class="sub">${d.name}・上傳於 ${d.date}</div>
+      </div>
+      <button class="btn ghost sm">下載</button>
+    </div>`).join('')}
   </div>`;
 }
 
@@ -1236,6 +1540,101 @@ function screen_adm_committee(){
     <div class="section-title">會議紀錄建檔</div>
     <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✓</div><div class="body"><div class="title">114學年度第2次校級委員會會議</div><div class="sub">2026/06/20・決議：核准本期機構評估結果，翊豐廣告案列入追蹤</div></div><button class="btn ghost sm">查看紀錄</button></div>
     <div class="list-row"><div class="icon" style="background:var(--surface-2);color:var(--ink-faint)">○</div><div class="body"><div class="title">114學年度第3次校級委員會會議（排定中）</div><div class="sub">2026/09/15・待上傳議程</div></div><button class="btn primary sm">建立會議紀錄</button></div>
+  </div>`;
+}
+
+function screen_adm_docsearch(){
+  const records = [
+    {dept:'護理學系', type:'不適應輔導紀錄（繼續實習或轉介）', year:'114學年度第2學期', date:'2026/08/10'},
+    {dept:'資訊管理學系', type:'實習說明會記錄', year:'114學年度第2學期', date:'2026/07/28'},
+    {dept:'企業管理學系', type:'安全講習記錄', year:'114學年度第2學期', date:'2026/07/25'},
+    {dept:'社會工作學系', type:'中止實習紀錄', year:'114學年度第1學期', date:'2026/01/15'},
+  ];
+  const contracts = [
+    {dept:'職能治療學系', org:'萬芳醫院', status:'待機構回簽', period:'2026/09/01–2027/01/31'},
+    {dept:'資訊管理學系', org:'雲創數位有限公司', status:'已回簽', period:'2026/07/01–2026/12/31'},
+    {dept:'企業管理學系', org:'台灣星辰資訊股份有限公司', status:'已回簽', period:'2026/08/01–2027/01/31'},
+  ];
+  const plans = [
+    {dept:'資訊管理學系', student:'李冠廷', org:'雲創數位有限公司', date:'2026/06/25'},
+    {dept:'職能治療學系', student:'王小明', org:'萬芳醫院', date:'2026/08/20'},
+    {dept:'職能治療學系', student:'陳小芳', org:'萬芳醫院', date:'2026/08/20'},
+  ];
+  return `
+  <div class="page-head">
+    <h1>跨系所文件查詢</h1>
+    <p>唯讀查詢全校「各項紀錄」「合約」「學生實習計畫書」，可批次下載</p>
+  </div>
+
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">🔍</span>
+    <div>三類資料採唯讀查詢，不可於此修改或刪除系所已上傳之資料。與「委員會治理報表」互補：治理報表著重彙總統計，本頁提供逐筆文件之查閱與下載。</div>
+  </div>
+
+  <div class="card" style="padding:20px 22px;margin-bottom:18px;">
+    <div class="field-row" style="margin-bottom:14px;">
+      <div class="field"><label>查詢類型</label>
+        <select><option>各項紀錄</option><option>合約</option><option>學生實習計畫書</option></select>
+      </div>
+      <div class="field"><label>查詢範圍</label>
+        <select><option>全校 35 系所</option><option>指定系所</option></select>
+      </div>
+      <div class="field"><label>學年期</label>
+        <select><option>114學年度第2學期</option><option>114學年度第1學期</option><option>不限</option></select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost sm">批次下載</button>
+      <button class="btn primary sm">查詢</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">各項紀錄查詢結果<span class="hint">共 ${records.length} 筆</span></div>
+    <table>
+      <thead><tr><th>系所</th><th>紀錄類型</th><th>學年期</th><th>上傳日期</th><th></th></tr></thead>
+      <tbody>
+        ${records.map(r=>`<tr>
+          <td style="font-weight:700;">${r.dept}</td>
+          <td>${r.type}</td>
+          <td class="mono">${r.year}</td>
+          <td class="mono" style="color:var(--ink-faint);">${r.date}</td>
+          <td><button class="btn ghost sm">下載</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="section-title">合約查詢結果<span class="hint">共 ${contracts.length} 筆</span></div>
+    <table>
+      <thead><tr><th>系所</th><th>機構</th><th>狀態</th><th>合約有效期間</th><th></th></tr></thead>
+      <tbody>
+        ${contracts.map(c=>`<tr>
+          <td style="font-weight:700;">${c.dept}</td>
+          <td>${c.org}</td>
+          <td><span class="tag ${c.status==='已回簽'?'ok':'warn'}">${c.status}</span></td>
+          <td class="mono">${c.period}</td>
+          <td><button class="btn ghost sm">下載</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-title">學生實習計畫書查詢結果<span class="hint">共 ${plans.length} 筆</span></div>
+    <table>
+      <thead><tr><th>系所</th><th>學生</th><th>機構</th><th>上傳日期</th><th></th></tr></thead>
+      <tbody>
+        ${plans.map(pl=>`<tr>
+          <td style="font-weight:700;">${pl.dept}</td>
+          <td>${pl.student}</td>
+          <td>${pl.org}</td>
+          <td class="mono" style="color:var(--ink-faint);">${pl.date}</td>
+          <td><button class="btn ghost sm">下載</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
   </div>`;
 }
 
@@ -1348,10 +1747,16 @@ const SCREENS = {
   sec_form: screen_sec_form,
   sec_case_detail: screen_sec_case_detail,
   sec_contract: screen_sec_contract,
+  sec_records: screen_sec_records,
+  sec_docs: screen_sec_docs,
   adv_review: screen_adv_review,
   adv_visits: screen_adv_visits,
   dir_review: screen_dir_review,
   stu_journey: screen_stu_journey,
+  stu_uploads: screen_stu_uploads,
+  stu_survey: screen_stu_survey,
+  stu_docs: screen_stu_docs,
+  adm_docsearch: screen_adm_docsearch,
   adm_reports: screen_adm_reports,
   adm_regs: screen_adm_regs,
   adm_committee: screen_adm_committee,

@@ -462,6 +462,14 @@ function updateChrome(){
 
 function showScreen(id){ currentScreen=id; render(); }
 
+function checkOrgMatch(){
+  const taxId = document.getElementById('orgTaxIdInput');
+  const banner = document.getElementById('orgMatchBanner');
+  if(!taxId || !banner) return;
+  // Demo logic: show match banner only when the 8-digit tax ID is complete
+  banner.style.display = (taxId.value.trim().length === 8) ? 'flex' : 'none';
+}
+
 function dual(actual, enroll){
   return `<div class="dualtrack">
     <div class="track actual"><span class="ic">實</span>實際期間 <b>${actual}</b></div>
@@ -601,10 +609,29 @@ function screen_sec_form(){
   </div>
 
   <div class="card" style="padding:22px;">
-    <div class="field-row" style="margin-bottom:16px;">
-      <div class="field"><label>機構名稱 <span class="req">*</span></label><input placeholder="例：台灣星辰資訊股份有限公司"></div>
-      <div class="field"><label>統一編號 <span class="req">*</span></label><input placeholder="12345678" class="mono"></div>
+    <div class="field-row" style="margin-bottom:8px;">
+      <div class="field">
+        <label>機構名稱 <span class="req">*</span></label>
+        <input list="orgNames" value="臺大醫院" oninput="checkOrgMatch()" id="orgNameInput">
+        <datalist id="orgNames">
+          <option value="臺大醫院">
+          <option value="台灣大學醫學院附設醫院">
+          <option value="台大醫院新竹分院">
+        </datalist>
+        <div class="help">【第二層・關鍵字搜尋輔助】輸入時列出全校已建立過、名稱包含關鍵字之機構供選擇，純為搜尋輔助，不做語意層級判斷</div>
+      </div>
+      <div class="field">
+        <label>統一編號 <span class="req">*</span></label>
+        <input value="12345678" class="mono" oninput="checkOrgMatch()" id="orgTaxIdInput">
+        <div class="help">【第一層・統編優先查重】填寫完整8碼後，系統以精確比對查詢全校是否已有相同統編之機構紀錄</div>
+      </div>
     </div>
+
+    <div id="orgMatchBanner" class="banner gold" style="margin-bottom:18px;">
+      <span class="ic">🔗</span>
+      <div><b>此統一編號已有系所建立機構資料：</b>「臺大醫院」（醫學系，建立於 2025/09/12），基本資料如地址、行業別可直接套用，<b>不含查核評估結果</b>——貴系仍需由實習輔導教師依自身需求獨立進行應備條件檢核與品質燈號評估。 <button class="btn gold sm" style="margin-left:8px;">套用此機構基本資料</button> <button class="btn ghost sm">仍建立獨立新紀錄</button></div>
+    </div>
+
     <div class="field-row" style="margin-bottom:16px;">
       <div class="field"><label>教育部機構查詢比對結果 <span class="req">*</span></label>
         <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:8px;">

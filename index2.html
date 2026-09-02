@@ -171,6 +171,13 @@
   .news-tag.reg{background:var(--gold-bg);color:var(--gold);}
   .news-tag.deadline{background:var(--alert-bg);color:var(--alert);}
   .news-tag.system{background:var(--primary-bg);color:var(--primary);}
+  .news-tag.external{background:var(--track-enroll-bg,#EFE7F5);color:#7A4FA0;}
+  .news-attach{
+    display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+    font-size:11.5px;color:var(--primary);font-weight:700;
+    padding:6px 10px;border-radius:8px;background:var(--primary-bg);
+  }
+  .news-attach:hover{background:var(--primary);color:#fff;}
   .news-title{font-size:13.5px;font-weight:700;margin-bottom:3px;}
   .news-desc{font-size:12px;color:var(--ink-soft);line-height:1.7;}
 
@@ -247,7 +254,6 @@
     <div><div class="name">產業實習管理平台</div><div class="sub">FJU INTERNSHIP PLATFORM</div></div>
   </div>
   <div class="navlinks">
-    <a href="#opportunities">實習機會</a>
     <a href="#news">最新消息</a>
     <a href="#docs">法規專區</a>
     <a href="#overview">平台功能</a>
@@ -285,52 +291,22 @@
   </div>
 </section>
 
-<section class="opps" id="opportunities">
-  <div class="section-head">
-    <div><h2>實習機會公告</h2><p>目前開放媒合中的合作機構實習名額（燈號代表機構查核與品質評估結果）</p></div>
-    <a class="more" href="#">查看全部機會 →</a>
-  </div>
-  <div class="opp-grid">
-    <div class="card opp-card">
-      <div class="opp-top"><span class="opp-field">軟體開發</span><span class="opp-deadline">8/30 截止</span></div>
-      <div class="opp-name">台灣星辰資訊股份有限公司</div>
-      <div class="opp-meta">
-        <span>📍 台北市內湖區</span>
-        <span>🕐 114學年度第1學期・全學期實習</span>
-        <span>🟢🟢🟡 查核燈號</span>
-      </div>
-      <div class="opp-foot"><span class="opp-slots">開放名額：3</span><span class="tag" style="font-size:11px;color:var(--primary);font-weight:700;">資訊管理學系</span></div>
-    </div>
-    <div class="card opp-card">
-      <div class="opp-top"><span class="opp-field">數位行銷</span><span class="opp-deadline">9/05 截止</span></div>
-      <div class="opp-name">雲創數位有限公司</div>
-      <div class="opp-meta">
-        <span>📍 台北市信義區</span>
-        <span>🕐 暑假期間實習</span>
-        <span>🟢🟢🟢 查核燈號</span>
-      </div>
-      <div class="opp-foot"><span class="opp-slots">開放名額：5</span><span class="tag" style="font-size:11px;color:var(--primary);font-weight:700;">企業管理學系</span></div>
-    </div>
-    <div class="card opp-card">
-      <div class="opp-top"><span class="opp-field">社會服務</span><span class="opp-deadline">9/10 截止</span></div>
-      <div class="opp-name">安心居家社會福利基金會</div>
-      <div class="opp-meta">
-        <span>📍 新北市板橋區</span>
-        <span>🕐 114學年度第1學期・學期期間實習</span>
-        <span>🆕 首次合作機構</span>
-      </div>
-      <div class="opp-foot"><span class="opp-slots">開放名額：2</span><span class="tag" style="font-size:11px;color:var(--primary);font-weight:700;">社會工作學系</span></div>
-    </div>
-  </div>
-</section>
-
 <section id="news">
   <div class="section-head">
-    <div><h2>最新消息</h2><p>系統公告、法規更新與填報期程提醒</p></div>
+    <div><h2>最新消息</h2><p>系統公告、法規更新、填報期程提醒與外部來文公告</p></div>
     <a class="more" href="#">全部公告 →</a>
   </div>
   <div class="card" style="padding:8px 22px;">
     <div class="news-list">
+      <div class="news-row">
+        <div class="news-date">2026/08/18</div>
+        <div>
+          <span class="news-tag external">外部來文公告</span>
+          <div class="news-title">萬芳醫院來函提供職能治療系實習職缺 4 名</div>
+          <div class="news-desc">來函提供社區職能治療、兒童職能治療實習職缺，詳見附件正本與職缺說明。</div>
+          <a class="news-attach" href="#">📎 萬芳醫院來函正本.pdf</a>
+        </div>
+      </div>
       <div class="news-row">
         <div class="news-date">2026/08/10</div>
         <div><span class="news-tag reg">法規更新</span><div class="news-title">《校外實習作業要點》第 4 版已上線</div><div class="news-desc">新增教育部機構查核比對規定與燈號品質評估機制，即日起適用於所有新申請案件。</div></div>
@@ -363,14 +339,75 @@
     <div class="card doc-card"><div class="doc-icon">📄</div><div><div class="doc-title">校外實習合作契約範本（非僱傭關係版本）</div><div class="doc-desc">教育部 111年函頒範本</div><span class="doc-ext">下載範本 ↗</span></div></div>
     <div class="card doc-card"><div class="doc-icon">🔍</div><div><div class="doc-title">教育部實習機構查詢系統</div><div class="doc-desc">機構合法性人工比對查詢入口</div><span class="doc-ext">前往查詢 ↗</span></div></div>
   </div>
+
+  <div class="card" style="margin-top:22px;padding:22px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="font-family:'Noto Serif TC',serif;font-size:15.5px;font-weight:700;">各院／系治理文件查詢</div>
+        <div style="font-size:11.5px;color:var(--ink-faint);margin-top:2px;">查詢各系所或學院自行上傳之委員會設置辦法、爭議處理作業要點等文件</div>
+      </div>
+      <select id="unitSelect" onchange="renderUnitDocs()" style="padding:9px 14px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;min-width:220px;">
+        <option value="im">管理學院 － 資訊管理學系</option>
+        <option value="ba">管理學院 － 企業管理學系</option>
+        <option value="sw">社會科學院 － 社會工作學系</option>
+        <option value="law1">法律學院 － 法律學系</option>
+        <option value="law2">法律學院 － 財經法律學系</option>
+      </select>
+    </div>
+    <div id="unitDocsArea" style="margin-top:14px;"></div>
+  </div>
 </section>
+
+<script>
+const UNIT_DOCS = {
+  im: { level:'系級', unitName:'資訊管理學系', docs:[
+    {title:'資訊管理學系校外實習委員會設置辦法', type:'委員會設置辦法', date:'2025/09/01'},
+  ]},
+  ba: { level:'系級', unitName:'企業管理學系', docs:[
+    {title:'企業管理學系校外實習委員會設置辦法', type:'委員會設置辦法', date:'2025/09/01'},
+    {title:'企業管理學系實習爭議處理補充規定', type:'爭議處理作業要點', date:'2026/03/15'},
+  ]},
+  sw: { level:'系級', unitName:'社會工作學系', docs:[
+    {title:'社會工作學系校外實習委員會設置辦法', type:'委員會設置辦法', date:'2025/09/01'},
+    {title:'社會工作學系實習機構安全查核補充規定', type:'其他補充規定', date:'2026/06/20'},
+  ]},
+  law1: { level:'院級', unitName:'法律學院', docs:[
+    {title:'法律學院校外實習委員會設置辦法', type:'委員會設置辦法', date:'2025/09/01'},
+    {title:'法律學院學生實習爭議處理作業要點', type:'爭議處理作業要點', date:'2026/02/10'},
+  ]},
+  law2: { level:'院級', unitName:'法律學院', docs:[
+    {title:'法律學院校外實習委員會設置辦法', type:'委員會設置辦法', date:'2025/09/01'},
+    {title:'法律學院學生實習爭議處理作業要點', type:'爭議處理作業要點', date:'2026/02/10'},
+  ]},
+};
+function renderUnitDocs(){
+  const sel = document.getElementById('unitSelect').value;
+  const u = UNIT_DOCS[sel];
+  const area = document.getElementById('unitDocsArea');
+  let noteHtml = '';
+  if(u.level === '院級'){
+    noteHtml = `<div style="background:var(--gold-bg);color:#7A5A19;border-radius:10px;padding:10px 14px;font-size:11.5px;margin-bottom:12px;">ℹ️ 本學院採<b>院級委員會</b>，不逐系設置，以下為 ${u.unitName} 適用之院級辦法。</div>`;
+  }
+  const rows = u.docs.map(d => `
+    <div class="news-row" style="padding:12px 4px;">
+      <div class="news-date" style="width:auto;margin-right:14px;">${d.date}</div>
+      <div>
+        <span class="news-tag reg">${d.type}</span>
+        <div class="news-title">${d.title}</div>
+        <div class="news-desc">所屬治理單位：${u.unitName}（${u.level}）</div>
+      </div>
+    </div>`).join('');
+  area.innerHTML = noteHtml + rows;
+}
+renderUnitDocs();
+</script>
 
 <section id="overview">
   <div class="section-head">
     <div><h2>依身分打造的後台功能</h2><p>登入後系統依角色自動導向對應功能，降低操作學習成本</p></div>
   </div>
   <div class="overview">
-    <div class="card role-card"><div class="ic">🗂️</div><div class="t">系所秘書／助理</div><div class="d">機構管理、批次建立實習案、合約簽訂、案件狀態追蹤</div></div>
+    <div class="card role-card"><div class="ic">🗂️</div><div class="t">系所秘書／實習助教</div><div class="d">機構管理、批次建立實習案、合約簽訂、案件狀態追蹤</div></div>
     <div class="card role-card"><div class="ic">🧑‍🏫</div><div class="t">實習輔導教師</div><div class="d">訪視排程與紀錄、學生進度追蹤、不適應輔導</div></div>
     <div class="card role-card"><div class="ic">✅</div><div class="t">系主管</div><div class="d">機構審核核定、契約檢核、爭議案件處理</div></div>
     <div class="card role-card"><div class="ic">🎓</div><div class="t">學生</div><div class="d">實習歷程查看、心得上傳、學習歷程自動同步</div></div>
@@ -389,7 +426,7 @@
     <h3>選擇登入身分</h3>
     <p>系統將依您的帳號權限自動導向對應後台功能（本頁為靜態展示原型）</p>
     <div class="role-pick">
-      <button>🗂️ 系所秘書／助理</button>
+      <button>🗂️ 系所秘書／實習助教</button>
       <button>🧑‍🏫 實習輔導教師</button>
       <button>✅ 系主管</button>
       <button>🎓 學生</button>

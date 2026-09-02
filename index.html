@@ -605,28 +605,15 @@ function screen_sec_form(){
       <div class="field"><label>統一編號 <span class="req">*</span></label><input placeholder="12345678" class="mono"></div>
     </div>
     <div class="field-row" style="margin-bottom:16px;">
-      <div class="field"><label>實習領域（選填）</label>
-        <input list="fieldTags" placeholder="輸入或選擇，如：軟體開發">
-        <datalist id="fieldTags"><option value="軟體開發"><option value="數位行銷"><option value="財務會計"><option value="供應鏈管理"></datalist>
-      </div>
       <div class="field"><label>教育部機構查詢比對結果 <span class="req">*</span></label>
         <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:8px;">
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400;"><input type="checkbox" checked> 本人已於教育部實習機構查詢系統人工查詢比對，查無異常紀錄</label>
           <div style="font-size:10.5px;color:var(--ink-faint);">確認人：實習助教 吳佩珊・查詢日期：2026/08/13（如查有異常，需另加註說明始得送出）</div>
         </div>
       </div>
-    </div>
-
-    <div class="field-row" style="margin-bottom:16px;">
-      <div class="field"><label>實習場域所屬類型 <span class="req">*</span></label>
-        <select><option>一般辦公場所</option><option>醫事機構</option><option>政府機關</option><option>其他（含危險性工作場所）</option></select>
-      </div>
-      <div class="field"><label>初步待遇登記 <span class="req">*</span></label>
-        <div style="display:flex;gap:8px;">
-          <select style="flex:0 0 110px;"><option>僱傭傾向</option><option>非僱傭傾向</option></select>
-          <input placeholder="每月給付新臺幣＿＿元" class="mono">
-        </div>
-        <div class="help">僅供查核階段參考，正式僱傭關係判定於合約簽訂階段辦理</div>
+      <div class="field"><label>實習場所 <span class="req">*</span></label>
+        <select><option>企業機構</option><option>政府機構</option><option>其他機構</option><option>就讀學校附屬機構實習</option></select>
+        <div class="help">教育部學10填報正式分類欄位</div>
       </div>
     </div>
 
@@ -743,8 +730,13 @@ function screen_adv_review(){
         <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 6. 最近2年無性別歧視/性騷擾/就業歧視處罰紀錄</label>
         <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 7. 非從事派遣業務之事業單位</label>
         <div>
-          <div style="font-weight:700;margin-bottom:5px;">8. 危險性工作場所檢查合格證明</div>
-          <div style="padding-left:14px;font-size:11.5px;color:var(--ink-faint);">機構回報場域類型為「一般辦公場所」，非勞動檢查法第26條規定之危險性工作場所，本項免填</div>
+        <div>
+          <div style="font-weight:700;margin-bottom:5px;">8. 本機構實習場所是否屬危險性工作場所</div>
+          <div style="display:flex;gap:16px;padding-left:14px;align-items:center;">
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="radio" name="danger" checked> 否</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="radio" name="danger"> 是（需附勞動檢查法第26條合格證明）</label>
+          </div>
+          <div style="font-size:10.5px;color:var(--ink-faint);padding-left:14px;margin-top:3px;">由查核之實習輔導教師依現場了解逕行判斷</div>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 9. 未列入內政部消防署「消防安全檢查重大不合格場所一覽表」</label>
       </div>
@@ -794,6 +786,7 @@ function screen_adv_visits(){
 
   <div class="card" style="padding:22px;">
     <div class="section-title" style="padding:0 0 14px;border:none;">填寫訪視紀錄 — 李冠廷（雲創數位有限公司）</div>
+    <div class="help" style="margin-bottom:8px;">下方雙軌時間資料唯讀，取自合約簽訂時建立之「學生－課程配對清單」，無法於本頁修改</div>
     ${dual('2026/07/01 – 2026/08/31','114學年度第1學期')}
     <div style="height:14px;"></div>
     <div class="field-row" style="margin-bottom:16px;">
@@ -907,12 +900,34 @@ function screen_stu_journey(){
   </div>
 
   <div class="grid g2">
-    <div class="card">
-      <div class="section-title">待辦事項</div>
-      <div class="todo-item"><input type="checkbox"><span>確認 8/20 訪視時間是否方便</span><span class="due soon">3 天後</span></div>
-      <div class="todo-item"><input type="checkbox"><span>上傳實習週誌（第 7 週）</span><span class="due soon">明天</span></div>
-      <div class="todo-item"><input type="checkbox" disabled checked><span style="color:var(--ink-faint);text-decoration:line-through;">簽署實習保密協定</span><span class="due">已完成</span></div>
+    <div class="card" style="padding:18px;">
+      <div class="section-title" style="padding:0 0 12px;border:none;">實習行事曆 <span class="hint">2026年8月</span></div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10.5px;text-align:center;color:var(--ink-faint);margin-bottom:4px;">
+        <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">
+        ${calDay('')}${calDay('')}${calDay('')}${calDay('')}${calDay('')}${calDay('')}${calDay('1')}
+        ${calDay('2')}${calDay('3')}${calDay('4')}${calDay('5')}${calDay('6')}${calDay('7')}${calDay('8')}
+        ${calDay('9')}${calDay('10')}${calDay('11')}${calDay('12')}${calDay('13')}${calDay('14')}${calDay('15','deadline')}
+        ${calDay('16')}${calDay('17')}${calDay('18')}${calDay('19')}${calDay('20','visit')}${calDay('21')}${calDay('22')}
+        ${calDay('23')}${calDay('24')}${calDay('25','survey')}${calDay('26','survey')}${calDay('27','survey')}${calDay('28','survey')}${calDay('29','survey')}
+        ${calDay('30','survey')}${calDay('31','survey')}
+      </div>
+      <div style="display:flex;gap:14px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:10.5px;color:var(--ink-soft);">
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--track-actual);margin-right:4px;"></span>訪視</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--gold);margin-right:4px;"></span>調查期間</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--alert);margin-right:4px;"></span>繳交期限</span>
+      </div>
     </div>
+    <div class="card">
+      <div class="section-title">清單檢視 <span class="hint">與月曆同步</span></div>
+      <div class="list-row"><div class="icon" style="background:var(--track-actual-bg);color:var(--track-actual)">📍</div><div class="body"><div class="title">實地訪視（林志明教授）</div><div class="sub">2026/08/20・輔導教師排定</div></div></div>
+      <div class="list-row"><div class="icon" style="background:var(--alert-bg);color:var(--alert)">⏰</div><div class="body"><div class="title">實習週誌（第7週）繳交期限</div><div class="sub">2026/08/15</div></div></div>
+      <div class="list-row"><div class="icon" style="background:var(--gold-bg);color:var(--gold)">📝</div><div class="body"><div class="title">實習滿意度調查開放期間</div><div class="sub">2026/08/25 – 08/31</div></div></div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:18px;">
     <div class="card">
       <div class="section-title">實習歷程紀錄（自動同步至學習歷程檔案）</div>
       <div class="list-row"><div class="icon" style="background:var(--track-actual-bg);color:var(--track-actual)">📄</div><div class="body"><div class="title">實習合約已生效</div><div class="sub">2026/07/01</div></div></div>
@@ -920,6 +935,15 @@ function screen_stu_journey(){
       <div class="list-row"><div class="icon" style="background:var(--success-bg);color:var(--success)">✔</div><div class="body"><div class="title">輔導教師期初電訪完成</div><div class="sub">2026/07/15</div></div></div>
     </div>
   </div>`;
+}
+
+function calDay(n, type){
+  if(!n) return '<div></div>';
+  let dot = '';
+  if(type==='visit') dot = `<div style="width:6px;height:6px;border-radius:50%;background:var(--track-actual);margin:2px auto 0;"></div>`;
+  if(type==='deadline') dot = `<div style="width:6px;height:6px;border-radius:50%;background:var(--alert);margin:2px auto 0;"></div>`;
+  const bg = type==='survey' ? 'var(--gold-bg)' : 'var(--surface-2)';
+  return `<div style="background:${bg};border-radius:6px;padding:5px 2px;font-size:11px;text-align:center;">${n}${dot}</div>`;
 }
 
 function screen_sec_case_detail(){
@@ -968,13 +992,24 @@ function screen_sec_case_detail(){
 }
 
 function screen_sec_contract(){
+  const pairs = [
+    {student:'王小明', course:'社區職能治療', year:'115學年度第1學期', credits:'3', type:'必修', period:'2026/09/01–2026/12/31', timeType:'單一學期實習'},
+    {student:'李小華', course:'社區職能治療', year:'115學年度第1學期', credits:'3', type:'必修', period:'2026/09/01–2026/12/31', timeType:'單一學期實習'},
+    {student:'陳小芳', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習'},
+    {student:'張小龍', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習'},
+  ];
   return `
   <div class="page-head">
     <h1>合約簽訂</h1>
-    <p>李冠廷 → 雲創數位有限公司・INT-2026-0142</p>
+    <p>萬芳醫院・職能治療學系・支援一約多生多課</p>
   </div>
 
-  <div class="card" style="padding:22px;">
+  <div class="banner info" style="margin-bottom:18px;">
+    <span class="ic">📌</span>
+    <div><b>範例情境：</b>職能治療系於 114學年度第2學期 與萬芳醫院簽約，共 4 名學生，2 名指派至「社區職能治療」、2 名指派至「兒童職能治療」（皆為 115學年度第1學期預告課程）。簽約當下選課系統尚未開放，仍可完整建立配對關係。</div>
+  </div>
+
+  <div class="card" style="padding:22px;margin-bottom:18px;">
     <div class="field" style="margin-bottom:18px;">
       <label>合約關係類型 <span class="req">*</span></label>
       <div style="display:flex;gap:12px;">
@@ -987,12 +1022,7 @@ function screen_sec_contract(){
           <div><div style="font-size:12.5px;font-weight:700;">非僱傭關係</div><div style="font-size:11px;color:var(--ink-faint);margin-top:3px;">單純學習訓練關係，不具工作事實</div></div>
         </label>
       </div>
-      <div class="help" style="margin-top:8px;">判斷依據：人格從屬性（是否服從雇主權威）／經濟從屬性（是否為他人目的而勞動）／組織從屬性（是否納入生產組織體系）。如有疑義建議洽詢學校法律顧問。</div>
-    </div>
-
-    <div class="banner gold" style="margin-bottom:18px;">
-      <span class="ic">📋</span>
-      <div><b>已依「僱傭關係」自動套用契約範本（教育部 111年函頒版本）及對應保險檢核規則：</b>需依法辦理勞工保險、勞工職業災害保險、就業保險、全民健康保險，並提繳勞工退休金；薪資不得低於當年度基本工資。</div>
+      <div class="help" style="margin-top:8px;">判斷依據：人格從屬性／經濟從屬性／組織從屬性三要件。如有疑義建議洽詢學校法律顧問。</div>
     </div>
 
     <div class="field" style="margin-bottom:18px;">
@@ -1012,15 +1042,51 @@ function screen_sec_contract(){
       <div class="field"><label>合約檔案上傳</label><input type="file"></div>
     </div>
 
-    <div class="field" style="margin-bottom:22px;">
+    <div class="field">
       <label>適用法規版本</label>
       <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;">《校外實習作業要點》第 4 版（2026/08/10 生效）— 自動帶入，不受後續版本更新影響</div>
     </div>
+  </div>
 
-    <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn ghost">儲存草稿</button>
-      <button class="btn primary">送出待機構回簽</button>
+  <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">
+      預告課程清單 <span class="hint">選課系統尚未開放時之錨點依據</span>
+      <button class="btn ghost sm">＋ 新增預告課程</button>
     </div>
+    <table>
+      <thead><tr><th>開課代碼</th><th>開課名稱</th><th>必選修別</th><th>學分數</th><th>預計開課學年期</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">OT-3021</td><td style="font-weight:700;">社區職能治療</td><td>必修</td><td class="mono">3</td><td>115學年度第1學期</td><td><span class="tag gold">預告中</span></td></tr>
+        <tr><td class="mono">OT-3045</td><td style="font-weight:700;">兒童職能治療</td><td>選修</td><td class="mono">2</td><td>115學年度第1學期</td><td><span class="tag gold">預告中</span></td></tr>
+      </tbody>
+    </table>
+    <div class="help" style="margin-top:8px;">當該學年期選課系統正式開放後，系統將提供「比對確認」功能，核對預告課程與正式開課代碼是否一致。</div>
+  </div>
+
+  <div class="card" style="padding:22px;">
+    <div class="section-title" style="padding:0 0 14px;border:none;">
+      學生－課程配對清單 <span class="hint">一約多生多課，雙軌時間於此確立</span>
+      <button class="btn primary sm">＋ 新增學生配對</button>
+    </div>
+    <table>
+      <thead><tr><th>學生</th><th>適用課程</th><th>實際實習期間</th><th>選課認列學年期</th><th>學分／別</th><th>實習時間類別</th></tr></thead>
+      <tbody>
+        ${pairs.map(p=>`<tr>
+          <td style="font-weight:700;">${p.student}</td>
+          <td>${p.course}</td>
+          <td class="mono">${p.period}</td>
+          <td><span class="tag neutral">${p.year}</span></td>
+          <td class="mono">${p.credits}・${p.type}</td>
+          <td>${p.timeType}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="help" style="margin-top:8px;">「選課認列學年期」自動帶入所選課程之預計開課學年期，不可手動覆寫。此表為訪視紀錄（見輔導教師端）雙軌時間顯示之唯一資料來源。</div>
+  </div>
+
+  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
+    <button class="btn ghost">儲存草稿</button>
+    <button class="btn primary">送出待機構回簽</button>
   </div>`;
 }
 

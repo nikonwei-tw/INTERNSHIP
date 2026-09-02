@@ -306,6 +306,7 @@
   }
   .banner.info{background:var(--track-actual-bg);color:#2A4A67;}
   .banner.gold{background:var(--gold-bg);color:#7A5A19;}
+  .banner.warn{background:var(--warn-bg);color:#8A4E1A;}
   .banner .ic{font-size:15px;}
 
   .progress-track{
@@ -998,6 +999,7 @@ function screen_sec_contract(){
     {student:'陳小芳', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習'},
     {student:'張小龍', course:'兒童職能治療', year:'115學年度第1學期', credits:'2', type:'選修', period:'2026/09/01–2027/01/15', timeType:'單一學期實習'},
   ];
+  const blockedPair = {student:'黃小雯', course:'兒童職能治療', year:'115學年度第2學期', credits:'2', type:'選修', period:'2027/03/01–2027/06/30', timeType:'單一學期實習'};
   return `
   <div class="page-head">
     <h1>合約簽訂</h1>
@@ -1009,42 +1011,105 @@ function screen_sec_contract(){
     <div><b>範例情境：</b>職能治療系於 114學年度第2學期 與萬芳醫院簽約，共 4 名學生，2 名指派至「社區職能治療」、2 名指派至「兒童職能治療」（皆為 115學年度第1學期預告課程）。簽約當下選課系統尚未開放，仍可完整建立配對關係。</div>
   </div>
 
+  <div class="banner gold" style="margin-bottom:18px;">
+    <span class="ic">🗂️</span>
+    <div><b>合約來源兩種路徑：</b>① <b>使用校方官方範本</b>（僱傭／非僱傭關係版本）——系統自動帶入已填資料產生範本合約；② <b>機構自備合約</b>——機構不接受校方範本時，直接上傳機構提供之合約檔案。<b>不論哪一種來源，皆須送同一套校內用印公文流程</b>（學系→公文系統→教務處/法務室/校長室審核→秘書室用印）。下方示範為路徑①之進行中狀態。</div>
+  </div>
+
   <div class="card" style="padding:22px;margin-bottom:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div class="section-title" style="padding:0;border:none;">機構合約主體</div>
+      <span class="tag warn">待機構回簽</span>
+    </div>
     <div class="field" style="margin-bottom:18px;">
       <label>合約關係類型 <span class="req">*</span></label>
       <div style="display:flex;gap:12px;">
-        <label class="card" style="flex:1;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;border-color:var(--primary);">
-          <input type="radio" name="relation" checked style="margin-top:3px;">
+        <label class="card" style="flex:1;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;cursor:not-allowed;border-color:var(--primary);opacity:0.7;">
+          <input type="radio" name="relation" checked disabled style="margin-top:3px;">
           <div><div style="font-size:12.5px;font-weight:700;">僱傭關係</div><div style="font-size:11px;color:var(--ink-faint);margin-top:3px;">學生從事學習訓練以外之勞務提供或工作事實，適用勞基法</div></div>
         </label>
-        <label class="card" style="flex:1;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
-          <input type="radio" name="relation" style="margin-top:3px;">
+        <label class="card" style="flex:1;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;cursor:not-allowed;opacity:0.7;">
+          <input type="radio" name="relation" disabled style="margin-top:3px;">
           <div><div style="font-size:12.5px;font-weight:700;">非僱傭關係</div><div style="font-size:11px;color:var(--ink-faint);margin-top:3px;">單純學習訓練關係，不具工作事實</div></div>
         </label>
       </div>
-      <div class="help" style="margin-top:8px;">判斷依據：人格從屬性／經濟從屬性／組織從屬性三要件。如有疑義建議洽詢學校法律顧問。</div>
+      <div class="help" style="margin-top:8px;">已送出，條款鎖定不可修改。如需變更請先撤回。判斷依據：人格從屬性／經濟從屬性／組織從屬性三要件。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>合約有效期間 <span class="req">*</span></label>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input type="date" value="2026-09-01" disabled style="color:var(--ink-faint)">
+        <span style="color:var(--ink-faint);">至</span>
+        <input type="date" value="2027-01-31" disabled style="color:var(--ink-faint)">
+      </div>
+      <div class="help" style="margin-top:6px;">機構與學校簽約時明訂之適用範圍，非長期無限期有效。下方學生名單新增時，系統會檢核學生實習期間是否落在此區間內。</div>
     </div>
 
     <div class="field" style="margin-bottom:18px;">
       <label>對應保險辦理狀態（依合約類型自動列出必要項目）</label>
-      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:7px;font-size:12px;">
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 勞工保險</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 勞工職業災害保險</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 就業保險</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked> 全民健康保險</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox"> 勞工退休金提繳</label>
-        <label style="display:flex;align-items:center;gap:6px;font-weight:400;padding-top:6px;border-top:1px solid var(--line);"><input type="checkbox" checked> 學校校外實習團體傷害保險（校方義務，不論僱傭與否皆須投保）</label>
+      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--ink-faint);">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked disabled> 勞工保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked disabled> 勞工職業災害保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" disabled> 就業保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" checked disabled> 全民健康保險</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;"><input type="checkbox" disabled> 勞工退休金提繳</label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:400;padding-top:6px;border-top:1px solid var(--line);"><input type="checkbox" checked disabled> 學校校外實習團體傷害保險（校方義務，不論僱傭與否皆須投保）</label>
       </div>
     </div>
 
     <div class="field-row" style="margin-bottom:16px;">
-      <div class="field"><label>薪資／待遇（元／月）<span class="req">*</span></label><input class="mono" value="28,000"><div class="help">不得低於當年度基本工資</div></div>
-      <div class="field"><label>合約檔案上傳</label><input type="file"></div>
+      <div class="field"><label>薪資／待遇（元／月）</label><input class="mono" value="28,000" disabled style="color:var(--ink-faint)"></div>
+      <div class="field"><label>合約來源</label>
+        <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-faint);">使用校方官方範本（僱傭關係版本）</div>
+      </div>
     </div>
 
-    <div class="field">
+    <div class="field" style="margin-bottom:18px;">
+      <label>範本合約產生</label>
+      <div style="padding:14px 16px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">📄</span>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;">萬芳醫院實習合約_僱傭關係版本_已帶入資料.docx</div>
+            <div style="font-size:10.5px;color:var(--ink-faint);">已依合約關係類型自動套用範本，並帶入機構、學生名單、待遇、期間等資料・產生於 2026/08/14</div>
+          </div>
+        </div>
+        <button class="btn ghost sm">下載</button>
+      </div>
+      <div class="help" style="margin-top:6px;">下載後請依學校既有流程送公文用印，完成後將用印正本掃描上傳至下方「已簽回合約正本」欄位。若機構不接受校方範本，請改選「機構自備合約」並直接上傳機構提供之合約檔案。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label>校內用印公文進度追蹤 <span class="req">*</span></label>
+      <select style="max-width:320px;">
+        <option>尚未送出</option>
+        <option selected>已送出，教務處／法務室／校長室審核中</option>
+        <option>審核通過，秘書室用印中</option>
+        <option>已完成用印，待取回</option>
+      </select>
+      <div class="help">人工登打對照，因校內公文系統為獨立系統，本欄位不會自動偵測進度</div>
+    </div>
+
+    <div class="field" style="margin-bottom:18px;">
       <label>適用法規版本</label>
       <div style="padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;">《校外實習作業要點》第 4 版（2026/08/10 生效）— 自動帶入，不受後續版本更新影響</div>
+    </div>
+
+    <div class="banner warn" style="margin-bottom:18px;">
+      <span class="ic">⏳</span>
+      <div><b>目前於校內用印公文流程中：</b>取回已完成用印之合約正本後，請掃描上傳至下方欄位並確認，系統才會將案件狀態轉為「實習進行中」，此為後續唯一必要動作。</div>
+    </div>
+
+    <div class="field" style="margin-bottom:20px;">
+      <label>已簽回合約正本上傳（含校方用印） <span class="req">*</span></label>
+      <div style="border:1px dashed var(--line);border-radius:8px;padding:18px;text-align:center;color:var(--ink-faint);font-size:12px;">拖曳或點擊上傳完成校內用印及機構簽署之合約正本掃描檔（PDF／圖檔）</div>
+    </div>
+
+    <div class="help" style="margin-bottom:10px;">此區塊為送交機構簽署之正式條款；合約有效期間內調整下方學生名單不需要重新走本區塊的回簽流程，但學生實習期間超出有效期間時須另訂新約或申請展延。</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn ghost">撤回並改為草稿</button>
+      <button class="btn primary">確認已回簽（轉為實習進行中）</button>
     </div>
   </div>
 
@@ -1066,7 +1131,7 @@ function screen_sec_contract(){
   <div class="card" style="padding:22px;">
     <div class="section-title" style="padding:0 0 14px;border:none;">
       學生－課程配對清單 <span class="hint">一約多生多課，雙軌時間於此確立</span>
-      <button class="btn primary sm">＋ 新增學生配對</button>
+      <button class="btn ghost sm">＋ 新增學生配對</button>
     </div>
     <table>
       <thead><tr><th>學生</th><th>適用課程</th><th>實際實習期間</th><th>選課認列學年期</th><th>學分／別</th><th>實習時間類別</th></tr></thead>
@@ -1079,14 +1144,26 @@ function screen_sec_contract(){
           <td class="mono">${p.credits}・${p.type}</td>
           <td>${p.timeType}</td>
         </tr>`).join('')}
+        <tr style="background:var(--alert-bg);">
+          <td style="font-weight:700;color:var(--ink-faint);text-decoration:line-through;">${blockedPair.student}</td>
+          <td style="color:var(--ink-faint);text-decoration:line-through;">${blockedPair.course}</td>
+          <td class="mono" style="color:var(--alert);font-weight:700;">${blockedPair.period}</td>
+          <td colspan="3"><span class="tag alert">⛔ 超出合約有效期間，新增遭阻擋</span></td>
+        </tr>
       </tbody>
     </table>
+    <div class="banner warn" style="margin-top:10px;">
+      <span class="ic">⚠️</span>
+      <div><b>示範：黃小雯的實習期間（2027/03/01–06/30）超出本合約有效期間（2026/09/01–2027/01/31）</b>，系統阻擋直接新增，提示「該生實習期間超出本合約有效期間，請另訂新約或申請合約展延」，不允許誤植進不涵蓋之合約。</div>
+    </div>
     <div class="help" style="margin-top:8px;">「選課認列學年期」自動帶入所選課程之預計開課學年期，不可手動覆寫。此表為訪視紀錄（見輔導教師端）雙軌時間顯示之唯一資料來源。</div>
-  </div>
-
-  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px;">
-    <button class="btn ghost">儲存草稿</button>
-    <button class="btn primary">送出待機構回簽</button>
+    <div class="banner info" style="margin-top:14px;margin-bottom:0;">
+      <span class="ic">ℹ️</span>
+      <div>本清單可於<b>合約有效期間內</b>隨時新增或調整（例如學期中途追加學生），<b>立即生效、獨立於機構合約回簽流程之外</b>，不需重新送出上方合約主體等待機構簽名；超出有效期間則需另訂新約。</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn primary">儲存學生配對名單</button>
+    </div>
   </div>`;
 }
 

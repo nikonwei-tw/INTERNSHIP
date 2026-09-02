@@ -254,9 +254,10 @@
     <div><div class="name">產業實習管理平台</div><div class="sub">FJU INTERNSHIP PLATFORM</div></div>
   </div>
   <div class="navlinks">
-    <a href="#news">最新消息</a>
-    <a href="#docs">法規專區</a>
-    <a href="#overview">平台功能</a>
+    <a onclick="document.getElementById('news').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">最新消息</a>
+    <a onclick="document.getElementById('docs').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">法規專區</a>
+    <a onclick="document.getElementById('overview').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">平台功能</a>
+    <a onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;">聯絡資訊</a>
   </div>
   <button class="btn primary" onclick="openModal()">登入系統</button>
 </nav>
@@ -268,7 +269,7 @@
     <p>整合實習前查核、合約簽訂、實地訪視、滿意度調查與教育部校務資料庫填報，並串接學生學習歷程，讓系所秘書、輔導教師與學生都能簡單上手。</p>
     <div class="hero-ctas">
       <button class="btn primary" onclick="openModal()">登入系統 →</button>
-      <a href="#overview"><button class="btn ghost">了解平台功能</button></a>
+      <button class="btn ghost" onclick="document.getElementById('overview').scrollIntoView({behavior:'smooth'})">了解平台功能</button>
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="val mono">35</div><div class="lbl">適用系所單位</div></div>
@@ -294,7 +295,7 @@
 <section id="news">
   <div class="section-head">
     <div><h2>最新消息</h2><p>系統公告、法規更新、填報期程提醒與外部來文公告</p></div>
-    <a class="more" href="#">全部公告 →</a>
+    <a class="more" href="javascript:void(0)" onclick="event.preventDefault()">全部公告 →</a>
   </div>
   <div class="card" style="padding:8px 22px;">
     <div class="news-list">
@@ -304,7 +305,7 @@
           <span class="news-tag external">外部來文公告</span>
           <div class="news-title">萬芳醫院來函提供職能治療系實習職缺 4 名</div>
           <div class="news-desc">來函提供社區職能治療、兒童職能治療實習職缺，詳見附件正本與職缺說明。</div>
-          <a class="news-attach" href="#">📎 萬芳醫院來函正本.pdf</a>
+          <a class="news-attach" href="javascript:void(0)" onclick="event.preventDefault()">📎 萬芳醫院來函正本.pdf</a>
         </div>
       </div>
       <div class="news-row">
@@ -412,6 +413,61 @@ renderUnitDocs();
     <div class="card role-card"><div class="ic">✅</div><div class="t">系主管</div><div class="d">機構審核核定、契約檢核、爭議案件處理</div></div>
     <div class="card role-card"><div class="ic">🎓</div><div class="t">學生</div><div class="d">實習歷程查看、心得上傳、學習歷程自動同步</div></div>
     <div class="card role-card"><div class="ic">🏛️</div><div class="t">校級管理者</div><div class="d">跨系統計報表、法規版本管理、委員會治理報表</div></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-head">
+    <div><h2>聯絡資訊</h2><p>遇到問題不知道找誰嗎？依情境對照下方單位，或直接聯繫系所秘書／實習助教</p></div>
+  </div>
+  <div class="card" style="padding:8px 22px;">
+    <div class="news-list">
+      <div class="news-row" style="border-color:var(--alert);">
+        <div style="width:78px;flex-shrink:0;font-size:20px;text-align:center;">🚨</div>
+        <div>
+          <span class="news-tag" style="background:var(--alert-bg);color:var(--alert);">緊急・優先撥打</span>
+          <div class="news-title">緊急意外事故／人身安全危難</div>
+          <div class="news-desc">實習期間發生意外傷害、職災或其他人身安全緊急狀況，請立即聯繫校安中心；系統內「緊急事件通報」（見輔導教師／學生端）為後續正式紀錄留存，不取代第一時間報案。</div>
+          <div style="margin-top:6px;font-size:12px;font-weight:700;color:var(--alert);">校安中心 24 小時緊急電話：(02) 2905-XXXX</div>
+        </div>
+      </div>
+      <div class="news-row">
+        <div style="width:78px;flex-shrink:0;font-size:20px;text-align:center;">🛡️</div>
+        <div>
+          <span class="news-tag external">性平事件</span>
+          <div class="news-title">遭遇性騷擾、性侵害等性別事件</div>
+          <div class="news-desc">本平台不受理性平事件通報，請逕洽本校性平事件受理單位。學校將依既有性平會機制調查處理，24小時內完成通報。</div>
+          <div style="margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);">學務處生輔組（性平事件受理單位）：(02) 2905-XXXX・信箱 genderequity@fju.edu.tw</div>
+        </div>
+      </div>
+      <div class="news-row">
+        <div style="width:78px;flex-shrink:0;font-size:20px;text-align:center;">⚖️</div>
+        <div>
+          <span class="news-tag system">實習權益爭議</span>
+          <div class="news-title">與實習機構發生薪資、工時、對待等爭議</div>
+          <div class="news-desc">請先向系所實習輔導教師反映，如未獲改善，將提報校外實習委員會協處（見系統「實習爭議處理」機制）。</div>
+          <div style="margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);">請洽所屬系所實習輔導教師，或教務處實習業務承辦人</div>
+        </div>
+      </div>
+      <div class="news-row">
+        <div style="width:78px;flex-shrink:0;font-size:20px;text-align:center;">📋</div>
+        <div>
+          <span class="news-tag reg">一般實習業務</span>
+          <div class="news-title">機構查核、合約簽訂、選課認列等一般諮詢</div>
+          <div class="news-desc">實習業務以系所為主要窗口，請先聯繫所屬系所辦公室。</div>
+          <div style="margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);">所屬系所秘書／實習助教（見系所公告），或教務處實習業務單位：(02) 2905-XXXX</div>
+        </div>
+      </div>
+      <div class="news-row" style="border-bottom:none;">
+        <div style="width:78px;flex-shrink:0;font-size:20px;text-align:center;">💻</div>
+        <div>
+          <span class="news-tag system">系統操作問題</span>
+          <div class="news-title">平台登入、功能異常等技術問題</div>
+          <div class="news-desc">系統相關技術問題請洽資訊中心服務台。</div>
+          <div style="margin-top:6px;font-size:12px;font-weight:700;color:var(--primary);">資訊中心服務台：(02) 2905-XXXX・信箱 helpdesk@fju.edu.tw</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 

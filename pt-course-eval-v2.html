@@ -456,7 +456,8 @@ async function exportPdf(){
   }
   const safe=s=>String(s||"").replace(/[\\/:*?"<>|]/g,"").trim();
   const name=["兼任教師續開課程評估",safe(S.info.code),safe(S.info.teacher)].filter(Boolean).join("_")+".pdf";
-  await DL.save({filename:name,data:pdf.output("blob")});
+  if(DL)await DL.save({filename:name,data:pdf.output("blob")});
+  else pdf.save(name);
   bPdf.innerHTML=bi("已匯出","Exported");
  }catch(e){
   const code=e&&e.code;
@@ -465,7 +466,9 @@ async function exportPdf(){
  }finally{bPdf.disabled=false;setTimeout(()=>{bPdf.innerHTML=lab},2200)}
 }
 bPdf.addEventListener("click",exportPdf);
-if(window.claude&&window.claude.use){window.claude.use("downloads").then(n=>{if(n&&window.jspdf&&window.html2canvas){DL=n;bPdf.classList.remove("hide")}}).catch(()=>{})}
+const libsOk=()=>!!(window.jspdf&&window.html2canvas);
+if(window.claude&&window.claude.use){window.claude.use("downloads").then(n=>{if(n&&libsOk()){DL=n;bPdf.classList.remove("hide")}}).catch(()=>{})}
+else if(libsOk())bPdf.classList.remove("hide");
 applyLang();load();render();
 }
 </script>

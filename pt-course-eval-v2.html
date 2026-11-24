@@ -60,6 +60,24 @@ tr.ih td{background:var(--soft);border-top:2px solid var(--line)}
 tr.sr td.first{padding-left:22px;font-size:15px}
 td.ck{text-align:center}
 td.ck select{width:auto;max-width:11em;font-size:15px;padding:6px}
+tr.ar td{border-top:1px solid var(--line)}
+td.axc{min-width:300px;width:46%}
+.axis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative;padding-top:2px}
+.axis::before{content:"";position:absolute;left:10%;right:10%;top:17px;height:2px;background:var(--line)}
+.ap{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;position:relative;text-align:center}
+.ap input{position:absolute;opacity:0;width:1px;height:1px}
+.pt{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--panel);display:grid;place-items:center;font:600 14px "Red Hat Display",sans-serif;color:var(--mute);z-index:1}
+.pl{font-size:12px;color:var(--mute);line-height:1.2}
+.pl .en{font-size:11px}
+.ap:hover .pt{border-color:var(--accent)}
+.ap input:focus-visible+.pt{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
+.ap input:checked+.pt{background:var(--accent);border-color:var(--accent);color:#fff}
+.ap input:checked~.pl{color:var(--ink);font-weight:600}
+.ap input:disabled+.pt{opacity:.5}
+.anc{margin-top:8px;font-size:14px;color:var(--ink);background:var(--soft);border-radius:8px;padding:8px 10px;min-height:38px}
+.anc .en{font-size:13px}
+.nab{display:flex;gap:6px;align-items:flex-start;margin-top:8px;font-size:14px;color:var(--mute);cursor:pointer}
+@media(max-width:600px){td.axc{min-width:0;width:auto;display:block!important}td.axc::before{display:none}}
 .lv{margin-top:6px;font-size:13px;color:var(--mute)}
 .lv summary{cursor:pointer;color:var(--blue)}
 .lv ol{margin:6px 0 0;padding-left:20px}
@@ -145,8 +163,8 @@ input[type=radio],input[type=checkbox]{width:18px;height:18px;margin-top:3px;acc
  <div id="scoring">
  <section class="card">
   <h2><span class="zh">二、核心表現（100 分）</span><span class="en">2. Core performance (100 points)</span></h2>
-  <p class="note" style="margin:0 0 10px"><span class="zh">勾選已達成的細項即給分；課堂經營、教學改善選擇等級（1–5）。</span><span class="en">Tick each criterion met; choose a level (1–5) for classroom management and teaching improvement.</span></p>
-  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目與細項</span><span class="en">Item and criteria</span></th><th class="n"><span class="zh">配分</span><span class="en">Points</span></th><th class="n c-dept"><span class="zh">系所初評</span><span class="en">Dept.</span></th><th class="n c-col"><span class="zh">院複評</span><span class="en">College</span></th></tr></thead><tbody id="coreBody"></tbody></table></div>
+  <p class="note" style="margin:0 0 10px"><span class="zh">第 2–9 項點選等級 1–5，每項得分＝等級 × 2；點「等級說明」可看各級標準。</span><span class="en">Items 2–9: choose a level from 1 to 5; points = level × 2. Open “Level guide” for each level’s description.</span></p>
+  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目</span><span class="en">Item</span></th><th><span class="zh">評定等級（目前關卡）</span><span class="en">Level (current stage)</span></th><th class="n c-dept"><span class="zh">系所</span><span class="en">Dept.</span></th><th class="n c-col"><span class="zh">院</span><span class="en">College</span></th></tr></thead><tbody id="coreBody"></tbody></table></div>
   <div class="conv" id="conv"></div>
  </section>
 
@@ -203,14 +221,14 @@ const GATES=[
 const LV=[["優異","Excellent"],["良好","Good"],["符合","Meets"],["待加強","Needs work"],["不足","Insufficient"]];
 const CORE=[
  {id:"c1",z:"1 教學評量",e:"1 Student course evaluation",max:20,type:"auto",nz:"依平均值換算；僅計填答 10 人以上、填答率 50% 以上；「不評量」不列入；EMI 僅計共同題項",ne:"Converted from the average; only courses with 10+ respondents and 50%+ response; excluded if not evaluated; EMI uses common items only"},
- {id:"c2",z:"2 教學大綱",e:"2 Syllabus",max:10,type:"check",nz:"教務系統預填",ne:"Pre-filled from the academic system",subs:[["s1","各次均準時上傳","Uploaded on time each offering",5],["s2","內容完整（含評分方式、各週進度）","Complete, including grading and weekly plan",5]]},
- {id:"c3",z:"3 期中預警",e:"3 Mid-term early alert",max:10,type:"check",nz:"教務系統預填；無應預警學生視同完成",ne:"Pre-filled; no students to flag counts as done",subs:[["s1","第一次開課如期完成","Completed on time, first offering",5],["s2","第二次開課如期完成","Completed on time, second offering",5]]},
- {id:"c4",z:"4 成績繳交",e:"4 Grade submission",max:10,type:"check",nz:"教務系統預填",ne:"Pre-filled from the academic system",subs:[["s1","各次均準時繳交","Submitted on time each offering",5],["s2","無因教師疏失之成績更正","No corrections due to instructor error",5]]},
- {id:"c5",z:"5 數位教學能力",e:"5 Digital teaching",max:10,type:"check",na:true,nz:"課程性質不適用者，以其餘核心項目得分率換算",ne:"If not applicable, converted from the rate on the other core items",subs:[["s1","以數位學習平台發布教材與公告","Materials and notices on the learning platform",4],["s2","線上繳交作業或測驗","Online assignments or quizzes",3],["s3","數位教材或線上／混成教學","Digital materials or online/blended teaching",3]]},
- {id:"c6",z:"6 課堂經營",e:"6 Classroom management",max:10,type:"scale",nz:"五點量表，得分＝等級 × 2",ne:"Five-point scale; points = level × 2",lv:[["依行事曆授課、調補課均依規，無申訴成立，課堂秩序與師生互動良好且有具體事證","Teaches to calendar, proper make-up classes, no upheld complaints, good order and interaction with evidence"],["授課與調補課依規，無申訴成立，課堂互動良好","Proper teaching and make-up classes, no upheld complaints, good interaction"],["授課與調補課依規，無申訴成立","Proper teaching and make-up classes, no upheld complaints"],["調補課偶有未依規，或課堂秩序有待改善","Occasional improper make-up classes, or order needs improvement"],["多次未依規授課，或有申訴成立","Repeated improper teaching, or an upheld complaint"]]},
- {id:"c7",z:"7 教學改善",e:"7 Teaching improvement",max:10,type:"scale",nz:"五點量表，得分＝等級 × 2",ne:"Five-point scale; points = level × 2",lv:[["依回饋具體調整並有成效證據，且有教學創新（PBL、業師協同等）","Concrete changes from feedback with evidence of results, plus innovation such as PBL or industry co-teaching"],["有具體調整或教學創新，並說明成效","Concrete changes or innovation, with results explained"],["有具體調整，但未說明成效","Concrete changes, results not explained"],["僅有零星調整","Only minor changes"],["未依回饋做任何調整","No changes based on feedback"]]},
- {id:"c8",z:"8 永續融入",e:"8 Sustainability (SDGs)",max:10,type:"check",subs:[["s1","大綱標註對應之 SDGs 目標","SDG goals tagged in the syllabus",3],["s2","有對應之教學內容或活動","Matching teaching content or activities",4],["s3","有對應之作業或學生成果","Matching assignments or student work",3]]},
- {id:"c9",z:"9 AI 融入",e:"9 AI integration",max:10,type:"check",subs:[["s1","大綱訂定 AI 使用規範","AI usage rules in the syllabus",3],["s2","設計 AI 協作學習活動或作業","AI-assisted learning activity or assignment",4],["s3","要求學生揭露 AI 使用情形並反思","Students disclose and reflect on AI use",3]]}];
+ {id:"c2",z:"2 教學大綱",e:"2 Syllabus",max:10,type:"scale",lv:[["各次均準時上傳，內容完整且具體（學習目標、評分方式、各週進度）","On time every offering; complete and specific (objectives, grading, weekly plan)"],["各次均準時上傳，內容完整","On time every offering; complete"],["各次均準時上傳，內容大致完整","On time every offering; mostly complete"],["曾逾期上傳，或內容明顯不足","Late at least once, or clearly incomplete"],["多次逾期或未上傳","Repeatedly late or not uploaded"]]},
+ {id:"c3",z:"3 期中預警",e:"3 Mid-term early alert",max:10,type:"scale",nz:"無應預警學生者以 4 計",ne:"Rate 4 if no students needed an alert",lv:[["各次均如期完成，並有後續輔導紀錄","On time every offering, with follow-up records"],["各次均如期完成","On time every offering"],["大致如期，偶有延誤","Mostly on time, occasional delay"],["有一次未完成","Missed once"],["均未完成","Never completed"]]},
+ {id:"c4",z:"4 成績繳交",e:"4 Grade submission",max:10,type:"scale",lv:[["各次均準時，且無任何更正","On time every offering, no corrections"],["各次均準時，僅有合理更正","On time; only justified corrections"],["各次均準時，有一次因教師疏失更正","On time; one correction due to instructor error"],["有一次逾期，或多次因疏失更正","Late once, or several error corrections"],["多次逾期","Repeatedly late"]]},
+ {id:"c5",z:"5 數位教學能力",e:"5 Digital teaching",max:10,type:"scale",na:true,nz:"課程性質不適用者，以其餘核心項目得分率換算",ne:"If not applicable, converted from the rate on the other core items",lv:[["以平台發布教材公告、線上作業或測驗，並有數位教材或線上／混成教學","Platform materials and notices, online assignments or quizzes, plus digital materials or blended teaching"],["符合上述其中兩項，且運用良好","Two of the above, used well"],["符合上述其中兩項","Two of the above"],["僅符合其中一項","Only one of the above"],["均未使用","None used"]]},
+ {id:"c6",z:"6 課堂經營",e:"6 Classroom management",max:10,type:"scale",lv:[["依行事曆授課、調補課均依規，無申訴成立，課堂秩序與師生互動良好且有具體事證","Teaches to calendar, proper make-up classes, no upheld complaints, good order and interaction with evidence"],["授課與調補課依規，無申訴成立，課堂互動良好","Proper teaching and make-up classes, no upheld complaints, good interaction"],["授課與調補課依規，無申訴成立","Proper teaching and make-up classes, no upheld complaints"],["調補課偶有未依規，或課堂秩序有待改善","Occasional improper make-up classes, or order needs improvement"],["多次未依規授課，或有申訴成立","Repeated improper teaching, or an upheld complaint"]]},
+ {id:"c7",z:"7 教學改善",e:"7 Teaching improvement",max:10,type:"scale",lv:[["依回饋具體調整並有成效證據，且有教學創新（PBL、業師協同等）","Concrete changes from feedback with evidence of results, plus innovation such as PBL or industry co-teaching"],["有具體調整或教學創新，並說明成效","Concrete changes or innovation, with results explained"],["有具體調整，但未說明成效","Concrete changes, results not explained"],["僅有零星調整","Only minor changes"],["未依回饋做任何調整","No changes based on feedback"]]},
+ {id:"c8",z:"8 永續融入",e:"8 Sustainability (SDGs)",max:10,type:"scale",lv:[["大綱標註 SDGs 目標，並有對應的教學活動與學生作業成果","SDGs tagged, with matching activities and student work"],["大綱標註，且有對應的教學活動","SDGs tagged, with matching activities"],["大綱標註，並於課堂中提及","SDGs tagged and mentioned in class"],["僅於大綱標註","Tagged in the syllabus only"],["未融入","Not integrated"]]},
+ {id:"c9",z:"9 AI 融入",e:"9 AI integration",max:10,type:"scale",lv:[["訂有使用規範，設計 AI 協作活動或作業，並要求學生揭露與反思","Usage rules, AI-assisted activity or assignment, and student disclosure with reflection"],["訂有使用規範，且有 AI 協作活動或作業","Usage rules plus an AI-assisted activity or assignment"],["訂有使用規範，並於課堂示範或討論 AI 運用","Usage rules, with AI demonstrated or discussed in class"],["僅訂使用規範","Usage rules only"],["未融入","Not integrated"]]}];
 const BONUS=[
  {id:"b1",z:"外語教學（課程，擇一）",e:"Foreign-language teaching (course, one only)",max:4,type:"pick",opts:[["emi","本課程為全外語（EMI）課程","EMI course",4],["c1","非 EMI，教師具外語檢定 C1 以上","Non-EMI; instructor CEFR C1+",2],["b2","非 EMI，教師具外語檢定 B2","Non-EMI; instructor CEFR B2",1]]},
  {id:"b2",z:"課程規劃（課程）",e:"Program integration (course)",max:2,type:"check",subs:[["s1","列入跨域學程、微學程或引導式跨域選修","Part of an interdisciplinary program, micro-program or guided cross-domain elective",2]]},
@@ -221,9 +239,9 @@ const BONUS=[
 const OUT=[["建議續開","Recommend renewal"],["有條件續開","Conditional renewal"],["不予續開","Not renewed"]];
 const AAOUT=[["核定續開","Approved"],["核定有條件續開","Approved with conditions"],["不予續開","Not approved"]];
 const STAGES=["dept","col","aa"];
-const KEY="adjEvalForm.v2";
+const KEY="adjEvalForm.v3";
 const SAMPLE={stage:"dept",lang:"both",info:{title:"行銷管理",code:"D01234",unit:"企業管理學系",cat:"系所專業",teacher:"王小明",co:"1",terms:"114-1、114-2",term:"115-1"},gates:{g1:0,g2:0,g3:0},avg:"4.12",
- dept:{"c2.s1":1,"c2.s2":1,"c3.s1":1,"c3.s2":1,"c4.s1":1,"c5.s1":1,"c5.s2":1,c6:"4",c7:"3","c8.s1":1,"c8.s2":1,"c9.s1":1,b1:"c1","b2.s1":1,b5:"2"},col:{},out:{dept:{v:-1,t:"",s:""},col:{v:-1,t:"",s:""}},aa:{v:-1,t:""}};
+ dept:{c2:"5",c3:"4",c4:"4",c5:"3",c6:"4",c7:"3",c8:"3",c9:"2",b1:"c1","b2.s1":1,b5:"2"},col:{},out:{dept:{v:-1,t:"",s:""},col:{v:-1,t:"",s:""}},aa:{v:-1,t:""}};
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 if(!S||!S.info)S=JSON.parse(JSON.stringify(SAMPLE));
@@ -254,11 +272,16 @@ function totals(st){
 $("#infoGrid").innerHTML=INFO.map(([k,z,e,t,o])=>`<label class="f"><span>${bi(z,e)}</span>${t==="sel"?`<select id="i_${k}"><option value=""></option>${o.map(([oz,oe])=>`<option value="${oz}">${oz} ${oe}</option>`).join("")}</select>`:`<input type="text" id="i_${k}">`}</label>`).join("");
 $("#gateBody").innerHTML=GATES.map(([k,z,e,o])=>`<tr><td class="first">${bi(z,e)}</td><td data-l="結果 Result"><div class="opts">${o.map(([oz,oe],i)=>`<label><input type="radio" name="${k}" value="${i}">${bi(oz,oe)}</label>`).join("")}</div></td></tr>`).join("");
 const cells=(f)=>["dept","col"].map(st=>`<td class="ck c-${st}" data-l="${st==="dept"?"系所 Dept.":"院 College"}">${f(st)}</td>`).join("");
+function axisRow(it){
+ const pts=[1,2,3,4,5].map(n=>`<label class="ap"><input type="radio" name="ax_${it.id}" value="${n}" id="ax_${it.id}_${n}"><span class="pt">${n}</span><span class="pl">${bi(LV[5-n][0],LV[5-n][1])}</span></label>`).join("");
+ return `<tr class="ar"><td class="first"><b>${bi(it.z,it.e)}</b>${it.nz?`<div class="crit">${bi(it.nz,it.ne)}</div>`:""}<details class="lv"><summary>${bi("等級說明","Level guide")}</summary><ol reversed>${it.lv.map(([z,e],i)=>`<li><b>${bi(LV[i][0],LV[i][1])}</b> ${bi(z,e)}</li>`).join("")}</ol></details></td><td class="axc" data-l="等級 Level"><div class="axis" role="radiogroup" aria-label="${it.z}">${pts}</div><div class="anc" id="an_${it.id}"></div>${it.na?`<label class="nab"><input type="checkbox" id="ax_${it.id}_na">${bi("課程性質不適用（系所認定）","Not applicable to this course")}</label>`:""}</td>${["dept","col"].map(st=>`<td class="n c-${st}" data-l="${st==="dept"?"系所 Dept.":"院 College"}"><b id="t_${st}_${it.id}"></b></td>`).join("")}</tr>`;
+}
 function rows(it){
+ if(it.type==="scale")return axisRow(it);
  let h=`<tr class="ih"><td class="first"><b>${bi(it.z,it.e)}</b>${it.nz?`<div class="crit">${bi(it.nz,it.ne)}</div>`:""}`;
- if(it.type==="auto")h+=`<label class="f" style="margin-top:8px;max-width:16em"><span>${bi("評量平均值（5 分制）","Average rating (5-point scale)")}</span><input type="number" id="avg" step="0.01" min="1" max="5"></label>`;
+
  if(it.type==="scale")h+=`<details class="lv"><summary>${bi("等級說明","Level guide")}</summary><ol reversed>${it.lv.map(([z,e],i)=>`<li><b>${bi(LV[i][0],LV[i][1])}</b> ${bi(z,e)}</li>`).join("")}</ol></details>`;
- h+=`</td><td class="n" data-l="配分 Points">${it.max}</td>${["dept","col"].map(st=>`<td class="n c-${st}" data-l="${st==="dept"?"系所 Dept.":"院 College"}"><b id="t_${st}_${it.id}"></b></td>`).join("")}</tr>`;
+ h+=`</td><td class="${it.type==="auto"?"axc":"n"}" data-l="${it.type==="auto"?"平均值 Average":"配分 Points"}">${it.type==="auto"?`<input type="number" id="avg" step="0.01" min="1" max="5" aria-label="評量平均值" style="max-width:8em"><div class="anc">${bi("輸入 5 分制平均值，系統換算","Enter the 5-point average; converted automatically")}</div>`:it.max}</td>${["dept","col"].map(st=>`<td class="n c-${st}" data-l="${st==="dept"?"系所 Dept.":"院 College"}"><b id="t_${st}_${it.id}"></b></td>`).join("")}</tr>`;
  if(it.type==="check"){
   it.subs.forEach(([sid,z,e,p])=>{h+=`<tr class="sr"><td class="first">${bi(z,e)}</td><td class="n" data-l="配分 Points">${p}</td>${cells(st=>`<input type="checkbox" id="${st}__${it.id}.${sid}" aria-label="${z}">`)}</tr>`});
   if(it.na)h+=`<tr class="sr"><td class="first"><i>${bi("課程性質不適用（系所認定）","Not applicable to this course (department decision)")}</i></td><td class="n"></td>${cells(st=>`<input type="checkbox" id="${st}__${it.id}.na" aria-label="不適用">`)}</tr>`;
@@ -289,8 +312,15 @@ function load(){
   document.querySelectorAll(`input[name=out_${st}]`).forEach(r=>r.checked=String(S.out[st].v)===r.value);
   $("#txt_"+st).value=S.out[st].t||"";$("#sig_"+st).value=S.out[st].s||"";
  });
+ loadAxis();
  document.querySelectorAll("input[name=out_aa]").forEach(r=>r.checked=String(S.aa.v)===r.value);
  $("#aaNote").value=S.aa.t||"";$("#sgOfficer").value=S.aa.officer||"";$("#sgChief").value=S.aa.chief||"";$("#sgDean").value=S.aa.dean||"";
+}
+function loadAxis(){
+ const st=S.stage==="col"?"col":"dept";
+ CORE.forEach(it=>{if(it.type!=="scale")return;
+  document.querySelectorAll(`input[name=ax_${it.id}]`).forEach(r=>r.checked=String(S[st][it.id]??"")===r.value);
+  if(it.na)$(`#ax_${it.id}_na`).checked=!!S[st][it.id+".na"];});
 }
 function suggest(t){
  const g1=String(S.gates.g1)==="1",g2=String(S.gates.g2)==="1",g3=String(S.gates.g3)==="2";
@@ -309,6 +339,7 @@ function render(){
   $(`#${st}_core`).textContent=t.core;$(`#${st}_bonus`).textContent=t.bonus;
   const [z,e,c]=suggest(t);const tg=$("#sug_"+st);tg.className="tag "+c;tg.innerHTML=bi(z,e);
  });
+ {const st=S.stage==="col"?"col":"dept";CORE.forEach(it=>{if(it.type!=="scale")return;const l=parseInt(S[st][it.id]);$("#an_"+it.id).innerHTML=isNaN(l)?bi("請點選等級","Choose a level"):`<b>${l}</b> ${bi(it.lv[5-l][0],it.lv[5-l][1])}`})}
  const act=S.stage;
  document.querySelectorAll(".stn").forEach(b=>{b.setAttribute("aria-selected",b.dataset.stage===act);b.classList.toggle("done",STAGES.indexOf(b.dataset.stage)<STAGES.indexOf(act))});
  $("#scoring").classList.toggle("hide",act==="aa");$("#aa").classList.toggle("hide",act!=="aa");
@@ -355,6 +386,8 @@ document.addEventListener("input",ev=>{
 });
 document.addEventListener("change",ev=>{
  const el=ev.target;
+ if(el.name&&el.name.startsWith("ax_")){const st=S.stage==="col"?"col":"dept";S[st][el.name.slice(3)]=el.value;render();return}
+ if(/^ax_.+_na$/.test(el.id)){const st=S.stage==="col"?"col":"dept";const k=el.id.slice(3,-3)+".na";if(el.checked)S[st][k]=1;else delete S[st][k];render();return}
  if(el.type==="checkbox"){setVal(el);render();return}
  if(el.tagName==="SELECT"&&setVal(el)){render();return}
  if(el.type!=="radio")return;
@@ -364,7 +397,7 @@ document.addEventListener("change",ev=>{
  else if(el.name.startsWith("out_"))S.out[el.name.slice(4)].v=+el.value;
  render();
 });
-document.querySelectorAll(".stn").forEach(b=>b.addEventListener("click",()=>{S.stage=b.dataset.stage;render();window.scrollTo({top:0})}));
+document.querySelectorAll(".stn").forEach(b=>b.addEventListener("click",()=>{S.stage=b.dataset.stage;loadAxis();render();window.scrollTo({top:0})}));
 $("#btnNext").addEventListener("click",()=>{
  const st=S.stage;
  if(st==="dept"&&Object.keys(S.col).length===0)S.col=JSON.parse(JSON.stringify(S.dept));

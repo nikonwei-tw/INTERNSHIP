@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>兼任教師續開課程評估</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700&family=Red+Hat+Text:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work: an official review form, calm and exact
+   IDEA a three-signature routing slip: department, college, academic affairs
+   PICTURE the form itself, with a routing bar of three stations and a live score dial per stage
+   COLOUR soft grey ground, white panels, muted slate blue accent, low contrast
+   TYPE Red Hat Display + Red Hat Text, Noto Sans TC for Chinese
+   LAYOUT title band with routing bar; one form column with sticky score bar; stacks on phone */
+:root{color-scheme:light dark;--bg:light-dark(#f5f6f4,#1d2023);--panel:light-dark(#ffffff,#25292c);--ink:light-dark(#2f3539,#d9dee1);--mute:light-dark(#727b80,#99a2a7);--line:light-dark(#e2e5e2,#373c40);--band:light-dark(#eceff0,#25292c);--accent:light-dark(#4f7390,#9dbbd1);--blue:light-dark(#4f7390,#9dbbd1);--soft:light-dark(#f2f4f3,#2b3034);--ok:light-dark(#4d7a5c,#93c3a3);--warn:light-dark(#94703a,#d6b580)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Red Hat Text","Noto Sans TC",system-ui,sans-serif;overflow-x:clip}
+h1,h2,.disp{font-family:"Red Hat Display","Noto Sans TC",system-ui,sans-serif}
+.band{background:var(--band);color:var(--ink);border-bottom:1px solid var(--line);padding:28px max(5vw,16px) 22px}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-size:clamp(26px,4vw,40px);line-height:1.08;letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--mute);margin:0}
+.en{display:block;font-size:.86em;color:var(--mute);font-weight:400;line-height:1.35}
+.band .en{color:var(--mute)}
+body.zh .en{display:none}
+body.en .zh{display:none}
+body.en .en{font-size:1em;color:inherit}
+.top{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end}
+.seg{display:inline-flex;border:1px solid var(--line);background:var(--panel);border-radius:8px;overflow:hidden}
+.seg button{background:transparent;color:var(--mute);border:0;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+.seg button[aria-pressed=true]{background:var(--soft);color:var(--ink);font-weight:600}
+.route{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:22px;position:relative}
+.route::before{content:"";position:absolute;left:8%;right:8%;top:21px;height:3px;background:var(--line);border-radius:2px}
+.stn{position:relative;background:none;border:0;color:var(--mute);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:0 4px;min-height:44px}
+.dot{width:46px;height:46px;border-radius:50%;background:var(--panel);border:2px solid var(--line);display:grid;place-items:center;font:700 17px "Red Hat Display",sans-serif;color:var(--mute);z-index:1}
+.stn[aria-selected=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.stn[aria-selected=true]{color:var(--ink);font-weight:600}
+.stn .en{color:var(--mute)}
+.stn.done .dot{background:var(--soft);border-color:var(--ok);color:var(--ok)}
+main{padding:22px max(5vw,16px) 120px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
+h2{font-size:20px;margin:0 0 14px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:500}
+input[type=text],input[type=number],textarea,select{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 45%,transparent);outline-offset:1px}
+input[readonly]{background:var(--soft);color:var(--mute)}
+textarea{min-height:64px;resize:vertical}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--mute);font-weight:600;background:var(--soft)}
+td.n,th.n{text-align:right;white-space:nowrap}
+td input[type=number]{width:5.2em;text-align:right;padding:7px 8px}
+tr.ih td{background:var(--soft);border-top:2px solid var(--line)}
+tr.sr td.first{padding-left:22px;font-size:15px}
+td.ck{text-align:center}
+td.ck select{width:auto;max-width:11em;font-size:15px;padding:6px}
+tr.ar td{border-top:1px solid var(--line)}
+td.axc{min-width:300px;width:46%}
+.axis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative;padding-top:2px}
+.axis::before{content:"";position:absolute;left:10%;right:10%;top:17px;height:2px;background:var(--line)}
+.ap{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;position:relative;text-align:center}
+.ap input{position:absolute;opacity:0;width:1px;height:1px}
+.pt{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--panel);display:grid;place-items:center;font:600 14px "Red Hat Display",sans-serif;color:var(--mute);z-index:1}
+.pl{font-size:12px;color:var(--mute);line-height:1.2}
+.pl .en{font-size:11px}
+.ap:hover .pt{border-color:var(--accent)}
+.ap input:focus-visible+.pt{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
+.ap input:checked+.pt{background:var(--accent);border-color:var(--accent);color:#fff}
+.ap input:checked~.pl{color:var(--ink);font-weight:600}
+.ap input:disabled+.pt{opacity:.5}
+.anc{margin-top:8px;font-size:14px;color:var(--ink);background:var(--soft);border-radius:8px;padding:8px 10px;min-height:38px}
+.anc .en{font-size:13px}
+.nab{display:flex;gap:6px;align-items:flex-start;margin-top:8px;font-size:14px;color:var(--mute);cursor:pointer}
+@media(max-width:600px){td.axc{min-width:0;width:auto;display:block!important}td.axc::before{display:none}}
+.banner{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:15px}
+.ro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;font-size:15px}
+.ro div span.k{color:var(--mute);font-size:13px;display:block}
+.big{font:700 clamp(36px,6vw,52px)/1 "Red Hat Display",sans-serif;color:var(--accent);font-variant-numeric:tabular-nums}
+.comp{display:flex;flex-direction:column;gap:14px}
+.comp fieldset{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0}
+.comp legend{font-weight:600;padding:0 6px}
+.comp .opts{flex-direction:column;gap:8px}
+.status{font:700 22px/1.3 "Red Hat Display","Noto Sans TC",sans-serif}
+@media(max-width:720px){.ro{grid-template-columns:minmax(0,1fr)}.stn .en{display:none}}
+.up{margin-top:10px}
+.upb{display:inline-flex;align-items:center;gap:6px;font-size:14px;min-height:40px;padding:7px 12px;position:relative;cursor:pointer}
+.upb input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.upb:focus-within{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+.fl{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.fl li{display:flex;gap:10px;align-items:center;font-size:14px;background:var(--soft);border-radius:6px;padding:4px 4px 4px 10px}
+.fl li span:first-child{flex:1;overflow-wrap:anywhere}
+.fs{color:var(--mute);font-size:12px;white-space:nowrap}
+.rm{border:0;background:none;color:var(--mute);font-size:20px;line-height:1;width:32px;height:32px;cursor:pointer;border-radius:6px}
+.rm:hover{background:var(--line)}
+.nn{font-size:15px;color:var(--mute);background:var(--soft);border-radius:8px;padding:10px 12px}
+.evb{margin-top:10px}
+.evb.miss textarea{border-color:var(--warn)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.lv{margin-top:6px;font-size:13px;color:var(--mute)}
+.lv summary{cursor:pointer;color:var(--blue)}
+.lv ol{margin:6px 0 0;padding-left:20px}
+.crit{color:var(--mute);font-size:14px}
+.opts{display:flex;flex-wrap:wrap;gap:6px 14px}
+.opts label{display:flex;gap:6px;align-items:flex-start;font-size:15px;cursor:pointer}
+input[type=radio],input[type=checkbox]{width:18px;height:18px;margin-top:3px;accent-color:var(--blue);flex:none}
+.col-off{opacity:.45}
+.sum td{font-weight:700;background:var(--soft)}
+.conv{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:13px;color:var(--mute)}
+.conv span{border:1px solid var(--line);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.res{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.res .card{margin:0}
+.tag{display:inline-block;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;background:var(--soft);color:var(--blue)}
+.tag.bad{color:var(--warn)}
+.tag.ok{color:var(--ok)}
+.tag.warn{color:var(--warn)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px max(5vw,16px);z-index:5}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;justify-content:space-between}
+.kpi{display:flex;gap:20px;flex-wrap:wrap}
+.kpi div{font-size:13px;color:var(--mute)}
+.kpi b{display:block;font:700 24px/1.1 "Red Hat Display",sans-serif;color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi .hl b{color:var(--accent)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:15px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 14px;min-height:44px;cursor:pointer}
+.btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+.diff{color:var(--warn);font-weight:600}
+.hide{display:none!important}
+.sign{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+#rpt{position:fixed;left:-12000px;top:0;width:794px;padding:36px 40px;background:#fff;color:#222;--ink:#222;--mute:#666;--line:#cfcfcf;--soft:#f3f4f4;--panel:#fff;font-size:13px;line-height:1.5}
+#rpt h1{font-size:22px;margin:0 0 2px;color:#222}
+#rpt h3{font-size:15px;margin:0 0 6px}
+#rpt .blk{padding:0 0 14px}
+#rpt table{width:100%;border-collapse:collapse;font-size:12.5px}
+#rpt th,#rpt td{border:1px solid #cfcfcf;padding:5px 6px;vertical-align:top;text-align:left;background:#fff}
+#rpt th{background:#f3f4f4;color:#444}
+#rpt td.n,#rpt th.n{text-align:right;white-space:nowrap}
+#rpt tr.ih td{background:#f3f4f4;font-weight:600}
+#rpt tr.sr td:first-child{padding-left:18px}
+#rpt td.c{text-align:center}
+#rpt .en{color:#666}
+#rpt .meta{color:#666;font-size:12px;margin:0 0 12px}
+@media(max-width:720px){.grid,.res,.sign{grid-template-columns:minmax(0,1fr)}.route::before{top:19px}.dot{width:40px;height:40px}}
+@media(max-width:600px){table{font-size:14px}th,td{padding:8px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--line)}.stack td{border:0;display:flex;justify-content:space-between;gap:12px;padding:3px 0}.stack td::before{content:attr(data-l);font-size:13px;color:var(--mute);flex:none;max-width:45%}.stack td.first{display:block}.stack td.first::before{display:none}}
+@media(prefers-reduced-motion:no-preference){.dot{transition:background .25s,border-color .25s}}
+</style>
+</head>
+<body>
+<header class="band">
+ <div class="wrap">
+  <div class="top">
+   <div>
+    <h1><span class="zh">兼任教師續開課程評估表</span><span class="en">Adjunct Faculty Course Renewal Evaluation</span></h1>
+    <p class="sub"><span class="zh">每門課、每位授課教師一張</span><span class="en">One form per course per instructor</span></p>
+   </div>
+   <div class="seg" role="group" aria-label="Language">
+    <button type="button" data-lang="both" aria-pressed="true">中 / EN</button>
+    <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+    <button type="button" data-lang="en" aria-pressed="false">English</button>
+   </div>
+  </div>
+  <nav class="route" role="tablist">
+   <button class="stn" role="tab" data-stage="notice"><span class="dot">1</span><span><span class="zh">系所發送通知</span><span class="en">Department notice</span></span></button>
+   <button class="stn" role="tab" data-stage="teacher"><span class="dot">2</span><span><span class="zh">教師填寫意願與職能</span><span class="en">Instructor response</span></span></button>
+   <button class="stn" role="tab" data-stage="dept"><span class="dot">3</span><span><span class="zh">系所初評</span><span class="en">Department review</span></span></button>
+   <button class="stn" role="tab" data-stage="done"><span class="dot">4</span><span><span class="zh">結果與後續</span><span class="en">Outcome</span></span></button>
+  </nav>
+ </div>
+</header>
+
+<main><div class="wrap">
+ <!-- Stage 1 -->
+ <section class="card st st-notice" id="info">
+  <h2><span class="zh">續開課程意願調查：課程資料</span><span class="en">Renewal survey: course information</span></h2>
+  <div class="grid" id="infoGrid"></div>
+  <div class="grid" style="margin-top:12px">
+   <label class="f"><span><span class="zh">通知類型</span><span class="en">Notice type</span></span><select id="n_type"><option value="survey">續開意願調查 Renewal survey</option><option value="invite">新開課程邀請 New course invitation</option></select></label>
+   <label class="f"><span><span class="zh">回覆期限</span><span class="en">Reply by</span></span><input type="text" id="n_due" placeholder="YYYY-MM-DD"></label>
+  </div>
+  <p class="note"><span class="zh">表中已填入範例資料，可按「清空」重新填寫。</span><span class="en">Sample data is pre-filled; use “Clear” to start over.</span></p>
+ </section>
+
+ <!-- Course summary shown in later stages -->
+ <section class="card st st-teacher st-dept st-done" id="sumInfo">
+  <h2><span class="zh">課程資料</span><span class="en">Course information</span></h2>
+  <div class="ro" id="roInfo"></div>
+ </section>
+
+ <!-- Stage 2 -->
+ <section class="card st st-teacher" id="tWill">
+  <h2><span class="zh">一、續開意願</span><span class="en">1. Intention to continue</span></h2>
+  <div class="opts" style="flex-direction:column" id="willOpts"></div>
+ </section>
+ <section class="card st st-teacher" id="tComp">
+  <h2><span class="zh">二、教師課程職能</span><span class="en">2. Teaching competencies</span></h2>
+  <p class="note" style="margin:0 0 12px"><span class="zh">請勾選符合的項目，並於各項上傳佐證（如證書、研習證明、獲獎證明）。</span><span class="en">Tick what applies and upload evidence for each item (certificates, workshop records, award letters).</span></p>
+  <div class="comp" id="compBox"></div>
+  <label class="f" style="margin-top:14px"><span><span class="zh">補充說明（選填）</span><span class="en">Additional notes (optional)</span></span><textarea id="t_note"></textarea></label>
+  <label class="f" style="margin-top:10px"><span><span class="zh">教師簽名／日期</span><span class="en">Instructor signature / date</span></span><input type="text" id="t_sign"></label>
+ </section>
+
+ <!-- Stage 3 -->
+ <div class="banner st st-dept" id="tReply"></div>
+ <section class="card st st-dept sc" id="gates">
+  <h2><span class="zh">一、課程面門檻</span><span class="en">1. Course eligibility</span></h2>
+  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目</span><span class="en">Item</span></th><th><span class="zh">結果</span><span class="en">Result</span></th></tr></thead><tbody id="gateBody"></tbody></table></div>
+ </section>
+ <section class="card st st-dept sc">
+  <h2><span class="zh">二、核心表現</span><span class="en">2. Core performance</span></h2>
+  <p class="note" style="margin:0 0 10px"><span class="zh">第 2–9 項請點選等級 1–5；點「等級說明」可看各級標準。</span><span class="en">For items 2–9, choose a level from 1 to 5; open “Level guide” for each level’s description.</span></p>
+  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目</span><span class="en">Item</span></th><th><span class="zh">評定</span><span class="en">Rating</span></th></tr></thead><tbody id="coreBody"></tbody></table></div>
+ </section>
+ <section class="card st st-dept sc" id="verdict">
+  <h2><span class="zh">三、本課程評定</span><span class="en">3. Recommendation for this course</span></h2>
+  <div class="res">
+   <div><div class="note" style="margin:0"><span class="zh">總分</span><span class="en">Total score</span></div><div class="big" id="vTotal">—</div><p><span class="zh">系統建議：</span><span class="en">Suggested: </span><span class="tag" id="sugTag"></span></p></div>
+   <div>
+    <div class="opts" style="flex-direction:column" id="outOpts"></div>
+    <label class="f" style="margin-top:10px"><span><span class="zh">說明（有條件或不予續開時必填）</span><span class="en">Explanation (required if conditional or not renewed)</span></span><textarea id="o_text"></textarea></label>
+    <label class="f" style="margin-top:10px"><span><span class="zh">系主任簽章／日期</span><span class="en">Department chair / date</span></span><input type="text" id="o_sign"></label>
+   </div>
+  </div>
+ </section>
+
+ <!-- Stage 4 -->
+ <section class="card st st-done" id="doneBox"></section>
+</div></main>
+<div id="rpt" aria-hidden="true"></div>
+
+<div class="bar"><div class="wrap">
+ <div class="kpi" id="kpi"></div>
+ <div class="btns">
+  <button class="btn" id="btnClear" type="button"><span class="zh">清空</span><span class="en">Clear</span></button>
+  <button class="btn hide" id="btnPdf" type="button"><span class="zh">匯出 PDF</span><span class="en">Export PDF</span></button>
+  <button class="btn" id="btnCopy" type="button"><span class="zh">複製摘要</span><span class="en">Copy summary</span></button>
+  <button class="btn pri" id="btnNext" type="button"></button>
+ </div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+{
+const INFO=[
+ ["title","課程名稱","Course title","text"],["code","開課代碼","Course code","text"],
+ ["unit","開課單位","Offering unit","text"],["cat","課程類別","Course category","sel",[["系所專業","Departmental"],["全人","Holistic education"]]],
+ ["teacher","授課教師","Instructor","text"],["co","合授人數","Number of co-instructors","text"],
+ ["terms","評估資料學期（最近 2 學年內最近兩次開課）","Semesters evaluated (last two offerings within 2 academic years)","text"],["term","擬開課學期","Proposed semester","text"]];
+const GATES=[
+ ["g1","本課程列入次學期預排開課，且具開課需求","Course is in next semester’s preliminary schedule and there is demand",[["符合","Met"],["不符","Not met"]]],
+ ["g2","開課單位尚有得聘員額","Offering unit has an available adjunct position",[["符合","Met"],["不符","Not met"]]],
+ ["g3","《教學評量辦法》第五條案件狀態","Status under Article 5 of the Teaching Evaluation Regulations",[["無","None"],["說明或輔導中","Explanation or support in progress"],["經院教評會審議可歸責且改善後仍未達標","Attributed to instructor by the College Committee and still below standard after support"]]]];
+const LV=[["優異","Excellent"],["良好","Good"],["符合","Meets"],["待加強","Needs work"],["不足","Insufficient"]];
+const CORE=[
+ {id:"c1",z:"1 教學評量",e:"1 Student course evaluation",max:20,type:"auto",nz:"依平均值換算；僅計填答 10 人以上、填答率 50% 以上；「不評量」不列入；EMI 僅計共同題項",ne:"Converted from the average; only courses with 10+ respondents and 50%+ response; excluded if not evaluated; EMI uses common items only"},
+ {id:"c2",z:"2 教學大綱",e:"2 Syllabus",max:10,type:"scale",lv:[["各次均準時上傳，內容完整且具體（學習目標、評分方式、各週進度）","On time every offering; complete and specific (objectives, grading, weekly plan)"],["各次均準時上傳，內容完整","On time every offering; complete"],["各次均準時上傳，內容大致完整","On time every offering; mostly complete"],["曾逾期上傳，或內容明顯不足","Late at least once, or clearly incomplete"],["多次逾期或未上傳","Repeatedly late or not uploaded"]]},
+ {id:"c3",z:"3 期中預警",e:"3 Mid-term early alert",max:10,type:"scale",nz:"無應預警學生者以 4 計",ne:"Rate 4 if no students needed an alert",lv:[["各次均如期完成，並有後續輔導紀錄","On time every offering, with follow-up records"],["各次均如期完成","On time every offering"],["大致如期，偶有延誤","Mostly on time, occasional delay"],["有一次未完成","Missed once"],["均未完成","Never completed"]]},
+ {id:"c4",z:"4 成績繳交",e:"4 Grade submission",max:10,type:"scale",lv:[["各次均準時，且無任何更正","On time every offering, no corrections"],["各次均準時，僅有合理更正","On time; only justified corrections"],["各次均準時，有一次因教師疏失更正","On time; one correction due to instructor error"],["有一次逾期，或多次因疏失更正","Late once, or several error corrections"],["多次逾期","Repeatedly late"]]},
+ {id:"c5",z:"5 數位教學能力",e:"5 Digital teaching",max:10,type:"scale",lv:[["以平台發布教材公告、線上作業或測驗，並有數位教材或線上／混成教學","Platform materials and notices, online assignments or quizzes, plus digital materials or blended teaching"],["符合上述其中兩項，且運用良好","Two of the above, used well"],["符合上述其中兩項","Two of the above"],["僅符合其中一項","Only one of the above"],["均未使用","None used"]]},
+ {id:"c6",z:"6 課堂經營",e:"6 Classroom management",max:10,type:"scale",lv:[["依行事曆授課、調補課均依規，無申訴成立，課堂秩序與師生互動良好且有具體事證","Teaches to calendar, proper make-up classes, no upheld complaints, good order and interaction with evidence"],["授課與調補課依規，無申訴成立，課堂互動良好","Proper teaching and make-up classes, no upheld complaints, good interaction"],["授課與調補課依規，無申訴成立","Proper teaching and make-up classes, no upheld complaints"],["調補課偶有未依規，或課堂秩序有待改善","Occasional improper make-up classes, or order needs improvement"],["多次未依規授課，或有申訴成立","Repeated improper teaching, or an upheld complaint"]]},
+ {id:"c7",z:"7 教學改善",e:"7 Teaching improvement",max:10,type:"scale",lv:[["依回饋具體調整並有成效證據，且有教學創新（PBL、業師協同等）","Concrete changes from feedback with evidence of results, plus innovation such as PBL or industry co-teaching"],["有具體調整或教學創新，並說明成效","Concrete changes or innovation, with results explained"],["有具體調整，但未說明成效","Concrete changes, results not explained"],["僅有零星調整","Only minor changes"],["未依回饋做任何調整","No changes based on feedback"]]},
+ {id:"c8",z:"8 永續融入",e:"8 Sustainability (SDGs)",max:10,type:"scale",lv:[["大綱標註 SDGs 目標，並有對應的教學活動與學生作業成果","SDGs tagged, with matching activities and student work"],["大綱標註，且有對應的教學活動","SDGs tagged, with matching activities"],["大綱標註，並於課堂中提及","SDGs tagged and mentioned in class"],["僅於大綱標註","Tagged in the syllabus only"],["未融入","Not integrated"]]},
+ {id:"c9",z:"9 AI 融入",e:"9 AI integration",max:10,type:"scale",lv:[["訂有使用規範，設計 AI 協作活動或作業，並要求學生揭露與反思","Usage rules, AI-assisted activity or assignment, and student disclosure with reflection"],["訂有使用規範，且有 AI 協作活動或作業","Usage rules plus an AI-assisted activity or assignment"],["訂有使用規範，並於課堂示範或討論 AI 運用","Usage rules, with AI demonstrated or discussed in class"],["僅訂使用規範","Usage rules only"],["未融入","Not integrated"]]}];
+const BONUS=[
+ {id:"b1",z:"外語教學（課程，擇一）",e:"Foreign-language teaching (course, one only)",max:4,type:"pick",opts:[["emi","本課程為全外語（EMI）課程","EMI course",4],["c1","非 EMI，教師具外語檢定 C1 以上","Non-EMI; instructor CEFR C1+",2],["b2","非 EMI，教師具外語檢定 B2","Non-EMI; instructor CEFR B2",1]]},
+ {id:"b3",z:"課程獲獎（課程）",e:"Course award (course)",max:3,type:"check",subs:[["s1","獲優良課程、教材或教學獎項","Award for course, materials or teaching",3]]},
+ {id:"b4",z:"AI 素養（職能，上限 2）",e:"AI literacy (competency, max 2)",max:2,type:"check",subs:[["s1","參加 AI 教學研習","Attended an AI teaching workshop",1],["s2","取得 AI 應用認證","Holds an AI certification",2]]},
+ {id:"b5",z:"教學研習（職能，擇一）",e:"Teaching workshops (competency, one only)",max:2,type:"pick",opts:[["1","參加教學發展研習 1 場","1 workshop",1],["2","參加教學發展研習 2 場以上","2 or more workshops",2]]},
+ {id:"b6",z:"個人教學獎項（職能，擇一）",e:"Personal teaching award (competency, one only)",max:3,type:"pick",opts:[["u","校級以上","University level or above",3],["c","院級","College level",2]]}];
+
+const OUT=[["建議續開","Recommend renewal"],["有條件續開","Conditional renewal"],["不予續開","Not renewed"]];
+const WILL=[["續開","Continue teaching"],["不續開","Not continue"]];
+const STAGES=["notice","teacher","dept","done"];
+const NEXT={notice:["送出通知給教師","Send notice to instructor"],teacher:["送出意願與職能","Submit response"],dept:["送出，進入開課流程","Submit to course scheduling"]};
+const KEY="adjEvalForm.v6";
+const SAMPLE={stage:"notice",lang:"both",info:{title:"行銷管理",code:"D01234",unit:"企業管理學系",cat:"系所專業",teacher:"王小明",co:"1",terms:"114-1、114-2",term:"115-1"},notice:{type:"survey",due:"2026-12-10"},
+ teacher:{will:0,comp:{b1:"c1",b5:"2"},files:{b1:[{n:"TOEIC_960.pdf",s:182000}],b5:[{n:"研習證明_114.pdf",s:96000}]},note:"",sign:""},
+ gates:{g1:0,g2:0,g3:0},avg:"4.12",dept:{c2:"5",c3:"4",c4:"4",c5:"3",c6:"4","c6.ev":"114-2 系主任觀課紀錄：課堂討論熱絡，學生參與度高",c7:"3",c8:"3",c9:"2"},out:{v:-1,t:"",s:""}};
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+if(!S||!S.info)S=JSON.parse(JSON.stringify(SAMPLE));
+S.notify=S.notify||{date:"",due:"",reply:"",fin:-1};
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const bi=(z,e)=>`<span class="zh">${z}</span><span class="en">${e}</span>`;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const r1=x=>Math.round(x*10)/10;
+const evalScore=a=>{const x=parseFloat(a);if(isNaN(x))return null;return r1(Math.min(20,Math.max(0,20*(x-3)/1.5)))};
+/* scoring (weights stay internal; only the total is shown) */
+const NEWNA=["c1","c2","c3","c4"];
+const EVID=["c5","c6","c7","c8","c9"];
+const needEv=id=>EVID.includes(id)&&parseInt(S.dept[id])>=4;
+const missingEv=()=>EVID.filter(id=>needEv(id)&&!(S.dept[id+".ev"]||"").trim()&&!((S.dept[id+".files"]||[]).length));
+const isNew=()=>S.notice.type==="invite";
+const isNA=id=>isNew()&&NEWNA.includes(id);
+function calc(){
+ const v=S.dept,sc={};
+ CORE.forEach(it=>{if(it.type==="auto")sc[it.id]=evalScore(S.avg)??0;else{const l=parseInt(v[it.id]);sc[it.id]=isNaN(l)?0:it.max*l/5}});
+ let got=0,mx=0;CORE.forEach(it=>{if(isNA(it.id))return;got+=sc[it.id];mx+=it.max});
+ let core=mx?got/mx*100:0;
+ const c=S.teacher.comp||{};let bonus=0;
+ BONUS.forEach(it=>{let p=0;if(it.type==="check")p=Math.min(it.max,it.subs.reduce((a,[sid,,,q])=>a+(c[it.id+"."+sid]?q:0),0));else{const o=it.opts.find(o=>o[0]===c[it.id]);p=o?o[3]:0}bonus+=p});
+ bonus=Math.min(15,bonus);core=r1(core);
+ const total=core>=60&&core<70?r1(core+bonus):core;
+ const rated=CORE.filter(it=>it.type==="scale"&&!isNA(it.id)).every(it=>v[it.id])&&(isNA("c1")||evalScore(S.avg)!==null);
+ return{core,bonus,total,rated};
+}
+function suggest(t){
+ if(S.teacher.will===1)return["不續開（教師意願）","Not renewed (instructor’s choice)","bad"];
+ if(String(S.gates.g1)==="1"||String(S.gates.g2)==="1")return["不予續開（課程因素）","Not renewed (course factors)","bad"];
+ if(String(S.gates.g3)==="2")return["不予續開（第五條）","Not renewed (Article 5)","bad"];
+ if(!t.rated)return["評定中","Rating in progress",""];
+ if(t.total>=70)return["建議續開","Recommend renewal","ok"];
+ if(t.core>=60)return["有條件續開","Conditional renewal","warn"];
+ return["提教評會個別審議","Refer to committee","bad"];
+}
+/* build */
+$("#infoGrid").innerHTML=INFO.map(([k,z,e,t,o])=>`<label class="f"><span>${bi(z,e)}</span>${t==="sel"?`<select id="i_${k}"><option value=""></option>${o.map(([oz,oe])=>`<option value="${oz}">${oz} ${oe}</option>`).join("")}</select>`:`<input type="text" id="i_${k}">`}</label>`).join("");
+$("#willOpts").innerHTML=WILL.map(([z,e],i)=>`<label><input type="radio" name="will" value="${i}">${bi(z,e)}</label>`).join("");
+$("#compBox").innerHTML=BONUS.map(it=>{
+ const zl=it.z.replace(/（.*）/,""),el=it.e.replace(/ \(.*\)/,"");
+ const body=it.type==="check"?it.subs.map(([sid,z,e])=>`<label><input type="checkbox" id="tc_${it.id}.${sid}">${bi(z,e)}</label>`).join(""):it.opts.map(([oid,z,e])=>`<label><input type="radio" name="tc_${it.id}" value="${oid}">${bi(z,e)}</label>`).join("")+`<label><input type="radio" name="tc_${it.id}" value="">${bi("無","None")}</label>`;
+ return `<fieldset><legend>${bi(zl,el)}</legend><div class="opts">${body}</div><div class="up"><label class="btn upb"><input type="file" id="tf_${it.id}" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">${bi("上傳佐證","Upload evidence")}</label><ul class="fl" id="fl_${it.id}"></ul></div></fieldset>`}).join("");
+$("#gateBody").innerHTML=GATES.map(([k,z,e,o])=>`<tr><td class="first">${bi(z,e)}</td><td data-l="結果 Result"><div class="opts">${o.map(([oz,oe],i)=>`<label><input type="radio" name="${k}" value="${i}">${bi(oz,oe)}</label>`).join("")}</div></td></tr>`).join("");
+$("#coreBody").innerHTML=CORE.map(it=>{
+ const name=`<b>${bi(it.z,it.e)}</b>`;
+ if(it.type==="auto")return `<tr class="ar"><td class="first">${name}<div class="crit">${bi("僅計填答 10 人以上、填答率 50% 以上；「不評量」不列入；EMI 僅計共同題項","Only courses with 10+ respondents and 50%+ response; excluded if not evaluated; EMI uses common items only")}</div></td><td class="axc" data-l="評定 Rating"><div class="nn hide" id="nn_${it.id}">${bi("新開課程，不適用","New course — not applicable")}</div><label class="f ctl" id="ctl_${it.id}" style="max-width:14em"><span>${bi("評量平均值（5 分制）","Average rating (5-point scale)")}</span><input type="number" id="avg" step="0.01" min="1" max="5"></label></td></tr>`;
+ const pts=[1,2,3,4,5].map(n=>`<label class="ap"><input type="radio" name="ax_${it.id}" value="${n}"><span class="pt">${n}</span><span class="pl">${bi(LV[5-n][0],LV[5-n][1])}</span></label>`).join("");
+ const nz=it.nz&&!/換算|×/.test(it.nz)?`<div class="crit">${bi(it.nz,it.ne)}</div>`:"";
+ return `<tr class="ar"><td class="first">${name}${nz}<details class="lv"><summary>${bi("等級說明","Level guide")}</summary>${EVID.includes(it.id)?`<p style="margin:6px 0 0">${bi("評為 4 良好、5 優異者，須填寫具體事證或上傳佐證。","Ratings of 4 or 5 require specific evidence.")}</p>`:""}<ol reversed>${it.lv.map(([z,e],i)=>`<li><b>${bi(LV[i][0],LV[i][1])}</b> ${bi(z,e)}</li>`).join("")}</ol></details></td><td class="axc" data-l="評定 Rating"><div class="nn hide" id="nn_${it.id}">${bi("新開課程，不適用","New course — not applicable")}</div><div class="ctl" id="ctl_${it.id}"><div class="axis" role="radiogroup" aria-label="${it.z}">${pts}</div><div class="anc" id="an_${it.id}"></div>${EVID.includes(it.id)?`<div class="evb hide" id="evb_${it.id}"><label class="f"><span>${bi("具體事證（良好、優異必填）","Specific evidence (required for Good or Excellent)")}</span><textarea id="ev_${it.id}" rows="2"></textarea></label><div class="up"><label class="btn upb"><input type="file" id="df_${it.id}" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">${bi("上傳佐證","Upload evidence")}</label><ul class="fl" id="dfl_${it.id}"></ul></div></div>`:""}</div></td></tr>`}).join("");
+$("#outOpts").innerHTML=OUT.map(([z,e],i)=>`<label><input type="radio" name="out" value="${i}">${bi(z,e)}</label>`).join("");
+
+const FILES={};
+const kb=n=>n>=1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB";
+function fileNames(id){return (S.teacher.files||{})[id]||[]}
+function renderFiles(){BONUS.forEach(it=>{const ul=$("#fl_"+it.id);ul.innerHTML=fileNames(it.id).map((f,i)=>`<li><span>${esc(f.n)}</span><span class="fs">${kb(f.s)}</span><button type="button" class="rm" data-rm="${it.id}|${i}" aria-label="移除 Remove">×</button></li>`).join("")})}
+function compList(withFiles){
+ const c=S.teacher.comp||{},out=[];
+ BONUS.forEach(it=>{const fs=withFiles&&fileNames(it.id).length?`（${bi("佐證","evidence")}：${fileNames(it.id).map(f=>esc(f.n)).join("、")}）`:"";if(it.type==="check")it.subs.forEach(([sid,z,e])=>{if(c[it.id+"."+sid])out.push(bi(z,e)+fs)});else{const o=it.opts.find(o=>o[0]===c[it.id]);if(o)out.push(bi(o[1],o[2])+fs)}});
+ return out;
+}
+function load(){
+ INFO.forEach(([k])=>{$("#i_"+k).value=S.info[k]??""});
+ $("#n_type").value=S.notice.type||"survey";$("#n_due").value=S.notice.due||"";
+ document.querySelectorAll("input[name=will]").forEach(r=>r.checked=String(S.teacher.will)===r.value);
+ const c=S.teacher.comp||{};
+ document.querySelectorAll("[id^=tc_]").forEach(el=>el.checked=!!c[el.id.slice(3)]);
+ BONUS.forEach(it=>{if(it.type==="pick")document.querySelectorAll(`input[name=tc_${it.id}]`).forEach(r=>r.checked=(c[it.id]??"")===r.value)});
+ $("#t_note").value=S.teacher.note||"";$("#t_sign").value=S.teacher.sign||"";
+ GATES.forEach(([k])=>{document.querySelectorAll(`input[name=${k}]`).forEach(r=>r.checked=String(S.gates[k])===r.value)});
+ $("#avg").value=S.avg??"";
+ CORE.forEach(it=>{if(it.type!=="scale")return;document.querySelectorAll(`input[name=ax_${it.id}]`).forEach(r=>r.checked=String(S.dept[it.id]??"")===r.value);if(EVID.includes(it.id))$("#ev_"+it.id).value=S.dept[it.id+".ev"]||""});
+ document.querySelectorAll("input[name=out]").forEach(r=>r.checked=String(S.out.v)===r.value);
+ $("#o_text").value=S.out.t||"";$("#o_sign").value=S.out.s||"";
+}
+function render(){
+ const act=S.stage,t=calc(),sg=suggest(t);
+ document.querySelectorAll(".stn").forEach(b=>{b.setAttribute("aria-selected",b.dataset.stage===act);b.classList.toggle("done",STAGES.indexOf(b.dataset.stage)<STAGES.indexOf(act))});
+ document.querySelectorAll(".st").forEach(el=>el.classList.toggle("hide",!el.classList.contains("st-"+act)));
+ $("#roInfo").innerHTML=INFO.map(([k,z,e])=>`<div><span class="k">${bi(z,e)}</span>${esc(S.info[k])||"—"}</div>`).join("")+`<div><span class="k">${bi("通知類型","Notice type")}</span>${S.notice.type==="invite"?bi("新開課程邀請","New course invitation"):bi("續開意願調查","Renewal survey")}</div><div><span class="k">${bi("回覆期限","Reply by")}</span>${esc(S.notice.due)||"—"}</div>`;
+ $("#tComp").classList.toggle("hide",act!=="teacher"||S.teacher.will!==0);
+ renderFiles();
+ const cl=compList(true);
+ $("#tReply").innerHTML=`<b>${bi("教師回覆：","Instructor response: ")}</b>${S.teacher.will>=0?bi(...WILL[S.teacher.will]):bi("尚未回覆","No response yet")}<br><b>${bi("課程職能：","Competencies: ")}</b>${cl.length?cl.join("；"):"—"}${S.teacher.note?`<br><b>${bi("補充說明：","Notes: ")}</b>${esc(S.teacher.note)}`:""}`;
+ CORE.forEach(it=>{if(it.type!=="scale")return;const l=parseInt(S.dept[it.id]);$("#an_"+it.id).innerHTML=isNaN(l)?bi("請點選等級","Choose a level"):`<b>${l}</b> ${bi(it.lv[5-l][0],it.lv[5-l][1])}`+(needEv(it.id)?`<br><small>${bi("良好、優異須附具體事證","Good or Excellent requires specific evidence")}</small>`:"")});
+ EVID.forEach(id=>{$("#evb_"+id).classList.toggle("hide",!needEv(id));const fs=S.dept[id+".files"]||[];$("#dfl_"+id).innerHTML=fs.map((f,i)=>`<li><span>${esc(f.n)}</span><span class="fs">${kb(f.s)}</span><button type="button" class="rm" data-drm="${id}|${i}" aria-label="移除 Remove">×</button></li>`).join("");$("#evb_"+id).classList.toggle("miss",needEv(id)&&missingEv().includes(id))});
+ const miss=missingEv();
+ NEWNA.forEach(id=>{const on=isNew();$("#nn_"+id).classList.toggle("hide",!on);$("#ctl_"+id).classList.toggle("hide",on)});
+ $("#vTotal").textContent=t.rated?t.total:"—";
+ const tg=$("#sugTag");tg.className="tag "+sg[2];tg.innerHTML=bi(sg[0],sg[1]);
+ const declined=S.teacher.will===1,go=!declined&&(S.out.v===0||S.out.v===1),no=!declined&&S.out.v===2;
+ if(act==="dept")document.querySelectorAll(".sc").forEach(el=>el.classList.toggle("hide",declined));
+ const row=(k,v)=>`<div><span class="k">${k}</span>${v}</div>`;
+ let status,after="";
+ if(declined){status=bi("教師不續開，本案結束","Instructor not continuing; case closed");after=`<p>${bi("系所後續：另覓師資或停開本課程。","Next: the department finds another instructor or cancels the course.")}</p>`}
+ else if(S.out.v<0)status=bi("系所尚未評定","Not yet decided by the department");
+ else if(go){status=bi("已進入開課流程","Sent to course scheduling");if(S.out.v===1)after=`<p>${bi("有條件續開：待改善事項已列於說明，下次評估時追蹤。","Conditional: improvements listed in the explanation will be checked at the next review.")}</p>`}
+ else{status=bi("不予續開","Not renewed");
+  const N=S.notify;
+  after=`<h2 style="margin-top:18px">${bi("通知與陳述意見","Notice and response")}</h2><p class="note" style="margin:0 0 10px">${bi("以書面通知教師並附理由，教師得於期限內陳述意見；有陳述意見者，送系教評會審議。","Notify the instructor in writing with reasons; the instructor may respond by the deadline, and any response goes to the department faculty committee.")}</p>
+  <div class="grid"><label class="f"><span>${bi("通知日期","Notice date")}</span><input type="text" id="nf_date" placeholder="YYYY-MM-DD" value="${esc(N.date)}"></label><label class="f"><span>${bi("陳述意見期限","Response deadline")}</span><input type="text" id="nf_due" placeholder="YYYY-MM-DD" value="${esc(N.due)}"></label></div>
+  <label class="f" style="margin-top:12px"><span>${bi("教師陳述意見","Instructor’s response")}</span><textarea id="nf_reply">${esc(N.reply)}</textarea></label>
+  <div style="margin-top:12px"><div class="note" style="margin:0 0 6px">${bi("最終處理","Final outcome")}</div><div class="opts" style="flex-direction:column">${[["維持不予續開，系所另覓師資或停開","Not renewed; department finds another instructor or cancels"],["經教評會審議改為續開，進入開課流程","Overturned by committee; sent to course scheduling"],["經教評會審議改為有條件續開，進入開課流程","Overturned to conditional renewal; sent to course scheduling"]].map(([z,e],i)=>`<label><input type="radio" name="nf_fin" value="${i}"${N.fin===i?" checked":""}>${bi(z,e)}</label>`).join("")}</div></div>`}
+ $("#doneBox").innerHTML=`<h2>${bi("結果","Outcome")}</h2><p class="status">${status}</p><div class="ro">${row(bi("教師意願","Instructor intention"),S.teacher.will>=0?bi(...WILL[S.teacher.will]):"—")}${declined?"":row(bi("總分","Total score"),t.rated?t.total:"—")+row(bi("系所評定","Department decision"),S.out.v>=0?bi(...OUT[S.out.v]):"—")+row(bi("說明","Explanation"),esc(S.out.t)||"—")+row(bi("系主任","Department chair"),esc(S.out.s)||"—")}</div>${after}`;
+ const stageName={notice:bi("系所通知","Notice"),teacher:bi("教師填寫","Instructor"),dept:bi("系所初評","Dept. review"),done:bi("開課流程","Scheduling")}[act];
+ $("#kpi").innerHTML=`<div>${bi("目前關卡","Stage")}<b>${stageName}</b></div>`+(act==="dept"||act==="done"?`<div>${bi("總分","Total")}<b>${t.rated?t.total:"—"}</b></div><div class="hl">${bi("建議","Suggested")}<b style="font-size:18px">${bi(sg[0],sg[1])}</b></div>`:"");
+ const nb=$("#btnNext");nb.classList.toggle("hide",act==="done");if(NEXT[act])nb.innerHTML=bi(...NEXT[act]);
+ let blk=false;
+ if(act==="dept"){
+  if(declined)nb.innerHTML=bi("結案（教師不續開）","Close case (instructor not continuing)");
+  else if(S.out.v<0){nb.innerHTML=bi("請先完成評定","Choose a decision first");blk=true}
+  else if(S.out.v===2)nb.innerHTML=bi("送出，通知教師不予續開","Submit and notify instructor");
+  else nb.innerHTML=bi("送出，進入開課流程","Submit to course scheduling");
+  if(!declined&&(S.out.v===1||S.out.v===2)&&!(S.out.t||"").trim()){blk=true;$("#kpi").innerHTML+=`<div style="color:var(--warn)">${bi("尚缺","Missing")}<b style="font-size:16px;color:var(--warn)">${bi("評定說明","explanation")}</b></div>`}
+  if(!declined&&miss.length)blk=true;
+ }
+ nb.disabled=blk;
+ const blkEv=act==="dept"&&!declined&&miss.length>0;
+ if(blkEv)$("#kpi").innerHTML+=`<div style="color:var(--warn)">${bi("尚缺具體事證","Evidence missing")}<b style="font-size:16px;color:var(--warn)">${miss.map(id=>CORE.find(c=>c.id===id).z.split(" ")[0]).join("、")}</b></div>`;
+ save();
+}
+document.addEventListener("input",ev=>{
+ const el=ev.target,id=el.id||"";
+ if(el.type==="radio"||el.type==="checkbox")return;
+ if(id.startsWith("i_"))S.info[id.slice(2)]=el.value;
+ else if(id==="n_due")S.notice.due=el.value;
+ else if(id==="avg")S.avg=el.value;
+ else if(id==="t_note")S.teacher.note=el.value;else if(id==="t_sign")S.teacher.sign=el.value;
+ else if(id.startsWith("ev_"))S.dept[id.slice(3)+".ev"]=el.value;
+ else if(id==="o_text")S.out.t=el.value;
+ else if(id==="nf_date"||id==="nf_due"||id==="nf_reply"){S.notify[id.slice(3)]=el.value;save();return}else if(id==="o_sign")S.out.s=el.value;
+ else return;
+ render();
+});
+document.addEventListener("change",ev=>{
+ const el=ev.target,id=el.id||"",n=el.name||"";
+ if(id.startsWith("i_"))S.info[id.slice(2)]=el.value;
+ else if(id==="n_type")S.notice.type=el.value;
+ else if(n==="will")S.teacher.will=+el.value;
+ else if(id.startsWith("tf_")){const k=id.slice(3);S.teacher.files=S.teacher.files||{};const arr=S.teacher.files[k]=S.teacher.files[k]||[];FILES[k]=FILES[k]||[];[...el.files].forEach(f=>{arr.push({n:f.name,s:f.size});FILES[k].push(f)});el.value=""}
+ else if(id.startsWith("df_")){const k=id.slice(3)+".files";const arr=S.dept[k]=S.dept[k]||[];[...el.files].forEach(f=>arr.push({n:f.name,s:f.size}));el.value=""}
+ else if(id.startsWith("tc_")){S.teacher.comp=S.teacher.comp||{};if(el.checked)S.teacher.comp[id.slice(3)]=1;else delete S.teacher.comp[id.slice(3)]}
+ else if(n.startsWith("tc_")){S.teacher.comp=S.teacher.comp||{};const k=n.slice(3);if(el.value)S.teacher.comp[k]=el.value;else delete S.teacher.comp[k]}
+ else if(/^g\d$/.test(n))S.gates[n]=+el.value;
+ else if(n.startsWith("ax_"))S.dept[n.slice(3)]=el.value;
+ else if(n==="out")S.out.v=+el.value;
+ else if(n==="nf_fin")S.notify.fin=+el.value;
+ else return;
+ render();
+});
+document.addEventListener("click",ev=>{const d=ev.target.closest("[data-drm]");if(!d)return;const [k,i]=d.dataset.drm.split("|");S.dept[k+".files"].splice(+i,1);render()});
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-rm]");if(!b)return;const [k,i]=b.dataset.rm.split("|");S.teacher.files[k].splice(+i,1);if(FILES[k])FILES[k].splice(+i,1);render()});
+document.querySelectorAll(".stn").forEach(b=>b.addEventListener("click",()=>{S.stage=b.dataset.stage;render();window.scrollTo({top:0})}));
+$("#btnNext").addEventListener("click",()=>{S.stage=STAGES[STAGES.indexOf(S.stage)+1];render();window.scrollTo({top:0})});
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{S.lang=b.dataset.lang;applyLang();save()}));
+function applyLang(){document.body.classList.remove("zh","en");if(S.lang!=="both")document.body.classList.add(S.lang);document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===S.lang))}
+$("#btnClear").addEventListener("click",()=>{const lang=S.lang;S={stage:"notice",lang,info:{},notice:{type:"survey",due:""},teacher:{will:-1,comp:{},files:{},note:"",sign:""},gates:{},avg:"",dept:{},out:{v:-1,t:"",s:""},notify:{date:"",due:"",reply:"",fin:-1}};load();render()});
+function summaryText(){
+ const t=calc(),w=S.teacher.will>=0?WILL[S.teacher.will].join(" / "):"—",o=S.out.v>=0?OUT[S.out.v].join(" / "):"—";
+ const tmp=document.createElement("div");tmp.innerHTML=compList().join("；");const cz=[...tmp.querySelectorAll(".zh")].map(x=>x.textContent).join("；");
+ return [`課程 Course：${S.info.title||""}（${S.info.code||""}）`,`授課教師 Instructor：${S.info.teacher||""}`,`教師意願 Intention：${w}`,`課程職能 Competencies：${cz||"—"}`,`總分 Total：${t.rated?t.total:"—"}`,`系所評定 Decision：${o} ${S.out.t||""}`].join("\n");
+}
+$("#btnCopy").addEventListener("click",async()=>{const b=$("#btnCopy");try{await navigator.clipboard.writeText(summaryText());b.innerHTML=bi("已複製","Copied")}catch(e){b.innerHTML=bi("無法複製","Copy failed")}setTimeout(()=>{b.innerHTML=bi("複製摘要","Copy summary")},1800)});
+/* PDF */
+const R=$("#rpt"),bPdf=$("#btnPdf");let DL=null;
+function buildReport(){
+ const t=calc();
+ const tb=(head,rows)=>`<table><thead><tr>${head.map(x=>`<th>${bi(x[0],x[1])}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table>`;
+ const info=INFO.map(([k,z,e])=>`<tr><th>${bi(z,e)}</th><td>${esc(S.info[k])}</td></tr>`).join("");
+ const gates=GATES.map(([k,z,e,o])=>`<tr><td>${bi(z,e)}</td><td>${S.gates[k]>=0&&o[S.gates[k]]?bi(...o[S.gates[k]]):"—"}</td></tr>`).join("");
+ const core=CORE.map(it=>{let r;if(isNew()&&NEWNA.includes(it.id))r=bi("新開課程，不適用","New course — N/A");else if(it.type==="auto")r=esc(S.avg)||"—";else{const l=parseInt(S.dept[it.id]);r=isNaN(l)?"—":`${l} ${bi(LV[5-l][0],LV[5-l][1])}`;if(needEv(it.id)){const fs=(S.dept[it.id+".files"]||[]).map(f=>esc(f.n)).join("、");r+=`<br>${bi("事證","Evidence")}：${esc(S.dept[it.id+".ev"]||"")}${fs?`（${fs}）`:""}`}}return `<tr><td>${bi(it.z,it.e)}</td><td>${r}</td></tr>`}).join("");
+ const cl=S.teacher.will===0?compList(true):[];
+ const now=new Date().toISOString().slice(0,10);
+ R.innerHTML=`<div class="blk"><h1>${bi("兼任教師續開課程評估表","Adjunct Faculty Course Renewal Evaluation")}</h1><p class="meta">${bi("匯出日期","Exported")}：${now}</p>${tb([["欄位","Field"],["內容","Content"]],info)}</div>
+ <div class="blk"><h3>${bi("一、教師意願與課程職能","1. Instructor intention and competencies")}</h3>${tb([["項目","Item"],["內容","Content"]],`<tr><td>${bi("續開意願","Intention")}</td><td>${S.teacher.will>=0?bi(...WILL[S.teacher.will]):"—"}</td></tr><tr><td>${bi("課程職能","Competencies")}</td><td>${cl.length?cl.join("<br>"):"—"}</td></tr><tr><td>${bi("補充說明","Notes")}</td><td>${esc(S.teacher.note)}</td></tr><tr><td>${bi("教師簽名","Instructor signature")}</td><td>${esc(S.teacher.sign)}</td></tr>`)}</div>
+ <div class="blk"><h3>${bi("二、課程面門檻","2. Course eligibility")}</h3>${tb([["項目","Item"],["結果","Result"]],gates)}</div>
+ <div class="blk"><h3>${bi("三、核心表現","3. Core performance")}</h3>${tb([["項目","Item"],["評定","Rating"]],core)}</div>
+ <div class="blk"><h3>${bi("四、本課程評定","4. Recommendation")}</h3>${tb([["總分","Total"],["評定","Decision"],["說明","Explanation"],["系主任","Department chair"]],`<tr><td>${t.rated?t.total:"—"}</td><td>${S.out.v>=0?bi(...OUT[S.out.v]):"—"}</td><td>${esc(S.out.t)}</td><td>${esc(S.out.s)}</td></tr>`)}</div>`;
+}
+async function exportPdf(){
+ const lab=bPdf.innerHTML;bPdf.disabled=true;bPdf.innerHTML=bi("產生中…","Generating…");
+ try{
+  buildReport();
+  const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:"mm",format:"a4"});
+  const W=190,M=10,PH=277;let y=M;
+  for(const blk of R.querySelectorAll(".blk")){
+   const cv=await html2canvas(blk,{scale:2,backgroundColor:"#ffffff",logging:false});
+   const hmm=cv.height*W/cv.width;
+   if(hmm<=PH){if(y+hmm>M+PH){pdf.addPage();y=M}pdf.addImage(cv.toDataURL("image/jpeg",.92),"JPEG",M,y,W,hmm);y+=hmm}
+   else{const pxPer=cv.width/W;let off=0;while(off<cv.height){if(y>M){pdf.addPage();y=M}const sh=Math.min(cv.height-off,Math.floor(PH*pxPer));const part=document.createElement("canvas");part.width=cv.width;part.height=sh;part.getContext("2d").drawImage(cv,0,off,cv.width,sh,0,0,cv.width,sh);const ph=sh/pxPer;pdf.addImage(part.toDataURL("image/jpeg",.92),"JPEG",M,y,W,ph);y+=ph;off+=sh}}
+  }
+  const safe=s=>String(s||"").replace(/[\\/:*?"<>|]/g,"").trim();
+  const name=["兼任教師續開課程評估",safe(S.info.code),safe(S.info.teacher)].filter(Boolean).join("_")+".pdf";
+  if(DL)await DL.save({filename:name,data:pdf.output("blob")});else pdf.save(name);
+  bPdf.innerHTML=bi("已匯出","Exported");
+ }catch(e){
+  const code=e&&e.code;
+  bPdf.innerHTML=code==="declined"?bi("已取消","Cancelled"):bi("匯出失敗","Export failed");
+  if(code==="unavailable"||code==="host_unavailable"||code==="not_granted")bPdf.classList.add("hide");
+ }finally{bPdf.disabled=false;setTimeout(()=>{bPdf.innerHTML=lab},2200)}
+}
+bPdf.addEventListener("click",exportPdf);
+const libsOk=()=>!!(window.jspdf&&window.html2canvas);
+if(window.claude&&window.claude.use){window.claude.use("downloads").then(n=>{if(n&&libsOk()){DL=n;bPdf.classList.remove("hide")}}).catch(()=>{})}
+else if(libsOk())bPdf.classList.remove("hide");
+applyLang();load();render();
+}
+</script>
+</body>
+</html>

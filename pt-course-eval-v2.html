@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>兼任教師續開課程評估</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700&family=Red+Hat+Text:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE work: an official review form, calm and exact
+   IDEA a three-signature routing slip: department, college, academic affairs
+   PICTURE the form itself, with a routing bar of three stations and a live score dial per stage
+   COLOUR soft grey ground, white panels, muted slate blue accent, low contrast
+   TYPE Red Hat Display + Red Hat Text, Noto Sans TC for Chinese
+   LAYOUT title band with routing bar; one form column with sticky score bar; stacks on phone */
+:root{color-scheme:light dark;--bg:light-dark(#f5f6f4,#1d2023);--panel:light-dark(#ffffff,#25292c);--ink:light-dark(#2f3539,#d9dee1);--mute:light-dark(#727b80,#99a2a7);--line:light-dark(#e2e5e2,#373c40);--band:light-dark(#eceff0,#25292c);--accent:light-dark(#4f7390,#9dbbd1);--blue:light-dark(#4f7390,#9dbbd1);--soft:light-dark(#f2f4f3,#2b3034);--ok:light-dark(#4d7a5c,#93c3a3);--warn:light-dark(#94703a,#d6b580)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Red Hat Text","Noto Sans TC",system-ui,sans-serif;overflow-x:clip}
+h1,h2,.disp{font-family:"Red Hat Display","Noto Sans TC",system-ui,sans-serif}
+.band{background:var(--band);color:var(--ink);border-bottom:1px solid var(--line);padding:28px max(5vw,16px) 22px}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-size:clamp(26px,4vw,40px);line-height:1.08;letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--mute);margin:0}
+.en{display:block;font-size:.86em;color:var(--mute);font-weight:400;line-height:1.35}
+.band .en{color:var(--mute)}
+body.zh .en{display:none}
+body.en .zh{display:none}
+body.en .en{font-size:1em;color:inherit}
+.top{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end}
+.seg{display:inline-flex;border:1px solid var(--line);background:var(--panel);border-radius:8px;overflow:hidden}
+.seg button{background:transparent;color:var(--mute);border:0;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+.seg button[aria-pressed=true]{background:var(--soft);color:var(--ink);font-weight:600}
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:22px;position:relative}
+.route::before{content:"";position:absolute;left:8%;right:8%;top:21px;height:3px;background:var(--line);border-radius:2px}
+.stn{position:relative;background:none;border:0;color:var(--mute);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:0 4px;min-height:44px}
+.dot{width:46px;height:46px;border-radius:50%;background:var(--panel);border:2px solid var(--line);display:grid;place-items:center;font:700 17px "Red Hat Display",sans-serif;color:var(--mute);z-index:1}
+.stn[aria-selected=true] .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.stn[aria-selected=true]{color:var(--ink);font-weight:600}
+.stn .en{color:var(--mute)}
+.stn.done .dot{background:var(--soft);border-color:var(--ok);color:var(--ok)}
+main{padding:22px max(5vw,16px) 120px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
+h2{font-size:20px;margin:0 0 14px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:500}
+input[type=text],input[type=number],textarea,select{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 45%,transparent);outline-offset:1px}
+input[readonly]{background:var(--soft);color:var(--mute)}
+textarea{min-height:64px;resize:vertical}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--mute);font-weight:600;background:var(--soft)}
+td.n,th.n{text-align:right;white-space:nowrap}
+td input[type=number]{width:5.2em;text-align:right;padding:7px 8px}
+tr.ih td{background:var(--soft);border-top:2px solid var(--line)}
+tr.sr td.first{padding-left:22px;font-size:15px}
+td.ck{text-align:center}
+td.ck select{width:auto;max-width:11em;font-size:15px;padding:6px}
+.lv{margin-top:6px;font-size:13px;color:var(--mute)}
+.lv summary{cursor:pointer;color:var(--blue)}
+.lv ol{margin:6px 0 0;padding-left:20px}
+.crit{color:var(--mute);font-size:14px}
+.opts{display:flex;flex-wrap:wrap;gap:6px 14px}
+.opts label{display:flex;gap:6px;align-items:flex-start;font-size:15px;cursor:pointer}
+input[type=radio],input[type=checkbox]{width:18px;height:18px;margin-top:3px;accent-color:var(--blue);flex:none}
+.col-off{opacity:.45}
+.sum td{font-weight:700;background:var(--soft)}
+.conv{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:13px;color:var(--mute)}
+.conv span{border:1px solid var(--line);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.res{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.res .card{margin:0}
+.tag{display:inline-block;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;background:var(--soft);color:var(--blue)}
+.tag.bad{color:var(--warn)}
+.tag.ok{color:var(--ok)}
+.tag.warn{color:var(--warn)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px max(5vw,16px);z-index:5}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;justify-content:space-between}
+.kpi{display:flex;gap:20px;flex-wrap:wrap}
+.kpi div{font-size:13px;color:var(--mute)}
+.kpi b{display:block;font:700 24px/1.1 "Red Hat Display",sans-serif;color:var(--ink);font-variant-numeric:tabular-nums}
+.kpi .hl b{color:var(--accent)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:15px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:9px 14px;min-height:44px;cursor:pointer}
+.btn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+.diff{color:var(--warn);font-weight:600}
+.hide{display:none!important}
+.sign{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+#rpt{position:fixed;left:-12000px;top:0;width:794px;padding:36px 40px;background:#fff;color:#222;--ink:#222;--mute:#666;--line:#cfcfcf;--soft:#f3f4f4;--panel:#fff;font-size:13px;line-height:1.5}
+#rpt h1{font-size:22px;margin:0 0 2px;color:#222}
+#rpt h3{font-size:15px;margin:0 0 6px}
+#rpt .blk{padding:0 0 14px}
+#rpt table{width:100%;border-collapse:collapse;font-size:12.5px}
+#rpt th,#rpt td{border:1px solid #cfcfcf;padding:5px 6px;vertical-align:top;text-align:left;background:#fff}
+#rpt th{background:#f3f4f4;color:#444}
+#rpt td.n,#rpt th.n{text-align:right;white-space:nowrap}
+#rpt tr.ih td{background:#f3f4f4;font-weight:600}
+#rpt tr.sr td:first-child{padding-left:18px}
+#rpt td.c{text-align:center}
+#rpt .en{color:#666}
+#rpt .meta{color:#666;font-size:12px;margin:0 0 12px}
+@media(max-width:720px){.grid,.res,.sign{grid-template-columns:minmax(0,1fr)}.route::before{top:19px}.dot{width:40px;height:40px}}
+@media(max-width:600px){table{font-size:14px}th,td{padding:8px 4px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--line)}.stack td{border:0;display:flex;justify-content:space-between;gap:12px;padding:3px 0}.stack td::before{content:attr(data-l);font-size:13px;color:var(--mute);flex:none;max-width:45%}.stack td.first{display:block}.stack td.first::before{display:none}}
+@media(prefers-reduced-motion:no-preference){.dot{transition:background .25s,border-color .25s}}
+</style>
+</head>
+<body>
+<header class="band">
+ <div class="wrap">
+  <div class="top">
+   <div>
+    <h1><span class="zh">兼任教師續開課程評估表</span><span class="en">Adjunct Faculty Course Renewal Evaluation</span></h1>
+    <p class="sub"><span class="zh">每門課、每位授課教師一張</span><span class="en">One form per course per instructor</span></p>
+   </div>
+   <div class="seg" role="group" aria-label="Language">
+    <button type="button" data-lang="both" aria-pressed="true">中 / EN</button>
+    <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+    <button type="button" data-lang="en" aria-pressed="false">English</button>
+   </div>
+  </div>
+  <nav class="route" role="tablist">
+   <button class="stn" role="tab" data-stage="dept" aria-selected="true"><span class="dot">1</span><span><span class="zh">系所初評</span><span class="en">Department review</span></span></button>
+   <button class="stn" role="tab" data-stage="col" aria-selected="false"><span class="dot">2</span><span><span class="zh">院複評</span><span class="en">College review</span></span></button>
+   <button class="stn" role="tab" data-stage="aa" aria-selected="false"><span class="dot">3</span><span><span class="zh">教務處彙整核定</span><span class="en">Academic Affairs approval</span></span></button>
+  </nav>
+ </div>
+</header>
+
+<main><div class="wrap">
+ <section class="card" id="info">
+  <h2><span class="zh">基本資料</span><span class="en">Course information</span></h2>
+  <div class="grid" id="infoGrid"></div>
+  <p class="note"><span class="zh">表中已填入範例資料，可按「清空」重新填寫。</span><span class="en">Sample data is pre-filled; use “Clear” to start over.</span></p>
+ </section>
+
+ <section class="card" id="gates">
+  <h2><span class="zh">一、課程面門檻（不計分）</span><span class="en">1. Course eligibility (not scored)</span></h2>
+  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目</span><span class="en">Item</span></th><th><span class="zh">結果</span><span class="en">Result</span></th></tr></thead><tbody id="gateBody"></tbody></table></div>
+ </section>
+
+ <div id="scoring">
+ <section class="card">
+  <h2><span class="zh">二、核心表現（100 分）</span><span class="en">2. Core performance (100 points)</span></h2>
+  <p class="note" style="margin:0 0 10px"><span class="zh">勾選已達成的細項即給分；課堂經營、教學改善選擇等級（1–5）。</span><span class="en">Tick each criterion met; choose a level (1–5) for classroom management and teaching improvement.</span></p>
+  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目與細項</span><span class="en">Item and criteria</span></th><th class="n"><span class="zh">配分</span><span class="en">Points</span></th><th class="n c-dept"><span class="zh">系所初評</span><span class="en">Dept.</span></th><th class="n c-col"><span class="zh">院複評</span><span class="en">College</span></th></tr></thead><tbody id="coreBody"></tbody></table></div>
+  <div class="conv" id="conv"></div>
+ </section>
+
+ <section class="card">
+  <h2><span class="zh">三、課程與職能加分（最多 15 分）</span><span class="en">3. Course and competency bonus (max 15)</span></h2>
+  <div class="tbl"><table class="stack"><thead><tr><th><span class="zh">項目與細項</span><span class="en">Item and criteria</span></th><th class="n"><span class="zh">配分</span><span class="en">Points</span></th><th class="n c-dept"><span class="zh">系所初評</span><span class="en">Dept.</span></th><th class="n c-col"><span class="zh">院複評</span><span class="en">College</span></th></tr></thead><tbody id="bonusBody"></tbody></table></div>
+ </section>
+
+ <section class="card" id="verdict">
+  <h2><span class="zh">四、本課程評定</span><span class="en">4. Recommendation for this course</span></h2>
+  <div class="res" id="verdictBox"></div>
+ </section>
+ </div>
+
+ <section class="card hide" id="aa">
+  <h2><span class="zh">教務處彙整核定</span><span class="en">Academic Affairs consolidation and approval</span></h2>
+  <div class="tbl"><table><thead><tr><th></th><th class="n"><span class="zh">核心</span><span class="en">Core</span></th><th class="n"><span class="zh">加分</span><span class="en">Bonus</span></th><th><span class="zh">評定</span><span class="en">Result</span></th><th><span class="zh">說明</span><span class="en">Explanation</span></th></tr></thead><tbody id="aaBody"></tbody></table></div>
+  <p class="note" id="aaDiff"></p>
+  <h2 style="margin-top:18px"><span class="zh">核定結果</span><span class="en">Final decision</span></h2>
+  <div class="opts" id="aaOpts"></div>
+  <label class="f" style="margin-top:12px"><span><span class="zh">核定說明</span><span class="en">Notes</span></span><textarea id="aaNote"></textarea></label>
+  <div class="sign">
+   <label class="f"><span><span class="zh">承辦人</span><span class="en">Officer</span></span><input type="text" id="sgOfficer"></label>
+   <label class="f"><span><span class="zh">組長</span><span class="en">Section chief</span></span><input type="text" id="sgChief"></label>
+   <label class="f"><span><span class="zh">教務長</span><span class="en">Dean of Academic Affairs</span></span><input type="text" id="sgDean"></label>
+  </div>
+ </section>
+</div></main>
+<div id="rpt" aria-hidden="true"></div>
+
+<div class="bar"><div class="wrap">
+ <div class="kpi" id="kpi"></div>
+ <div class="btns">
+  <button class="btn" id="btnClear" type="button"><span class="zh">清空</span><span class="en">Clear</span></button>
+  <button class="btn hide" id="btnPdf" type="button"><span class="zh">匯出 PDF</span><span class="en">Export PDF</span></button>
+  <button class="btn" id="btnCopy" type="button"><span class="zh">複製摘要</span><span class="en">Copy summary</span></button>
+  <button class="btn pri" id="btnNext" type="button"><span class="zh">送下一關</span><span class="en">Send to next stage</span></button>
+ </div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+{
+const INFO=[
+ ["title","課程名稱","Course title","text"],["code","開課代碼","Course code","text"],
+ ["unit","開課單位","Offering unit","text"],["cat","課程類別","Course category","sel",[["系所專業","Departmental"],["全人","Holistic education"]]],
+ ["teacher","授課教師","Instructor","text"],["co","合授人數","Number of co-instructors","text"],
+ ["terms","評估資料學期（最近 2 學年內最近兩次開課）","Semesters evaluated (last two offerings within 2 academic years)","text"],["term","擬開課學期","Proposed semester","text"]];
+const GATES=[
+ ["g1","本課程列入次學期預排開課，且具開課需求","Course is in next semester’s preliminary schedule and there is demand",[["符合","Met"],["不符","Not met"]]],
+ ["g2","開課單位尚有得聘員額","Offering unit has an available adjunct position",[["符合","Met"],["不符","Not met"]]],
+ ["g3","《教學評量辦法》第五條案件狀態","Status under Article 5 of the Teaching Evaluation Regulations",[["無","None"],["說明或輔導中","Explanation or support in progress"],["經院教評會審議可歸責且改善後仍未達標","Attributed to instructor by the College Committee and still below standard after support"]]]];
+const LV=[["優異","Excellent"],["良好","Good"],["符合","Meets"],["待加強","Needs work"],["不足","Insufficient"]];
+const CORE=[
+ {id:"c1",z:"1 教學評量",e:"1 Student course evaluation",max:20,type:"auto",nz:"依平均值換算；僅計填答 10 人以上、填答率 50% 以上；「不評量」不列入；EMI 僅計共同題項",ne:"Converted from the average; only courses with 10+ respondents and 50%+ response; excluded if not evaluated; EMI uses common items only"},
+ {id:"c2",z:"2 教學大綱",e:"2 Syllabus",max:10,type:"check",nz:"教務系統預填",ne:"Pre-filled from the academic system",subs:[["s1","各次均準時上傳","Uploaded on time each offering",5],["s2","內容完整（含評分方式、各週進度）","Complete, including grading and weekly plan",5]]},
+ {id:"c3",z:"3 期中預警",e:"3 Mid-term early alert",max:10,type:"check",nz:"教務系統預填；無應預警學生視同完成",ne:"Pre-filled; no students to flag counts as done",subs:[["s1","第一次開課如期完成","Completed on time, first offering",5],["s2","第二次開課如期完成","Completed on time, second offering",5]]},
+ {id:"c4",z:"4 成績繳交",e:"4 Grade submission",max:10,type:"check",nz:"教務系統預填",ne:"Pre-filled from the academic system",subs:[["s1","各次均準時繳交","Submitted on time each offering",5],["s2","無因教師疏失之成績更正","No corrections due to instructor error",5]]},
+ {id:"c5",z:"5 數位教學能力",e:"5 Digital teaching",max:10,type:"check",na:true,nz:"課程性質不適用者，以其餘核心項目得分率換算",ne:"If not applicable, converted from the rate on the other core items",subs:[["s1","以數位學習平台發布教材與公告","Materials and notices on the learning platform",4],["s2","線上繳交作業或測驗","Online assignments or quizzes",3],["s3","數位教材或線上／混成教學","Digital materials or online/blended teaching",3]]},
+ {id:"c6",z:"6 課堂經營",e:"6 Classroom management",max:10,type:"scale",nz:"五點量表，得分＝等級 × 2",ne:"Five-point scale; points = level × 2",lv:[["依行事曆授課、調補課均依規，無申訴成立，課堂秩序與師生互動良好且有具體事證","Teaches to calendar, proper make-up classes, no upheld complaints, good order and interaction with evidence"],["授課與調補課依規，無申訴成立，課堂互動良好","Proper teaching and make-up classes, no upheld complaints, good interaction"],["授課與調補課依規，無申訴成立","Proper teaching and make-up classes, no upheld complaints"],["調補課偶有未依規，或課堂秩序有待改善","Occasional improper make-up classes, or order needs improvement"],["多次未依規授課，或有申訴成立","Repeated improper teaching, or an upheld complaint"]]},
+ {id:"c7",z:"7 教學改善",e:"7 Teaching improvement",max:10,type:"scale",nz:"五點量表，得分＝等級 × 2",ne:"Five-point scale; points = level × 2",lv:[["依回饋具體調整並有成效證據，且有教學創新（PBL、業師協同等）","Concrete changes from feedback with evidence of results, plus innovation such as PBL or industry co-teaching"],["有具體調整或教學創新，並說明成效","Concrete changes or innovation, with results explained"],["有具體調整，但未說明成效","Concrete changes, results not explained"],["僅有零星調整","Only minor changes"],["未依回饋做任何調整","No changes based on feedback"]]},
+ {id:"c8",z:"8 永續融入",e:"8 Sustainability (SDGs)",max:10,type:"check",subs:[["s1","大綱標註對應之 SDGs 目標","SDG goals tagged in the syllabus",3],["s2","有對應之教學內容或活動","Matching teaching content or activities",4],["s3","有對應之作業或學生成果","Matching assignments or student work",3]]},
+ {id:"c9",z:"9 AI 融入",e:"9 AI integration",max:10,type:"check",subs:[["s1","大綱訂定 AI 使用規範","AI usage rules in the syllabus",3],["s2","設計 AI 協作學習活動或作業","AI-assisted learning activity or assignment",4],["s3","要求學生揭露 AI 使用情形並反思","Students disclose and reflect on AI use",3]]}];
+const BONUS=[
+ {id:"b1",z:"外語教學（課程，擇一）",e:"Foreign-language teaching (course, one only)",max:4,type:"pick",opts:[["emi","本課程為全外語（EMI）課程","EMI course",4],["c1","非 EMI，教師具外語檢定 C1 以上","Non-EMI; instructor CEFR C1+",2],["b2","非 EMI，教師具外語檢定 B2","Non-EMI; instructor CEFR B2",1]]},
+ {id:"b2",z:"課程規劃（課程）",e:"Program integration (course)",max:2,type:"check",subs:[["s1","列入跨域學程、微學程或引導式跨域選修","Part of an interdisciplinary program, micro-program or guided cross-domain elective",2]]},
+ {id:"b3",z:"課程獲獎（課程）",e:"Course award (course)",max:3,type:"check",subs:[["s1","獲優良課程、教材或教學獎項","Award for course, materials or teaching",3]]},
+ {id:"b4",z:"AI 素養（職能，上限 2）",e:"AI literacy (competency, max 2)",max:2,type:"check",subs:[["s1","參加 AI 教學研習","Attended an AI teaching workshop",1],["s2","取得 AI 應用認證","Holds an AI certification",2]]},
+ {id:"b5",z:"教學研習（職能，擇一）",e:"Teaching workshops (competency, one only)",max:2,type:"pick",opts:[["1","參加教學發展研習 1 場","1 workshop",1],["2","參加教學發展研習 2 場以上","2 or more workshops",2]]},
+ {id:"b6",z:"個人教學獎項（職能，擇一）",e:"Personal teaching award (competency, one only)",max:3,type:"pick",opts:[["u","校級以上","University level or above",3],["c","院級","College level",2]]}];
+const OUT=[["建議續開","Recommend renewal"],["有條件續開","Conditional renewal"],["不予續開","Not renewed"]];
+const AAOUT=[["核定續開","Approved"],["核定有條件續開","Approved with conditions"],["不予續開","Not approved"]];
+const STAGES=["dept","col","aa"];
+const KEY="adjEvalForm.v2";
+const SAMPLE={stage:"dept",lang:"both",info:{title:"行銷管理",code:"D01234",unit:"企業管理學系",cat:"系所專業",teacher:"王小明",co:"1",terms:"114-1、114-2",term:"115-1"},gates:{g1:0,g2:0,g3:0},avg:"4.12",
+ dept:{"c2.s1":1,"c2.s2":1,"c3.s1":1,"c3.s2":1,"c4.s1":1,"c5.s1":1,"c5.s2":1,c6:"4",c7:"3","c8.s1":1,"c8.s2":1,"c9.s1":1,b1:"c1","b2.s1":1,b5:"2"},col:{},out:{dept:{v:-1,t:"",s:""},col:{v:-1,t:"",s:""}},aa:{v:-1,t:""}};
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+if(!S||!S.info)S=JSON.parse(JSON.stringify(SAMPLE));
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const bi=(z,e)=>`<span class="zh">${z}</span><span class="en">${e}</span>`;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const r1=x=>Math.round(x*10)/10;
+const evalScore=a=>{const x=parseFloat(a);if(isNaN(x))return null;return r1(Math.min(20,Math.max(0,20*(x-3)/1.5)))};
+function itemScore(st,it){
+ const v=S[st];
+ if(it.type==="auto")return evalScore(S.avg)??0;
+ if(it.type==="check")return Math.min(it.max,it.subs.reduce((a,[sid,,,p])=>a+(v[it.id+"."+sid]?p:0),0));
+ if(it.type==="scale"){const l=parseInt(v[it.id]);return isNaN(l)?0:it.max*l/5}
+ if(it.type==="pick"){const o=it.opts.find(o=>o[0]===v[it.id]);return o?o[3]:0}
+ return 0;
+}
+function totals(st){
+ const sc={};let core=0;
+ CORE.forEach(it=>{sc[it.id]=itemScore(st,it)});
+ if(S[st]["c5.na"]){let o=0;CORE.forEach(it=>{if(it.id!=="c5")o+=sc[it.id]});sc.c5=r1(o/90*10)}
+ CORE.forEach(it=>core+=sc[it.id]);
+ let bonus=0;BONUS.forEach(it=>{sc[it.id]=itemScore(st,it);bonus+=sc[it.id]});
+ const filled=Object.keys(S[st]).length>0||evalScore(S.avg)!==null;
+ return{sc,core:r1(core),bonus:Math.min(15,r1(bonus)),filled};
+}
+/* build form */
+$("#infoGrid").innerHTML=INFO.map(([k,z,e,t,o])=>`<label class="f"><span>${bi(z,e)}</span>${t==="sel"?`<select id="i_${k}"><option value=""></option>${o.map(([oz,oe])=>`<option value="${oz}">${oz} ${oe}</option>`).join("")}</select>`:`<input type="text" id="i_${k}">`}</label>`).join("");
+$("#gateBody").innerHTML=GATES.map(([k,z,e,o])=>`<tr><td class="first">${bi(z,e)}</td><td data-l="結果 Result"><div class="opts">${o.map(([oz,oe],i)=>`<label><input type="radio" name="${k}" value="${i}">${bi(oz,oe)}</label>`).join("")}</div></td></tr>`).join("");
+const cells=(f)=>["dept","col"].map(st=>`<td class="ck c-${st}" data-l="${st==="dept"?"系所 Dept.":"院 College"}">${f(st)}</td>`).join("");
+function rows(it){
+ let h=`<tr class="ih"><td class="first"><b>${bi(it.z,it.e)}</b>${it.nz?`<div class="crit">${bi(it.nz,it.ne)}</div>`:""}`;
+ if(it.type==="auto")h+=`<label class="f" style="margin-top:8px;max-width:16em"><span>${bi("評量平均值（5 分制）","Average rating (5-point scale)")}</span><input type="number" id="avg" step="0.01" min="1" max="5"></label>`;
+ if(it.type==="scale")h+=`<details class="lv"><summary>${bi("等級說明","Level guide")}</summary><ol reversed>${it.lv.map(([z,e],i)=>`<li><b>${bi(LV[i][0],LV[i][1])}</b> ${bi(z,e)}</li>`).join("")}</ol></details>`;
+ h+=`</td><td class="n" data-l="配分 Points">${it.max}</td>${["dept","col"].map(st=>`<td class="n c-${st}" data-l="${st==="dept"?"系所 Dept.":"院 College"}"><b id="t_${st}_${it.id}"></b></td>`).join("")}</tr>`;
+ if(it.type==="check"){
+  it.subs.forEach(([sid,z,e,p])=>{h+=`<tr class="sr"><td class="first">${bi(z,e)}</td><td class="n" data-l="配分 Points">${p}</td>${cells(st=>`<input type="checkbox" id="${st}__${it.id}.${sid}" aria-label="${z}">`)}</tr>`});
+  if(it.na)h+=`<tr class="sr"><td class="first"><i>${bi("課程性質不適用（系所認定）","Not applicable to this course (department decision)")}</i></td><td class="n"></td>${cells(st=>`<input type="checkbox" id="${st}__${it.id}.na" aria-label="不適用">`)}</tr>`;
+ }
+ if(it.type==="scale")h+=`<tr class="sr"><td class="first">${bi("等級","Level")}</td><td class="n"></td>${cells(st=>`<select id="${st}__${it.id}"><option value=""></option>${LV.map((l,i)=>`<option value="${5-i}">${5-i} ${l[0]} ${l[1]}</option>`).join("")}</select>`)}</tr>`;
+ if(it.type==="pick")h+=it.opts.map(([oid,z,e,p])=>`<tr class="sr"><td class="first">${bi(z,e)}</td><td class="n" data-l="配分 Points">${p}</td>${cells(st=>`<input type="radio" name="${st}__${it.id}" value="${oid}" id="${st}__${it.id}=${oid}" aria-label="${z}">`)}</tr>`).join("")+`<tr class="sr"><td class="first">${bi("不適用","None")}</td><td class="n"></td>${cells(st=>`<input type="radio" name="${st}__${it.id}" value="" id="${st}__${it.id}=" aria-label="none">`)}</tr>`;
+ return h;
+}
+const sumRow=(id,z,e,m)=>`<tr class="sum"><td class="first">${bi(z,e)}</td><td class="n">${m}</td><td class="n c-dept" data-l="系所 Dept." id="dept_${id}"></td><td class="n c-col" data-l="院 College" id="col_${id}"></td></tr>`;
+$("#coreBody").innerHTML=CORE.map(rows).join("")+sumRow("core","核心小計","Core subtotal",100);
+$("#bonusBody").innerHTML=BONUS.map(rows).join("")+sumRow("bonus","加分小計（以 15 分為限）","Bonus subtotal (capped at 15)",15);
+$("#conv").innerHTML=bi("教學評量換算：","Rating conversion:")+[3.0,3.2,3.4,3.6,3.8,4.0,4.2,4.4,4.5].map(a=>`<span>${a.toFixed(1)} → ${evalScore(a)}</span>`).join("");
+const vbox=st=>`<div class="card" id="v_${st}"><h2>${st==="dept"?bi("系所初評","Department review"):bi("院複評","College review")}</h2><p>${bi("系統建議：","Suggested: ")}<span class="tag" id="sug_${st}"></span></p><div class="opts" style="flex-direction:column">${OUT.map(([z,e],i)=>`<label><input type="radio" name="out_${st}" value="${i}">${bi(z,e)}</label>`).join("")}</div><label class="f" style="margin-top:10px"><span>${bi("說明（有條件或不予續開時必填）","Explanation (required if conditional or not renewed)")}</span><textarea id="txt_${st}"></textarea></label><label class="f" style="margin-top:10px"><span>${st==="dept"?bi("系主任簽章／日期","Department chair / date"):bi("院長簽章／日期","Dean of college / date")}</span><input type="text" id="sig_${st}"></label></div>`;
+$("#verdictBox").innerHTML=vbox("dept")+vbox("col");
+$("#aaOpts").innerHTML=AAOUT.map(([z,e],i)=>`<label><input type="radio" name="out_aa" value="${i}">${bi(z,e)}</label>`).join("");
+
+function load(){
+ INFO.forEach(([k])=>{$("#i_"+k).value=S.info[k]??""});
+ GATES.forEach(([k])=>{document.querySelectorAll(`input[name=${k}]`).forEach(r=>r.checked=String(S.gates[k])===r.value)});
+ $("#avg").value=S.avg??"";
+ ["dept","col"].forEach(st=>{
+  document.querySelectorAll(`[id^="${st}__"]`).forEach(el=>{
+   const key=el.id.slice(st.length+2);
+   if(el.type==="checkbox")el.checked=!!S[st][key];
+   else if(el.type==="radio"){const [k,val]=key.split("=");el.checked=(S[st][k]??"")===val}
+   else el.value=S[st][key]??"";
+  });
+  document.querySelectorAll(`input[name=out_${st}]`).forEach(r=>r.checked=String(S.out[st].v)===r.value);
+  $("#txt_"+st).value=S.out[st].t||"";$("#sig_"+st).value=S.out[st].s||"";
+ });
+ document.querySelectorAll("input[name=out_aa]").forEach(r=>r.checked=String(S.aa.v)===r.value);
+ $("#aaNote").value=S.aa.t||"";$("#sgOfficer").value=S.aa.officer||"";$("#sgChief").value=S.aa.chief||"";$("#sgDean").value=S.aa.dean||"";
+}
+function suggest(t){
+ const g1=String(S.gates.g1)==="1",g2=String(S.gates.g2)==="1",g3=String(S.gates.g3)==="2";
+ if(g1||g2)return["不予續開（課程因素）","Not renewed (course factors)","bad"];
+ if(g3)return["不予續開（第五條）","Not renewed (Article 5)","bad"];
+ if(!t.filled)return["尚未評分","Not scored yet",""];
+ if(t.core>=70)return["建議續開","Recommend renewal","ok"];
+ if(t.core>=60&&t.core+t.bonus>=70)return["建議續開（含加分）","Recommend renewal (with bonus)","ok"];
+ if(t.core>=60)return["有條件續開","Conditional renewal","warn"];
+ return["提教評會個別審議","Refer to committee","bad"];
+}
+function render(){
+ ["dept","col"].forEach(st=>{
+  const t=totals(st);
+  [...CORE,...BONUS].forEach(it=>{$(`#t_${st}_${it.id}`).textContent=r1(t.sc[it.id])});
+  $(`#${st}_core`).textContent=t.core;$(`#${st}_bonus`).textContent=t.bonus;
+  const [z,e,c]=suggest(t);const tg=$("#sug_"+st);tg.className="tag "+c;tg.innerHTML=bi(z,e);
+ });
+ const act=S.stage;
+ document.querySelectorAll(".stn").forEach(b=>{b.setAttribute("aria-selected",b.dataset.stage===act);b.classList.toggle("done",STAGES.indexOf(b.dataset.stage)<STAGES.indexOf(act))});
+ $("#scoring").classList.toggle("hide",act==="aa");$("#aa").classList.toggle("hide",act!=="aa");
+ ["dept","col"].forEach(st=>{
+  const on=act===st;
+  document.querySelectorAll(".c-"+st).forEach(el=>el.classList.toggle("col-off",!on));
+  document.querySelectorAll(`[id^="${st}__"], #v_${st} input, #v_${st} textarea`).forEach(el=>el.disabled=!on);
+  $("#v_"+st).classList.toggle("col-off",!on);
+ });
+ $("#avg").disabled=act!=="dept";
+ $("#gates").querySelectorAll("input").forEach(el=>el.disabled=act==="aa");
+ $("#info").querySelectorAll("input,select").forEach(el=>el.disabled=act==="aa");
+ const d=totals("dept"),c=totals("col");
+ const lab=v=>v>=0?bi(...OUT[v]):"—";
+ $("#aaBody").innerHTML=[["dept","系所初評","Department",d],["col","院複評","College",c]].map(([st,z,e,t])=>`<tr><td>${bi(z,e)}</td><td class="n">${t.core}</td><td class="n">${t.bonus}</td><td>${lab(S.out[st].v)}</td><td>${esc(S.out[st].t)}</td></tr>`).join("");
+ const diff=S.out.dept.v>=0&&S.out.col.v>=0&&S.out.dept.v!==S.out.col.v;
+ $("#aaDiff").innerHTML=diff?`<span class="diff">${bi("系所與院的評定不一致，請確認後核定。","Department and college results differ; please review before approval.")}</span>`:"";
+ const cur=act==="aa"?c:totals(act);const sg=suggest(cur);
+ $("#kpi").innerHTML=`<div>${bi("目前關卡","Stage")}<b>${act==="dept"?bi("系所","Dept."):act==="col"?bi("院","College"):bi("教務處","AA")}</b></div><div>${bi("核心","Core")}<b>${cur.core}</b></div><div>${bi("加分","Bonus")}<b>${cur.bonus}</b></div><div class="hl">${bi("建議","Suggested")}<b style="font-size:18px">${bi(sg[0],sg[1])}</b></div>`;
+ $("#btnNext").classList.toggle("hide",act==="aa");
+ save();
+}
+function setVal(el){
+ const id=el.id||"";
+ const m=id.match(/^(dept|col)__(.+)$/);
+ if(m){const st=m[1],key=m[2];
+  if(el.type==="checkbox"){if(el.checked)S[st][key]=1;else delete S[st][key]}
+  else if(el.type==="radio"){const k=key.split("=")[0];if(el.value)S[st][k]=el.value;else delete S[st][k]}
+  else{if(el.value)S[st][key]=el.value;else delete S[st][key]}
+  return true}
+ return false;
+}
+document.addEventListener("input",ev=>{
+ const el=ev.target,id=el.id||"";
+ if(el.type==="radio"||el.type==="checkbox")return;
+ if(id.startsWith("i_"))S.info[id.slice(2)]=el.value;
+ else if(id==="avg")S.avg=el.value;
+ else if(setVal(el)){}
+ else if(id.startsWith("txt_"))S.out[id.slice(4)].t=el.value;
+ else if(id.startsWith("sig_"))S.out[id.slice(4)].s=el.value;
+ else if(id==="aaNote")S.aa.t=el.value;
+ else if(id==="sgOfficer")S.aa.officer=el.value;else if(id==="sgChief")S.aa.chief=el.value;else if(id==="sgDean")S.aa.dean=el.value;
+ render();
+});
+document.addEventListener("change",ev=>{
+ const el=ev.target;
+ if(el.type==="checkbox"){setVal(el);render();return}
+ if(el.tagName==="SELECT"&&setVal(el)){render();return}
+ if(el.type!=="radio")return;
+ if(setVal(el)){}
+ else if(/^g\d$/.test(el.name))S.gates[el.name]=+el.value;
+ else if(el.name==="out_aa")S.aa.v=+el.value;
+ else if(el.name.startsWith("out_"))S.out[el.name.slice(4)].v=+el.value;
+ render();
+});
+document.querySelectorAll(".stn").forEach(b=>b.addEventListener("click",()=>{S.stage=b.dataset.stage;render();window.scrollTo({top:0})}));
+$("#btnNext").addEventListener("click",()=>{
+ const st=S.stage;
+ if(st==="dept"&&Object.keys(S.col).length===0)S.col=JSON.parse(JSON.stringify(S.dept));
+ S.stage=STAGES[STAGES.indexOf(st)+1];load();render();window.scrollTo({top:0});
+});
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{S.lang=b.dataset.lang;applyLang();save()}));
+function applyLang(){document.body.classList.remove("zh","en");if(S.lang!=="both")document.body.classList.add(S.lang);document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===S.lang))}
+$("#btnClear").addEventListener("click",()=>{const lang=S.lang;S={stage:"dept",lang,info:{},gates:{},avg:"",dept:{},col:{},out:{dept:{v:-1,t:"",s:""},col:{v:-1,t:"",s:""}},aa:{v:-1,t:""}};load();render()});
+$("#btnCopy").addEventListener("click",async()=>{
+ const d=totals("dept"),c=totals("col"),o=v=>v>=0?OUT[v].join(" / "):"—";
+ const txt=[`課程 Course：${S.info.title||""}（${S.info.code||""}）`,`授課教師 Instructor：${S.info.teacher||""}`,`系所初評 Dept.：核心 ${d.core}、加分 ${d.bonus}、${o(S.out.dept.v)} ${S.out.dept.t||""}`,`院複評 College：核心 ${c.core}、加分 ${c.bonus}、${o(S.out.col.v)} ${S.out.col.t||""}`,`教務處核定 AA：${S.aa.v>=0?AAOUT[S.aa.v].join(" / "):"—"} ${S.aa.t||""}`].join("\n");
+ const b=$("#btnCopy");try{await navigator.clipboard.writeText(txt);b.innerHTML=bi("已複製","Copied")}catch(e){b.innerHTML=bi("無法複製","Copy failed")}
+ setTimeout(()=>{b.innerHTML=bi("複製摘要","Copy summary")},1800);
+});
+/* PDF */
+const R=$("#rpt"),bPdf=$("#btnPdf");let DL=null;
+const chosen=(opts,v)=>v>=0&&opts[v]?bi(...opts[v]):"—";
+function subMark(st,it,sid){return S[st][it.id+"."+sid]?"✓":""}
+function itemRows(it,d,c){
+ let h=`<tr class="ih"><td>${bi(it.z,it.e)}${it.type==="auto"?`（${esc(S.avg)||"—"}）`:""}</td><td class="n">${it.max}</td><td class="n">${r1(d.sc[it.id])}</td><td class="n">${r1(c.sc[it.id])}</td></tr>`;
+ if(it.type==="check"){it.subs.forEach(([sid,z,e,p])=>{h+=`<tr class="sr"><td>${bi(z,e)}</td><td class="n">${p}</td><td class="c">${subMark("dept",it,sid)}</td><td class="c">${subMark("col",it,sid)}</td></tr>`});
+  if(it.na&&(S.dept["c5.na"]||S.col["c5.na"]))h+=`<tr class="sr"><td>${bi("課程性質不適用","Not applicable")}</td><td></td><td class="c">${S.dept["c5.na"]?"✓":""}</td><td class="c">${S.col["c5.na"]?"✓":""}</td></tr>`}
+ if(it.type==="scale")h+=`<tr class="sr"><td>${bi("等級","Level")}</td><td></td><td class="c">${esc(S.dept[it.id]||"—")}</td><td class="c">${esc(S.col[it.id]||"—")}</td></tr>`;
+ if(it.type==="pick"){const lb=st=>{const o=it.opts.find(o=>o[0]===S[st][it.id]);return o?bi(o[1],o[2]):"—"};h+=`<tr class="sr"><td>${bi("選項","Option")}</td><td></td><td>${lb("dept")}</td><td>${lb("col")}</td></tr>`}
+ return h;
+}
+function buildReport(){
+ const d=totals("dept"),c=totals("col");
+ const t=(head,rows)=>`<table><thead><tr>${head.map(x=>`<th${x[2]?' class="n"':''}>${bi(x[0],x[1])}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table>`;
+ const H=[["項目","Item"],["配分","Points",1],["系所初評","Dept.",1],["院複評","College",1]];
+ const info=INFO.map(([k,z,e])=>`<tr><th>${bi(z,e)}</th><td>${esc(S.info[k])}</td></tr>`).join("");
+ const gates=GATES.map(([k,z,e,o])=>`<tr><td>${bi(z,e)}</td><td>${chosen(o,S.gates[k]??-1)}</td></tr>`).join("");
+ const core=CORE.map(it=>itemRows(it,d,c)).join("")+`<tr><th>${bi("核心小計","Core subtotal")}</th><th class="n">100</th><th class="n">${d.core}</th><th class="n">${c.core}</th></tr>`;
+ const bon=BONUS.map(it=>itemRows(it,d,c)).join("")+`<tr><th>${bi("加分小計","Bonus subtotal")}</th><th class="n">15</th><th class="n">${d.bonus}</th><th class="n">${c.bonus}</th></tr>`;
+ const ver=[["dept","系所初評","Department review","系主任","Department chair"],["col","院複評","College review","院長","Dean of college"]].map(([st,z,e,sz,se])=>`<tr><td>${bi(z,e)}</td><td>${chosen(OUT,S.out[st].v)}</td><td>${esc(S.out[st].t)}</td><td>${bi(sz,se)}：${esc(S.out[st].s)}</td></tr>`).join("");
+ const aa=`<tr><td>${chosen(AAOUT,S.aa.v)}</td><td>${esc(S.aa.t)}</td><td>${bi("承辦人","Officer")}：${esc(S.aa.officer)}<br>${bi("組長","Section chief")}：${esc(S.aa.chief)}<br>${bi("教務長","Dean of Academic Affairs")}：${esc(S.aa.dean)}</td></tr>`;
+ const now=new Date().toISOString().slice(0,10);
+ R.innerHTML=`<div class="blk"><h1>${bi("兼任教師續開課程評估表","Adjunct Faculty Course Renewal Evaluation")}</h1><p class="meta">${bi("匯出日期","Exported")}：${now}</p>${t([["欄位","Field"],["內容","Content"]],info)}</div>
+ <div class="blk"><h3>${bi("一、課程面門檻","1. Course eligibility")}</h3>${t([["項目","Item"],["結果","Result"]],gates)}</div>
+ <div class="blk"><h3>${bi("二、核心表現","2. Core performance")}</h3>${t(H,core)}</div>
+ <div class="blk"><h3>${bi("三、課程與職能加分","3. Course and competency bonus")}</h3>${t(H,bon)}</div>
+ <div class="blk"><h3>${bi("四、本課程評定","4. Recommendation")}</h3>${t([["關卡","Stage"],["評定","Result"],["說明","Explanation"],["簽章","Signature"]],ver)}</div>
+ <div class="blk"><h3>${bi("五、教務處核定","5. Academic Affairs decision")}</h3>${t([["核定結果","Decision"],["核定說明","Notes"],["簽章","Signatures"]],aa)}</div>`;
+}
+async function exportPdf(){
+ const lab=bPdf.innerHTML;bPdf.disabled=true;bPdf.innerHTML=bi("產生中…","Generating…");
+ try{
+  buildReport();
+  const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:"mm",format:"a4"});
+  const W=190,M=10,PH=277;let y=M;
+  for(const blk of R.querySelectorAll(".blk")){
+   const cv=await html2canvas(blk,{scale:2,backgroundColor:"#ffffff",logging:false});
+   const hmm=cv.height*W/cv.width;
+   if(hmm<=PH){if(y+hmm>M+PH){pdf.addPage();y=M}pdf.addImage(cv.toDataURL("image/jpeg",.92),"JPEG",M,y,W,hmm);y+=hmm}
+   else{const pxPer=cv.width/W;let off=0;while(off<cv.height){if(y>M){pdf.addPage();y=M}const sh=Math.min(cv.height-off,Math.floor(PH*pxPer));const part=document.createElement("canvas");part.width=cv.width;part.height=sh;part.getContext("2d").drawImage(cv,0,off,cv.width,sh,0,0,cv.width,sh);const ph=sh/pxPer;pdf.addImage(part.toDataURL("image/jpeg",.92),"JPEG",M,y,W,ph);y+=ph;off+=sh}}
+  }
+  const safe=s=>String(s||"").replace(/[\\/:*?"<>|]/g,"").trim();
+  const name=["兼任教師續開課程評估",safe(S.info.code),safe(S.info.teacher)].filter(Boolean).join("_")+".pdf";
+  await DL.save({filename:name,data:pdf.output("blob")});
+  bPdf.innerHTML=bi("已匯出","Exported");
+ }catch(e){
+  const code=e&&e.code;
+  bPdf.innerHTML=code==="declined"?bi("已取消","Cancelled"):bi("匯出失敗","Export failed");
+  if(code==="unavailable"||code==="host_unavailable"||code==="not_granted")bPdf.classList.add("hide");
+ }finally{bPdf.disabled=false;setTimeout(()=>{bPdf.innerHTML=lab},2200)}
+}
+bPdf.addEventListener("click",exportPdf);
+if(window.claude&&window.claude.use){window.claude.use("downloads").then(n=>{if(n&&window.jspdf&&window.html2canvas){DL=n;bPdf.classList.remove("hide")}}).catch(()=>{})}
+applyLang();load();render();
+}
+</script>
+</body>
+</html>

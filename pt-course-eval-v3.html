@@ -306,7 +306,7 @@ function calc(){
  const c=S.teacher.comp||{};let bonus=0;
  BONUS.forEach(it=>{let p=0;if(it.type==="check")p=Math.min(it.max,it.subs.reduce((a,[sid,,,q])=>a+(c[it.id+"."+sid]?q:0),0));else{const o=it.opts.find(o=>o[0]===c[it.id]);p=o?o[3]:0}bonus+=p});
  bonus=Math.min(15,bonus);core=r1(core);
- const total=core>=60&&core<70?r1(core+bonus):core;
+ const total=core>=60&&core<70?Math.min(70,r1(core+bonus)):core;
  const rated=CORE.filter(it=>it.type==="scale"&&!isNA(it.id)).every(it=>v[it.id])&&(isNA("c1")||evalScore(S.avg)!==null);
  return{core,bonus,total,rated};
 }
